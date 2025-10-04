@@ -25,7 +25,7 @@
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             {{-- Anda bisa mengganti ini dengan logo --}}
-                            <a href="{{ route('dashboard') }}" class="text-white font-bold text-xl">Manajemen Aset</a>
+                            <a href="{{ route('dashboard') }}" class="text-white font-bold text-xl">Pelita</a>
                         </div>
                     </div>
                     <div>

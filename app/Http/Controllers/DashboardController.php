@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DataAset; // <-- Jangan lupa import modelnya
+use App\Models\DataAset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -19,11 +19,14 @@ class DashboardController extends Controller
         // 3. Menghitung Jumlah Aset dalam Kondisi Baik
         $asetBaik = DataAset::where('kondisi', 'Baik')->count();
 
-        // 4. Menghitung Jumlah Aset yang Perlu Perhatian (Perbaikan atau Rusak)
+        // 4. Menghitung Jumlah Aset yang Perlu Perhatian
         $asetPerluPerbaikan = DataAset::where('kondisi', '!=', 'Baik')->count();
 
         // 5. Menghitung Jumlah Kategori Aset yang unik
         $totalKategori = DataAset::distinct()->count('kategori');
+
+        // BARU: 6. Menghitung tahun perolehan aset terbaru
+        $asetTerbaruTahun = DataAset::max('tahun_pendagaan');
 
         // Mengirim semua data ke view 'dashboard'
         return view('dashboard', compact(
@@ -31,7 +34,8 @@ class DashboardController extends Controller
             'totalNilai',
             'asetBaik',
             'asetPerluPerbaikan',
-            'totalKategori'
+            'totalKategori',
+            'asetTerbaruTahun'
         ));
     }
 }

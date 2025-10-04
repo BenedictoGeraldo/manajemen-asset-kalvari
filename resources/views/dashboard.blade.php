@@ -8,8 +8,9 @@
 @section('content')
 <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
 
-        <!-- Grid untuk Kartu Overview -->
-        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <!-- Grid untuk Kartu Overview, diubah menjadi 3 kolom untuk layar besar -->
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            
             <!-- Kartu Total Aset -->
             <div class="bg-white overflow-hidden shadow-lg rounded-lg p-5">
                 <div class="flex items-center">
@@ -20,12 +21,8 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">
-                                Total Aset
-                            </dt>
-                            <dd class="text-2xl font-bold text-gray-900">
-                                {{ $totalAset ?? '0' }}
-                            </dd>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Total Aset</dt>
+                            <dd class="text-2xl font-bold text-gray-900">{{ $totalAset ?? '0' }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -41,12 +38,8 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">
-                                Total Nilai Aset (Rp)
-                            </dt>
-                            <dd class="text-2xl font-bold text-gray-900">
-                                {{ number_format($totalNilai, 0, ',', '.') ?? '0' }}
-                            </dd>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Total Nilai Aset (Rp)</dt>
+                            <dd class="text-2xl font-bold text-gray-900">{{ number_format($totalNilai, 0, ',', '.') ?? '0' }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -62,18 +55,14 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">
-                                Aset Kondisi Baik
-                            </dt>
-                            <dd class="text-2xl font-bold text-gray-900">
-                                {{ $asetBaik ?? '0' }}
-                            </dd>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Aset Kondisi Baik</dt>
+                            <dd class="text-2xl font-bold text-gray-900">{{ $asetBaik ?? '0' }}</dd>
                         </dl>
                     </div>
                 </div>
             </div>
 
-             <!-- Kartu Aset Perlu Perbaikan -->
+             <!-- Kartu Aset Perlu Perhatian -->
             <div class="bg-white overflow-hidden shadow-lg rounded-lg p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3">
@@ -83,12 +72,8 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">
-                                Perlu Perhatian
-                            </dt>
-                            <dd class="text-2xl font-bold text-gray-900">
-                                {{ $asetPerluPerbaikan ?? '0' }}
-                            </dd>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Perlu Perhatian</dt>
+                            <dd class="text-2xl font-bold text-gray-900">{{ $asetPerluPerbaikan ?? '0' }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -104,19 +89,32 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">
-                                Jumlah Kategori
-                            </dt>
-                            <dd class="text-2xl font-bold text-gray-900">
-                                {{ $totalKategori ?? '0' }}
-                            </dd>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Jumlah Kategori</dt>
+                            <dd class="text-2xl font-bold text-gray-900">{{ $totalKategori ?? '0' }}</dd>
                         </dl>
                     </div>
                 </div>
             </div>
+
+            <!-- KARTU BARU: Aset Terbaru -->
+            <div class="bg-white overflow-hidden shadow-lg rounded-lg p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-gray-500 rounded-md p-3">
+                        <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Aset Terbaru (Tahun)</dt>
+                            <dd class="text-2xl font-bold text-gray-900">{{ $asetTerbaruTahun ?? 'N/A' }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
         </div>
         <!-- Akhir Grid -->
-
     </div>
 </div>
 @endsection
