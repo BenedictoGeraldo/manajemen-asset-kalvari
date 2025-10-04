@@ -3,51 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Manajemen Aset')</title> {{-- Memberikan judul default jika tidak di-set di halaman anak --}}
-    
-    {{-- Memuat Tailwind CSS dari CDN --}}
+    <title>@yield('title', 'Manajemen Aset')</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
 </head>
 <body class="bg-gray-100">
-    <div id="app">
-        <!-- Navbar -->
-        <nav style="background-color: #343A40;">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-16">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            {{-- Anda bisa mengganti ini dengan logo --}}
-                            <a href="{{ route('dashboard') }}" class="text-white font-bold text-xl">Pelita</a>
-                        </div>
-                    </div>
-                    <div>
-                        {{-- Hanya tampilkan tombol logout jika user terautentikasi --}}
-                        @auth
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                                    Logout
-                                </button>
-                            </form>
-                        @endauth
+
+    <nav class="bg-[#343A40] shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Item Kiri: Judul Aplikasi -->
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <!-- Ganti dengan logo jika ada -->
+                        <span class="text-white font-bold text-xl">Pelita</span>
                     </div>
                 </div>
+                
+                <!-- Item Tengah: Menu Navigasi -->
+                <div class="hidden md:block">
+                    <div class="flex items-baseline space-x-4">
+                        <!-- Menu Navigasi -->
+                        <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                        
+                        {{-- Anda perlu membuat route dengan nama 'aset.index' nantinya --}}
+                        <a href="#" class="{{ request()->routeIs('aset.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} px-3 py-2 rounded-md text-sm font-medium">Data Aset</a>
+                    </div>
+                </div>
+                
+                <!-- Item Kanan: Tombol Logout -->
+                <div class="hidden md:block">
+                    <!-- Form Logout -->
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                            Logout
+                        </button>
+                    </form>
+                </div>
             </div>
-        </nav>
+        </div>
+    </nav>
 
-        <!-- Main Content -->
-        <main>
-            {{-- Di sinilah konten dari halaman spesifik (seperti dashboard) akan disisipkan --}}
-            @yield('content')
-        </main>
-    </div>
+    <main>
+        @yield('content')
+    </main>
+
 </body>
 </html>
+
