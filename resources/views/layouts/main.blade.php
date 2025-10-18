@@ -11,22 +11,18 @@
     <nav class="bg-[#343A40] shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <!-- Item Kiri: Judul Aplikasi -->
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <!-- Ganti dengan logo jika ada -->
                         <span class="text-white font-bold text-xl">Pelita</span>
                     </div>
                 </div>
                 
-                <!-- Item Tengah: Menu Navigasi -->
                 <div class="hidden md:block">
                     <div class="flex items-baseline space-x-4">
                         <!-- Menu Navigasi -->
                         <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
                         
-                        {{-- Anda perlu membuat route dengan nama 'aset.index' nantinya --}}
-                        <a href="#" class="{{ request()->routeIs('aset.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} px-3 py-2 rounded-md text-sm font-medium">Data Aset</a>
+                        <a href="{{ route('data-aset.index') }}" class="{{ request()->routeIs('data-aset.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} px-3 py-2 rounded-md text-sm font-medium">Data Aset</a>
                     </div>
                 </div>
                 
