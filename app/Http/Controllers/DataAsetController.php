@@ -8,28 +8,22 @@ use Illuminate\Http\Request;
 class DataAsetController extends Controller
 {
     /**
-     * Menampilkan halaman manajemen aset (view, create, edit via modal).
+     * Menampilkan halaman manajemen aset.
      */
     public function index()
     {
-        $asets = DataAset::latest()->paginate(10);
-        // Mengubah path view ke 'data-aset' sesuai dengan nama file baru Anda
+        $asets = DataAset::orderBy('id', 'desc')->paginate(10);
+        
+        // Memuat view utama untuk data aset
         return view('data-aset', compact('asets'));
     }
 
-    /**
-     * Method ini tidak lagi digunakan untuk menampilkan view,
-     * karena form tambah sekarang ada di dalam modal di halaman index.
-     * Dibiarkan ada untuk konsistensi dengan route resource.
-     */
     public function create()
     {
         return redirect()->route('data-aset.index');
     }
 
-    /**
-     * Menyimpan data aset baru ke dalam database.
-     */
+
     public function store(Request $request)
     {
         $request->validate([
@@ -48,19 +42,11 @@ class DataAsetController extends Controller
                          ->with('success', 'Aset baru berhasil ditambahkan.');
     }
 
-    /**
-     * Method ini tidak lagi digunakan untuk menampilkan view,
-     * karena form edit sekarang ada di dalam modal di halaman index.
-     * Dibiarkan ada untuk konsistensi dengan route resource.
-     */
     public function edit(DataAset $dataAset)
     {
          return redirect()->route('data-aset.index');
     }
 
-    /**
-     * Memperbarui data aset di dalam database.
-     */
     public function update(Request $request, DataAset $dataAset)
     {
         $request->validate([
@@ -72,15 +58,13 @@ class DataAsetController extends Controller
             'nilai_perolehan' => 'required|numeric|min:0',
         ]);
 
+        // 'kode_aset' tidak diupdate karena biasanya unik dan permanen
         $dataAset->update($request->except('kode_aset'));
 
         return redirect()->route('data-aset.index')
                          ->with('success', 'Data aset berhasil diperbarui.');
     }
 
-    /**
-     * Menghapus data aset dari database.
-     */
     public function destroy(DataAset $dataAset)
     {
         $dataAset->delete();
