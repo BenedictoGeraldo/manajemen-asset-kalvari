@@ -26,7 +26,7 @@ class DashboardController extends Controller
         $totalKategori = DataAset::distinct()->count('kategori');
 
         // BARU: 6. Menghitung tahun perolehan aset terbaru
-        $asetTerbaruTahun = DataAset::max('tahun_pendagaan');
+        $asetTerbaruTahun = DataAset::max('tahun_pengadaan');
 
         // Mengirim semua data ke view 'dashboard'
         return view('dashboard', compact(
