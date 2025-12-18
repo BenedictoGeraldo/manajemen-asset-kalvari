@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Generate Favicon</title>
+    </head>
+    <body>
+        <h1>Logo PELITA - Favicon Generator</h1>
+        <p>Untuk membuat favicon:</p>
+        <ol>
+            <li>Buka logo-pelita.svg di browser atau editor grafis</li>
+            <li>Screenshot atau export sebagai PNG dengan size 256x256px</li>
+            <li>Simpan sebagai favicon.ico atau favicon.png</li>
+        </ol>
+
+        <h2>Preview Logo:</h2>
+        <img
+            src="logo-pelita.svg"
+            alt="PELITA Logo"
+            style="
+                width: 200px;
+                height: 200px;
+                border: 1px solid #ccc;
+                padding: 20px;
+            "
+        />
+
+        <h2>Untuk konversi otomatis, jalankan script berikut:</h2>
+        <pre>
+# Menggunakan ImageMagick (jika tersedia)
+convert logo-pelita.svg -resize 256x256 favicon.png
+
+# Atau menggunakan online converter:
+# https://favicon.io/favicon-converter/
+# https://convertico.com/
+    </pre
+        >
+    </body>
+</html>
