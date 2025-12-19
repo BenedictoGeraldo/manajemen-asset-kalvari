@@ -26,9 +26,9 @@
 <body class="bg-gradient-to-br from-gray-50 via-purple-50 to-gray-100 min-h-screen">
 
     <!-- Enhanced Navbar -->
-    <nav class="bg-gradient-to-r from-[#343A40] via-[#3d444a] to-[#343A40] shadow-xl">
+    <nav class="bg-gradient-to-r from-[#343A40] via-[#3d444a] to-[#343A40] shadow-2xl border-b border-gray-700/50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
+            <div class="flex items-center justify-between h-24">
                 <!-- Brand -->
                 <div class="flex items-center">
                     <div class="text-white">
