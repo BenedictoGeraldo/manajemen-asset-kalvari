@@ -6,6 +6,7 @@
     <title>@yield('title', 'PELITA - Manajemen Aset')</title>
     <link rel="icon" type="image/png" href="{{ asset('logo-pelita.png') }}">
     <script src="https://cdn.tailwindcss.com"></script>
+    @stack('styles')
     <style>
         @keyframes slideDown {
             from {
@@ -25,17 +26,14 @@
 <body class="bg-gradient-to-br from-gray-50 via-purple-50 to-gray-100 min-h-screen">
 
     <!-- Enhanced Navbar -->
-    <nav class="bg-gradient-to-r from-[#343A40] via-[#3d444a] to-[#343A40] shadow-xl border-b-4 border-purple-600">
+    <nav class="bg-gradient-to-r from-[#343A40] via-[#3d444a] to-[#343A40] shadow-xl">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <!-- Logo and Brand -->
-                <div class="flex items-center space-x-4">
-                    <div class="flex-shrink-0 bg-white rounded-lg p-2 shadow-md">
-                        <img src="{{ asset('logo-pelita.png') }}" alt="Logo PELITA" class="w-10 h-10">
-                    </div>
+                <!-- Brand -->
+                <div class="flex items-center">
                     <div class="text-white">
                         <h1 class="text-2xl font-bold tracking-wide">PELITA</h1>
-                        <p class="text-xs text-gray-300 -mt-1">Sistem Manajemen Aset</p>
+                        <p class="text-xs text-gray-300 -mt-1">Pencatatan Elektronik List Terpusat Aset</p>
                     </div>
                 </div>
 
