@@ -12,8 +12,8 @@ class DataAsetController extends Controller
      */
     public function index()
     {
-        $asets = DataAset::orderBy('id', 'desc')->paginate(10);
-        
+        $asets = DataAset::orderBy('id', 'desc')->get();
+
         // Memuat view utama untuk data aset
         return view('data-aset', compact('asets'));
     }
