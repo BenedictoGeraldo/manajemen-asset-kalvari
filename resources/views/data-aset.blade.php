@@ -92,9 +92,6 @@
             <table id="dataTableAset" class="min-w-full divide-y divide-gray-200 display">
                 <thead class="bg-gray-100">
                     <tr>
-                        <th scope="col" class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
-                            No
-                        </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                             Nama Aset
                         </th>
@@ -115,9 +112,6 @@
                 <tbody class="bg-white divide-y divide-gray-200" id="aset-tbody">
                     @forelse ($asets as $index => $aset)
                         <tr class="hover:bg-gray-50 transition-colors duration-150">
-                            <td class="px-6 py-3 whitespace-nowrap text-center">
-                                <span class="text-sm font-semibold text-gray-700">{{ $index + 1 }}</span>
-                            </td>
                             <td class="px-6 py-3 whitespace-nowrap">
                                 <span class="text-sm font-medium text-gray-900">{{ $aset->nama_aset }}</span>
                             </td>
@@ -165,7 +159,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-12 text-center">
+                            <td colspan="5" class="px-6 py-12 text-center">
                                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                                 </svg>
@@ -377,10 +371,9 @@
             },
             "pageLength": 10,
             "lengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "Semua"]],
-            "order": [[1, 'asc']],
+            "order": [[0, 'asc']],
             "columnDefs": [
-                { "orderable": false, "targets": 0 },
-                { "orderable": false, "targets": 5 }
+                { "orderable": false, "targets": 4 }
             ]
         });
     });
