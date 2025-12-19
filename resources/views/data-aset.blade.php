@@ -2,6 +2,41 @@
 
 @section('title', 'Data Aset - PELITA')
 
+@push('styles')
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.tailwindcss.min.css">
+<style>
+    .dataTables_wrapper .dataTables_length select {
+        padding: 0.375rem 2rem 0.375rem 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+        background-color: white;
+    }
+    .dataTables_wrapper .dataTables_filter input {
+        padding: 0.375rem 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+        margin-left: 0.5rem;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.375rem 0.75rem;
+        margin: 0 0.125rem;
+        border-radius: 0.375rem;
+        border: 1px solid #d1d5db;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        background: #7c3aed;
+        color: white !important;
+        border: 1px solid #7c3aed;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        background: #f3f4f6;
+        border: 1px solid #9ca3af;
+        color: black !important;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="max-w-7xl mx-auto py-8 sm:px-6 lg:px-8">
     <!-- Header Section -->
@@ -52,57 +87,25 @@
     @endif
 
     <!-- Data Table Card -->
-    <div class="bg-white overflow-hidden shadow-2xl rounded-2xl">
+    <div class="bg-white overflow-hidden shadow-2xl rounded-2xl p-6">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
+            <table id="dataTableAset" class="min-w-full divide-y divide-gray-200 display">
                 <thead class="bg-gray-100">
                     <tr>
-                        <th scope="col" class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider w-20">
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
                             No
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                            <button onclick="sortTable('nama_aset')" class="flex items-center hover:text-purple-600 transition-colors">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                                </svg>
-                                Nama Aset
-                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                                </svg>
-                            </button>
+                            Nama Aset
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                            <button onclick="sortTable('kategori')" class="flex items-center hover:text-purple-600 transition-colors">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z" />
-                                </svg>
-                                Kategori
-                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                                </svg>
-                            </button>
+                            Kategori
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                            <button onclick="sortTable('kondisi')" class="flex items-center hover:text-purple-600 transition-colors">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                Kondisi
-                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                                </svg>
-                            </button>
+                            Kondisi
                         </th>
                         <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">
-                            <button onclick="sortTable('nilai_perolehan')" class="flex items-center justify-end hover:text-purple-600 transition-colors ml-auto">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                Nilai (Rp)
-                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                                </svg>
-                            </button>
+                            Nilai (Rp)
                         </th>
                         <th scope="col" class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
                             Aksi
@@ -113,7 +116,7 @@
                     @forelse ($asets as $index => $aset)
                         <tr class="hover:bg-gray-50 transition-colors duration-150">
                             <td class="px-6 py-3 whitespace-nowrap text-center">
-                                <span class="text-sm font-semibold text-gray-700">{{ $asets->firstItem() + $index }}</span>
+                                <span class="text-sm font-semibold text-gray-700">{{ $index + 1 }}</span>
                             </td>
                             <td class="px-6 py-3 whitespace-nowrap">
                                 <span class="text-sm font-medium text-gray-900">{{ $aset->nama_aset }}</span>
@@ -173,11 +176,6 @@
                     @endforelse
                 </tbody>
             </table>
-        </div>
-
-        {{-- Link Paginasi --}}
-        <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
-            {{ $asets->links() }}
         </div>
     </div>
 </div>
@@ -354,52 +352,38 @@
             @endif
         @endif
     });
+</script>
 
-    // Fungsi untuk sorting table
-    let currentSort = { column: null, direction: 'asc' };
-
-    function sortTable(column) {
-        const tbody = document.getElementById('aset-tbody');
-        const rows = Array.from(tbody.querySelectorAll('tr'));
-
-        // Toggle direction jika kolom yang sama
-        if (currentSort.column === column) {
-            currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
-        } else {
-            currentSort.column = column;
-            currentSort.direction = 'asc';
-        }
-
-        // Get column index
-        const columnMap = {
-            'nama_aset': 1,
-            'kategori': 2,
-            'kondisi': 3,
-            'nilai_perolehan': 4
-        };
-        const columnIndex = columnMap[column];
-
-        // Sort rows
-        rows.sort((a, b) => {
-            let aValue = a.cells[columnIndex].textContent.trim();
-            let bValue = b.cells[columnIndex].textContent.trim();
-
-            // Handle nilai (remove Rp and formatting)
-            if (column === 'nilai_perolehan') {
-                aValue = parseInt(aValue.replace(/[^\d]/g, ''));
-                bValue = parseInt(bValue.replace(/[^\d]/g, ''));
-            }
-
-            if (currentSort.direction === 'asc') {
-                return aValue > bValue ? 1 : -1;
-            } else {
-                return aValue < bValue ? 1 : -1;
-            }
+<!-- DataTables Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.tailwindcss.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#dataTableAset').DataTable({
+            "language": {
+                "lengthMenu": "Tampilkan _MENU_ data per halaman",
+                "zeroRecords": "Data tidak ditemukan",
+                "info": "Menampilkan halaman _PAGE_ dari _PAGES_",
+                "infoEmpty": "Tidak ada data tersedia",
+                "infoFiltered": "(difilter dari _MAX_ total data)",
+                "search": "Cari:",
+                "paginate": {
+                    "first": "Pertama",
+                    "last": "Terakhir",
+                    "next": "Selanjutnya",
+                    "previous": "Sebelumnya"
+                }
+            },
+            "pageLength": 10,
+            "lengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "Semua"]],
+            "order": [[1, 'asc']],
+            "columnDefs": [
+                { "orderable": false, "targets": 0 },
+                { "orderable": false, "targets": 5 }
+            ]
         });
-
-        // Re-append sorted rows
-        rows.forEach(row => tbody.appendChild(row));
-    }
+    });
 </script>
 @endsection
 
