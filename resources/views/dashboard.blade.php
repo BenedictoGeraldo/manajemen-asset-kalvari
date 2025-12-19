@@ -14,7 +14,7 @@
             transform: translateY(0);
         }
     }
-    
+
     @keyframes slideIn {
         from {
             opacity: 0;
@@ -25,24 +25,24 @@
             transform: translateX(0);
         }
     }
-    
+
     .animate-fadeInUp {
         animation: fadeInUp 0.6s ease-out forwards;
     }
-    
+
     .animate-slideIn {
         animation: slideIn 0.6s ease-out forwards;
     }
-    
+
     .card-hover {
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
+
     .card-hover:hover {
         transform: translateY(-4px);
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     }
-    
+
     .progress-bar {
         transition: width 1.5s ease-out;
     }
@@ -197,13 +197,13 @@
                 </svg>
                 Distribusi Kondisi Aset
             </h3>
-            
+
             @php
                 $totalAsetForPercentage = $totalAset > 0 ? $totalAset : 1;
                 $persentaseBaik = round(($asetBaik / $totalAsetForPercentage) * 100);
                 $persentasePerluPerbaikan = round(($asetPerluPerbaikan / $totalAsetForPercentage) * 100);
             @endphp
-            
+
             <div class="space-y-5">
                 <!-- Baik -->
                 <div>
@@ -218,7 +218,7 @@
                         <div class="progress-bar bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full shadow-sm" style="width: {{ $persentaseBaik }}%"></div>
                     </div>
                 </div>
-                
+
                 <!-- Perlu Perhatian -->
                 <div>
                     <div class="flex justify-between items-center mb-2">
@@ -243,7 +243,7 @@
                 </svg>
                 Informasi Cepat
             </h3>
-            
+
             <div class="space-y-4">
                 <div class="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">
                     <span class="text-sm font-medium text-gray-700">Rata-rata Nilai Aset</span>
@@ -251,19 +251,19 @@
                         Rp {{ $totalAset > 0 ? number_format($totalNilai / $totalAset, 0, ',', '.') : '0' }}
                     </span>
                 </div>
-                
+
                 <div class="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">
                     <span class="text-sm font-medium text-gray-700">Tingkat Kesehatan Aset</span>
                     <span class="text-sm font-bold {{ $persentaseBaik >= 80 ? 'text-green-600' : ($persentaseBaik >= 50 ? 'text-yellow-600' : 'text-red-600') }}">
                         {{ $persentaseBaik >= 80 ? 'Sangat Baik' : ($persentaseBaik >= 50 ? 'Cukup Baik' : 'Perlu Perhatian') }}
                     </span>
                 </div>
-                
+
                 <div class="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">
                     <span class="text-sm font-medium text-gray-700">Total Kategori</span>
                     <span class="text-sm font-bold text-indigo-600">{{ $totalKategori }} Kategori</span>
                 </div>
-                
+
                 <div class="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">
                     <span class="text-sm font-medium text-gray-700">Tahun Pengadaan Terbaru</span>
                     <span class="text-sm font-bold text-blue-600">{{ $asetTerbaruTahun ?? 'N/A' }}</span>
