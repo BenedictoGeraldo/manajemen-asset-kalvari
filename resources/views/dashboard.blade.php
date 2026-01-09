@@ -75,12 +75,12 @@
                 </svg>
             </div>
             <div class="text-right">
-                <p class="text-xs font-medium text-gray-500 uppercase">Total Aset</p>
-                <p class="text-3xl font-bold text-gray-800 mt-1">{{ $totalAset ?? '0' }}</p>
+                <p class="text-xs font-medium text-gray-500 uppercase">Total Barang</p>
+                <p class="text-3xl font-bold text-gray-800 mt-1">{{ number_format($totalAset ?? 0, 0, ',', '.') }}</p>
             </div>
         </div>
         <div class="border-t border-gray-100 pt-3">
-            <p class="text-sm text-gray-600">Seluruh aset terdaftar</p>
+            <p class="text-sm text-gray-600">Jumlah seluruh barang</p>
         </div>
     </div>
 
@@ -111,30 +111,31 @@
                 </svg>
             </div>
             <div class="text-right">
-                <p class="text-xs font-medium text-gray-500 uppercase">Kondisi Baik</p>
-                <p class="text-3xl font-bold text-gray-800 mt-1">{{ $asetBaik ?? '0' }}</p>
+                <p class="text-xs font-medium text-gray-500 uppercase">Total Record</p>
+                <p class="text-3xl font-bold text-gray-800 mt-1">{{ $totalRecord ?? 0 }}</p>
             </div>
         </div>
         <div class="border-t border-gray-100 pt-3">
-            <p class="text-sm text-gray-600">Aset dalam kondisi prima</p>
+            <p class="text-sm text-gray-600">Jumlah data aset terdaftar</p>
         </div>
     </div>
 
-    <!-- Kartu Aset Perlu Perhatian -->
+    <!-- Kartu Jumlah Lokasi -->
     <div class="bg-white overflow-hidden shadow rounded-lg p-5">
         <div class="flex items-center justify-between mb-3">
             <div class="bg-yellow-50 rounded-lg p-3">
                 <svg class="h-6 w-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
             </div>
             <div class="text-right">
-                <p class="text-xs font-medium text-gray-500 uppercase">Perlu Perhatian</p>
-                <p class="text-3xl font-bold text-gray-800 mt-1">{{ $asetPerluPerbaikan ?? '0' }}</p>
+                <p class="text-xs font-medium text-gray-500 uppercase">Lokasi</p>
+                <p class="text-3xl font-bold text-gray-800 mt-1">{{ $totalLokasi ?? 0 }}</p>
             </div>
         </div>
         <div class="border-t border-gray-100 pt-3">
-            <p class="text-sm text-gray-600">Memerlukan perbaikan segera</p>
+            <p class="text-sm text-gray-600">Jumlah lokasi penyimpanan</p>
         </div>
     </div>
 
@@ -161,16 +162,16 @@
         <div class="flex items-center justify-between mb-3">
             <div class="bg-gray-50 rounded-lg p-3">
                 <svg class="h-6 w-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </div>
             <div class="text-right">
                 <p class="text-xs font-medium text-gray-500 uppercase">Aset Terbaru</p>
-                <p class="text-3xl font-bold text-gray-800 mt-1">{{ $asetTerbaruTahun ?? 'N/A' }}</p>
+                <p class="text-xl font-bold text-gray-800 mt-1">{{ $asetTerbaru->first()->nama_aset ?? 'Belum ada' }}</p>
             </div>
         </div>
         <div class="border-t border-gray-100 pt-3">
-            <p class="text-sm text-gray-600">Tahun perolehan terbaru</p>
+            <p class="text-sm text-gray-600">Data aset terakhir ditambahkan</p>
         </div>
     </div>
 </div>
@@ -187,39 +188,29 @@
         </h3>
 
         @php
-            $totalAsetForPercentage = $totalAset > 0 ? $totalAset : 1;
-            $persentaseBaik = round(($asetBaik / $totalAsetForPercentage) * 100);
-            $persentasePerluPerbaikan = round(($asetPerluPerbaikan / $totalAsetForPercentage) * 100);
+            $totalRecordForPercentage = $totalRecord > 0 ? $totalRecord : 1;
         @endphp
 
         <div class="space-y-5">
-            <!-- Baik -->
-            <div>
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm font-medium text-gray-700 flex items-center">
-                        <span class="w-3 h-3 rounded-full bg-green-500 mr-2"></span>
-                        Kondisi Baik
-                    </span>
-                    <span class="text-sm font-bold text-gray-800">{{ $asetBaik }} ({{ $persentaseBaik }}%)</span>
+            @forelse($distribusiKondisi as $item)
+                @php
+                    $persentase = round(($item->total / $totalRecordForPercentage) * 100);
+                @endphp
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-medium text-gray-700 flex items-center">
+                            <span class="w-3 h-3 rounded-full bg-{{ $item->kondisi->kode_warna }}-500 mr-2"></span>
+                            {{ $item->kondisi->nama_kondisi }}
+                        </span>
+                        <span class="text-sm font-bold text-gray-800">{{ $item->total }} ({{ $persentase }}%)</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                        <div class="bg-{{ $item->kondisi->kode_warna }}-500 h-2.5 rounded-full" style="width: {{ $persentase }}%"></div>
+                    </div>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
-                    <div class="bg-green-500 h-2.5 rounded-full" style="width: {{ $persentaseBaik }}%"></div>
-                </div>
-            </div>
-
-            <!-- Perlu Perhatian -->
-            <div>
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm font-medium text-gray-700 flex items-center">
-                        <span class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></span>
-                        Perlu Perhatian
-                    </span>
-                    <span class="text-sm font-bold text-gray-800">{{ $asetPerluPerbaikan }} ({{ $persentasePerluPerbaikan }}%)</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
-                    <div class="bg-yellow-500 h-2.5 rounded-full" style="width: {{ $persentasePerluPerbaikan }}%"></div>
-                </div>
-            </div>
+            @empty
+                <p class="text-sm text-gray-500 text-center py-4">Belum ada data kondisi aset</p>
+            @endforelse
         </div>
     </div>
 
@@ -227,38 +218,83 @@
     <div class="bg-white rounded-lg shadow p-6">
         <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center">
             <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z" />
             </svg>
-            Informasi Cepat
+            Top 5 Kategori Aset
         </h3>
 
         <div class="space-y-3">
-            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <span class="text-sm font-medium text-gray-700">Rata-rata Nilai Aset</span>
-                <span class="text-sm font-bold text-blue-600">
-                    Rp {{ $totalAset > 0 ? number_format($totalNilai / $totalAset, 0, ',', '.') : '0' }}
-                </span>
-            </div>
-
-            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <span class="text-sm font-medium text-gray-700">Tingkat Kesehatan Aset</span>
-                <span class="text-sm font-bold {{ $persentaseBaik >= 80 ? 'text-green-600' : ($persentaseBaik >= 50 ? 'text-yellow-600' : 'text-red-600') }}">
-                    {{ $persentaseBaik >= 80 ? 'Sangat Baik' : ($persentaseBaik >= 50 ? 'Cukup Baik' : 'Perlu Perhatian') }}
-                </span>
-            </div>
-
-            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <span class="text-sm font-medium text-gray-700">Total Kategori</span>
-                <span class="text-sm font-bold text-blue-600">{{ $totalKategori }} Kategori</span>
-            </div>
-
-            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <span class="text-sm font-medium text-gray-700">Tahun Pengadaan Terbaru</span>
-                <span class="text-sm font-bold text-gray-600">{{ $asetTerbaruTahun ?? 'N/A' }}</span>
-            </div>
+            @forelse($distribusiKategori as $item)
+                @php
+                    $persentase = round(($item->total / $totalRecord) * 100);
+                @endphp
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div class="flex-1">
+                        <span class="text-sm font-medium text-gray-700">{{ $item->kategori->nama_kategori }}</span>
+                        <div class="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden mt-2">
+                            <div class="bg-blue-500 h-1.5 rounded-full" style="width: {{ $persentase }}%"></div>
+                        </div>
+                    </div>
+                    <span class="text-sm font-bold text-blue-600 ml-4">{{ $item->total }}</span>
+                </div>
+            @empty
+                <p class="text-sm text-gray-500 text-center py-4">Belum ada data kategori</p>
+            @endforelse
         </div>
     </div>
 </div>
+
+<!-- Aset Terbaru -->
+@if($asetTerbaru->count() > 0)
+<div class="bg-white rounded-lg shadow p-6 mb-6">
+    <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center">
+        <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Aset Terbaru Ditambahkan
+    </h3>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Aset</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lokasi</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kondisi</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                @foreach($asetTerbaru as $aset)
+                <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='{{ route('data-aset.show', $aset->id) }}'">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">{{ $aset->nama_aset }}</div>
+                        <div class="text-xs text-gray-500">{{ $aset->kode_aset }}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                            {{ $aset->kategori->nama_kategori }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ $aset->lokasi->nama_lokasi }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-{{ $aset->kondisi->kode_warna }}-100 text-{{ $aset->kondisi->kode_warna }}-800">
+                            {{ $aset->kondisi->nama_kondisi }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                        {{ $aset->jumlah_barang }}
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+@endif
 
 <!-- Call to Action -->
 <div class="bg-white rounded-lg shadow p-6">
