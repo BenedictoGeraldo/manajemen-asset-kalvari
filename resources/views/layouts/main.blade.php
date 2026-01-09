@@ -6,6 +6,7 @@
     <title>@yield('title', 'PELITA - Manajemen Aset')</title>
     <link rel="icon" type="image/png" href="{{ asset('logo-pelita-cross.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @stack('styles')
     <style>
         @keyframes slideIn {
@@ -86,34 +87,70 @@
                         </svg>
                     </a>
 
-                    <!-- Kategori Aset -->
-                    <a href="#"
-                       class="flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 text-gray-700 hover:bg-gray-100">
-                        <div class="flex items-center space-x-3">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    <!-- Data Master Dropdown -->
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open"
+                                class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('master.*') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                            <div class="flex items-center space-x-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                                </svg>
+                                <span>Data Master</span>
+                            </div>
+                            <svg class="w-4 h-4 transition-transform duration-200" :class="{ 'rotate-90': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                             </svg>
-                            <span>Kategori Aset</span>
-                        </div>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </a>
+                        </button>
 
-                    <!-- Lokasi -->
-                    <a href="#"
-                       class="flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 text-gray-700 hover:bg-gray-100">
-                        <div class="flex items-center space-x-3">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            <span>Lokasi</span>
+                        <!-- Dropdown Menu -->
+                        <div x-show="open"
+                             x-transition:enter="transition ease-out duration-100"
+                             x-transition:enter-start="transform opacity-0 scale-95"
+                             x-transition:enter-end="transform opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-75"
+                             x-transition:leave-start="transform opacity-100 scale-100"
+                             x-transition:leave-end="transform opacity-0 scale-95"
+                             class="mt-1 ml-4 space-y-1"
+                             style="display: none;">
+
+                            <!-- Master Kategori -->
+                            <a href="{{ route('master.kategori.index') }}" data-navigate
+                               class="nav-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('master.kategori.*') ? 'bg-blue-100 text-blue-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                                </svg>
+                                <span>Kategori</span>
+                            </a>
+
+                            <!-- Master Lokasi -->
+                            <a href="{{ route('master.lokasi.index') }}" data-navigate
+                               class="nav-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('master.lokasi.*') ? 'bg-blue-100 text-blue-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <span>Lokasi</span>
+                            </a>
+
+                            <!-- Master Kondisi -->
+                            <a href="{{ route('master.kondisi.index') }}" data-navigate
+                               class="nav-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('master.kondisi.*') ? 'bg-blue-100 text-blue-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>Kondisi</span>
+                            </a>
+
+                            <!-- Master Pengelola -->
+                            <a href="{{ route('master.pengelola.index') }}" data-navigate
+                               class="nav-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('master.pengelola.*') ? 'bg-blue-100 text-blue-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                                <span>Pengelola</span>
+                            </a>
                         </div>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </a>
+                    </div>
 
                     <!-- Pemeliharaan -->
                     <a href="#"
