@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'PELITA - Manajemen Aset')</title>
-    <link rel="icon" type="image/png" href="{{ asset('logo-pelita.png') }}">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="{{ asset('logo-pelita-cross.png') }}">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
     <style>
         @keyframes slideIn {
@@ -51,10 +51,8 @@
             <!-- Logo Section -->
             <div class="p-6 border-b border-gray-200">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center">
-                        <svg class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                        </svg>
+                    <div class="w-10 h-10 flex items-center justify-center">
+                        <img src="{{ asset('logo-pelita-cross.png') }}" alt="PELITA Logo" class="w-15 h-15 object-contain">
                     </div>
                     <h1 class="text-xl font-bold text-gray-800">PELITA</h1>
                 </div>
