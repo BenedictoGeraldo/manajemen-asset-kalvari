@@ -4,7 +4,11 @@ use Illuminate\Support\Facades\Route;
 // Mengimpor semua controller yang dibutuhkan
 use App\Http\Controllers\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\DataAsetController;
+use App\Http\Controllers\DataAsetKolektifController;
+use App\Http\Controllers\MasterKategoriController;
+use App\Http\Controllers\MasterLokasiController;
+use App\Http\Controllers\MasterKondisiController;
+use App\Http\Controllers\MasterPengelolaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,8 +36,17 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     // Rute untuk dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
-    Route::resource('data-aset', DataAsetController::class)->except(['show']);
+
+    // Rute untuk data aset kolektif
+    Route::resource('data-aset', DataAsetKolektifController::class);
+
+    // Rute untuk master data
+    Route::prefix('master')->name('master.')->group(function () {
+        Route::resource('kategori', MasterKategoriController::class)->except(['show']);
+        Route::resource('lokasi', MasterLokasiController::class)->except(['show']);
+        Route::resource('kondisi', MasterKondisiController::class)->except(['show']);
+        Route::resource('pengelola', MasterPengelolaController::class)->except(['show']);
+    });
 
     // Rute untuk logout
     Route::post('logout', [AuthenticatedSessionController::class, 'logout'])->name('logout');
