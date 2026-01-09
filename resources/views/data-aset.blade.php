@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('title', 'Data Aset - PELITA')
+@section('page-title', 'Data Aset')
 
 @push('styles')
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
@@ -38,217 +39,215 @@
 @endpush
 
 @section('content')
-<div class="max-w-7xl mx-auto py-8 sm:px-6 lg:px-8">
-    <!-- Header Section -->
-    <div class="mb-8 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl shadow-2xl p-6 text-white">
-        <div class="flex flex-col md:flex-row justify-between items-center">
-            <div class="mb-4 md:mb-0">
-                <h2 class="text-3xl font-bold flex items-center">
-                    <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    Manajemen Data Aset
-                </h2>
-                <p class="text-purple-100 mt-2">Kelola seluruh data aset gereja</p>
-            </div>
-            <button id="btn-tambah-aset" class="bg-white hover:bg-gray-100 text-purple-600 font-bold py-3 px-6 rounded-xl transition-all duration-300 flex items-center shadow-xl transform hover:scale-105">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+<!-- Header Section -->
+<div class="mb-6 bg-white rounded-lg shadow p-6">
+    <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-4 md:mb-0">
+            <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                Tambah Aset Baru
-            </button>
+                Manajemen Data Aset
+            </h2>
+            <p class="text-gray-600 mt-1">Kelola seluruh data aset gereja</p>
         </div>
-    </div>
-
-    <!-- Alerts -->
-    @if (session('success'))
-        <div id="success-alert" class="mb-6 bg-green-50 border-l-4 border-green-500 text-green-800 p-4 rounded-lg shadow-md flex items-center" role="alert">
-            <svg class="w-6 h-6 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <button id="btn-tambah-aset" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-5 rounded-lg transition-colors flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
             </svg>
-            <p class="font-medium">{{ session('success') }}</p>
-        </div>
-    @endif
-
-    @if ($errors->any())
-        <div class="mb-6 bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded-lg shadow-md" role="alert">
-            <div class="flex items-center mb-2">
-                <svg class="w-6 h-6 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p class="font-bold">Terjadi Kesalahan:</p>
-            </div>
-            <ul class="mt-2 list-disc list-inside ml-8">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <!-- Data Table Card -->
-    <div class="bg-white overflow-hidden shadow-2xl rounded-2xl p-6">
-        <div class="overflow-x-auto">
-            <table id="dataTableAset" class="min-w-full divide-y divide-gray-200 display">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                            Nama Aset
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                            Kategori
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                            Kondisi
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">
-                            Nilai (Rp)
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
-                            Aksi
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200" id="aset-tbody">
-                    @forelse ($asets as $index => $aset)
-                        <tr class="hover:bg-gray-50 transition-colors duration-150">
-                            <td class="px-6 py-3 whitespace-nowrap">
-                                <span class="text-sm font-medium text-gray-900">{{ $aset->nama_aset }}</span>
-                            </td>
-                            <td class="px-6 py-3 whitespace-nowrap">
-                                <span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-700">{{ $aset->kategori }}</span>
-                            </td>
-                            <td class="px-6 py-3 whitespace-nowrap">
-                                @if ($aset->kondisi == 'Baik')
-                                    <span class="px-2 py-1 inline-flex text-xs font-medium rounded bg-green-100 text-green-700">
-                                        Baik
-                                    </span>
-                                @elseif ($aset->kondisi == 'Rusak Ringan')
-                                    <span class="px-2 py-1 inline-flex text-xs font-medium rounded bg-yellow-100 text-yellow-700">
-                                        Rusak Ringan
-                                    </span>
-                                @else
-                                    <span class="px-2 py-1 inline-flex text-xs font-medium rounded bg-red-100 text-red-700">
-                                        Rusak Berat
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
-                                Rp {{ number_format($aset->nilai_perolehan, 0, ',', '.') }}
-                            </td>
-                            <td class="px-6 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                <button class="btn-edit-aset inline-flex items-center px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded transition-colors duration-200 mr-2"
-                                        data-id="{{ $aset->id }}"
-                                        data-asset='@json($aset)'>
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                    </svg>
-                                    Edit
-                                </button>
-                                <form action="{{ route('data-aset.destroy', $aset) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus aset \'{{ $aset->nama_aset }}\'?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="inline-flex items-center px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                        </svg>
-                                        Hapus
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="px-6 py-12 text-center">
-                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                                </svg>
-                                <p class="mt-4 text-sm text-gray-600 font-medium">Belum ada data aset.</p>
-                                <p class="text-xs text-gray-500 mt-1">Silakan tambahkan aset baru dengan klik tombol di atas</p>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+            Tambah Aset Baru
+        </button>
     </div>
 </div>
 
-<!-- Enhanced Modal -->
-<div id="aset-modal" class="fixed inset-0 bg-gray-900 bg-opacity-60 backdrop-blur-sm overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
-    <div class="relative mx-auto p-8 border-0 w-full max-w-3xl shadow-2xl rounded-2xl bg-white animate-modal-slide-up">
-        <div class="flex justify-between items-center border-b-2 border-purple-200 pb-4 mb-6">
-            <h3 id="modal-title" class="text-2xl font-bold text-gray-900 flex items-center">
-                <svg class="w-7 h-7 mr-3 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<!-- Alerts -->
+@if (session('success'))
+    <div id="success-alert" class="mb-6 bg-green-50 border-l-4 border-green-500 text-green-800 p-4 rounded-lg flex items-center" role="alert">
+        <svg class="w-5 h-5 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p class="font-medium">{{ session('success') }}</p>
+    </div>
+@endif
+
+@if ($errors->any())
+    <div class="mb-6 bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded-lg" role="alert">
+        <div class="flex items-center mb-2">
+            <svg class="w-5 h-5 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="font-bold">Terjadi Kesalahan:</p>
+        </div>
+        <ul class="mt-2 list-disc list-inside ml-7">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+<!-- Data Table Card -->
+<div class="bg-white overflow-hidden shadow rounded-lg p-6">
+    <div class="overflow-x-auto">
+        <table id="dataTableAset" class="min-w-full divide-y divide-gray-200 display">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        Nama Aset
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        Kategori
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        Kondisi
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        Nilai (Rp)
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        Aksi
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200" id="aset-tbody">
+                @forelse ($asets as $index => $aset)
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-3 whitespace-nowrap">
+                            <span class="text-sm font-medium text-gray-900">{{ $aset->nama_aset }}</span>
+                        </td>
+                        <td class="px-6 py-3 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-700">{{ $aset->kategori }}</span>
+                        </td>
+                        <td class="px-6 py-3 whitespace-nowrap">
+                            @if ($aset->kondisi == 'Baik')
+                                <span class="px-2 py-1 inline-flex text-xs font-medium rounded bg-green-100 text-green-700">
+                                    Baik
+                                </span>
+                            @elseif ($aset->kondisi == 'Rusak Ringan')
+                                <span class="px-2 py-1 inline-flex text-xs font-medium rounded bg-yellow-100 text-yellow-700">
+                                    Rusak Ringan
+                                </span>
+                            @else
+                                <span class="px-2 py-1 inline-flex text-xs font-medium rounded bg-red-100 text-red-700">
+                                    Rusak Berat
+                                </span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
+                            Rp {{ number_format($aset->nilai_perolehan, 0, ',', '.') }}
+                        </td>
+                        <td class="px-6 py-3 whitespace-nowrap text-center text-sm font-medium">
+                            <button class="btn-edit-aset inline-flex items-center px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded transition-colors mr-2"
+                                    data-id="{{ $aset->id }}"
+                                    data-asset='@json($aset)'>
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                                Edit
+                            </button>
+                            <form action="{{ route('data-aset.destroy', $aset) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus aset \'{{ $aset->nama_aset }}\'?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 rounded transition-colors">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    Hapus
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="px-6 py-12 text-center">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                            </svg>
+                            <p class="mt-4 text-sm text-gray-600 font-medium">Belum ada data aset.</p>
+                            <p class="text-xs text-gray-500 mt-1">Silakan tambahkan aset baru dengan klik tombol di atas</p>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="aset-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
+    <div class="relative mx-auto p-6 border-0 w-full max-w-3xl shadow-lg rounded-lg bg-white">
+        <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-6">
+            <h3 id="modal-title" class="text-xl font-bold text-gray-900 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
                 Tambah Aset Baru
             </h3>
-            <button id="btn-close-modal" class="text-gray-400 hover:text-gray-600 cursor-pointer transition-colors duration-200">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button id="btn-close-modal" class="text-gray-400 hover:text-gray-600 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
         </div>
-        <div class="mt-6">
+        <div class="mt-4">
             <form id="aset-form" method="POST" action="{{ route('data-aset.store') }}">
                 @csrf
                 <div id="method-field"></div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="md:col-span-2">
-                        <label for="nama_aset" class="block text-sm font-semibold text-gray-700 mb-2">Nama Aset</label>
+                        <label for="nama_aset" class="block text-sm font-medium text-gray-700 mb-2">Nama Aset</label>
                         <input type="text" name="nama_aset" id="nama_aset" value="{{ old('nama_aset') }}"
-                               class="block w-full px-4 py-3 rounded-lg border-2 border-gray-300 shadow-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-200"
+                               class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
                                placeholder="Nama aset" required>
                     </div>
                     <div>
-                        <label for="kategori" class="block text-sm font-semibold text-gray-700 mb-2">Kategori</label>
+                        <label for="kategori" class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
                         <input type="text" name="kategori" id="kategori" value="{{ old('kategori') }}"
-                               class="block w-full px-4 py-3 rounded-lg border-2 border-gray-300 shadow-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-200"
+                               class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
                                placeholder="Contoh: Elektronik, Furniture" required>
                     </div>
                     <div>
-                        <label for="kondisi" class="block text-sm font-semibold text-gray-700 mb-2">Kondisi</label>
+                        <label for="kondisi" class="block text-sm font-medium text-gray-700 mb-2">Kondisi</label>
                         <select name="kondisi" id="kondisi"
-                                class="block w-full px-4 py-3 rounded-lg border-2 border-gray-300 shadow-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-200" required>
-                            <option value="Baik" {{ old('kondisi') == 'Baik' ? 'selected' : '' }}>✓ Baik</option>
-                            <option value="Rusak Ringan" {{ old('kondisi') == 'Rusak Ringan' ? 'selected' : '' }}>⚠ Rusak Ringan</option>
-                            <option value="Rusak Berat" {{ old('kondisi') == 'Rusak Berat' ? 'selected' : '' }}>✗ Rusak Berat</option>
+                                class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors" required>
+                            <option value="Baik" {{ old('kondisi') == 'Baik' ? 'selected' : '' }}>Baik</option>
+                            <option value="Rusak Ringan" {{ old('kondisi') == 'Rusak Ringan' ? 'selected' : '' }}>Rusak Ringan</option>
+                            <option value="Rusak Berat" {{ old('kondisi') == 'Rusak Berat' ? 'selected' : '' }}>Rusak Berat</option>
                         </select>
                     </div>
                     <div class="md:col-span-2">
-                        <label for="lokasi" class="block text-sm font-semibold text-gray-700 mb-2">Lokasi</label>
+                        <label for="lokasi" class="block text-sm font-medium text-gray-700 mb-2">Lokasi</label>
                         <input type="text" name="lokasi" id="lokasi" value="{{ old('lokasi') }}"
-                               class="block w-full px-4 py-3 rounded-lg border-2 border-gray-300 shadow-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-200"
+                               class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
                                placeholder="Contoh: Ruang Ibadah Utama" required>
                     </div>
                     <div>
-                        <label for="tahun_pendagaan" class="block text-sm font-semibold text-gray-700 mb-2">Tahun Pengadaan</label>
+                        <label for="tahun_pendagaan" class="block text-sm font-medium text-gray-700 mb-2">Tahun Pengadaan</label>
                         <input type="number" name="tahun_pendagaan" id="tahun_pendagaan" value="{{ old('tahun_pendagaan') }}"
-                               class="block w-full px-4 py-3 rounded-lg border-2 border-gray-300 shadow-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-200"
+                               class="block w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
                                placeholder="{{ date('Y') }}" min="1900" max="{{ date('Y') }}" required>
                     </div>
                     <div>
-                        <label for="nilai_perolehan" class="block text-sm font-semibold text-gray-700 mb-2">Nilai Perolehan (Rp)</label>
+                        <label for="nilai_perolehan" class="block text-sm font-medium text-gray-700 mb-2">Nilai Perolehan (Rp)</label>
                         <div class="relative">
-                            <span class="absolute left-4 top-3 text-gray-500 font-medium">Rp</span>
+                            <span class="absolute left-4 top-2.5 text-gray-500 font-medium">Rp</span>
                             <input type="number" name="nilai_perolehan" id="nilai_perolehan" value="{{ old('nilai_perolehan') }}"
-                                   class="block w-full pl-12 pr-4 py-3 rounded-lg border-2 border-gray-300 shadow-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-200"
+                                   class="block w-full pl-12 pr-4 py-2.5 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
                                    placeholder="0" min="0" required>
                         </div>
                     </div>
                 </div>
-                <div class="mt-8 flex justify-end space-x-3 border-t-2 border-gray-200 pt-6">
+                <div class="mt-6 flex justify-end space-x-3 border-t border-gray-200 pt-5">
                     <button type="button" id="btn-cancel-modal"
-                            class="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg transition-all duration-200 flex items-center shadow-md hover:shadow-lg">
+                            class="px-5 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg transition-colors flex items-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                         Batal
                     </button>
                     <button type="submit" id="btn-submit-form"
-                            class="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold rounded-lg transition-all duration-200 flex items-center shadow-md hover:shadow-lg transform hover:scale-105">
+                            class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
