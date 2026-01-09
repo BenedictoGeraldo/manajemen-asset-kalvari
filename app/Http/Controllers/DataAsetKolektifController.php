@@ -7,7 +7,9 @@ use App\Models\MasterKategori;
 use App\Models\MasterLokasi;
 use App\Models\MasterKondisi;
 use App\Models\MasterPengelola;
+use App\Exports\DataAsetExport;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DataAsetKolektifController extends Controller
 {
@@ -116,5 +118,17 @@ class DataAsetKolektifController extends Controller
 
         return redirect()->route('data-aset.index')
             ->with('success', 'Data aset berhasil dihapus!');
+    }
+
+    public function export($format)
+    {
+        $timestamp = now()->format('Y-m-d_His');
+        $filename = "data-aset_{$timestamp}.{$format}";
+
+        if ($format === 'csv') {
+            return Excel::download(new DataAsetExport, $filename, \Maatwebsite\Excel\Excel::CSV);
+        }
+
+        return Excel::download(new DataAsetExport, $filename, \Maatwebsite\Excel\Excel::XLSX);
     }
 }
