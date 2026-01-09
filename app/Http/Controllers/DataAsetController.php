@@ -27,7 +27,6 @@ class DataAsetController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode_aset' => 'required|string|max:255|unique:data_aset',
             'nama_aset' => 'required|string|max:255',
             'kategori' => 'required|string|max:255',
             'kondisi' => 'required|in:Baik,Rusak Ringan,Rusak Berat',
