@@ -48,7 +48,7 @@
                     <select name="kategori_id" id="kategori_id" required
                             class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('kategori_id') border-red-500 @enderror">
                         <option value="">Pilih Kategori</option>
-                        @foreach($kategori as $kat)
+                        @foreach($kategoris as $kat)
                             <option value="{{ $kat->id }}" {{ old('kategori_id', $aset->kategori_id) == $kat->id ? 'selected' : '' }}>
                                 {{ $kat->nama_kategori }}
                             </option>
@@ -125,7 +125,7 @@
                     <select name="lokasi_id" id="lokasi_id" required
                             class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('lokasi_id') border-red-500 @enderror">
                         <option value="">Pilih Lokasi</option>
-                        @foreach($lokasi as $lok)
+                        @foreach($lokasis as $lok)
                             <option value="{{ $lok->id }}" {{ old('lokasi_id', $aset->lokasi_id) == $lok->id ? 'selected' : '' }}>
                                 {{ $lok->nama_lokasi }} - {{ $lok->lokasi_lengkap }}
                             </option>
@@ -143,7 +143,7 @@
                     <select name="kondisi_id" id="kondisi_id" required
                             class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('kondisi_id') border-red-500 @enderror">
                         <option value="">Pilih Kondisi</option>
-                        @foreach($kondisi as $kon)
+                        @foreach($kondisis as $kon)
                             <option value="{{ $kon->id }}" {{ old('kondisi_id', $aset->kondisi_id) == $kon->id ? 'selected' : '' }}>
                                 {{ $kon->nama_kondisi }} - {{ $kon->keterangan }}
                             </option>
@@ -293,7 +293,7 @@
                 <select name="pengelola_id" id="pengelola_id" required
                         class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('pengelola_id') border-red-500 @enderror">
                     <option value="">Pilih Pengelola</option>
-                    @foreach($pengelola as $pg)
+                    @foreach($pengelolas as $pg)
                         <option value="{{ $pg->id }}" {{ old('pengelola_id', $aset->pengelola_id) == $pg->id ? 'selected' : '' }}>
                             {{ $pg->nama_pengelola }} - {{ $pg->jabatan }} ({{ $pg->departemen }})
                         </option>
