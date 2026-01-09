@@ -8,109 +8,314 @@
     <script src="https://cdn.tailwindcss.com"></script>
     @stack('styles')
     <style>
-        @keyframes slideDown {
+        @keyframes slideIn {
             from {
-                opacity: 0;
-                transform: translateY(-10px);
+                transform: translateX(-100%);
             }
             to {
-                opacity: 1;
-                transform: translateY(0);
+                transform: translateX(0);
             }
         }
-        .slide-down {
-            animation: slideDown 0.3s ease-out;
+        .sidebar-animate {
+            animation: slideIn 0.3s ease-out;
+        }
+        @media (max-width: 768px) {
+            aside {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-out;
+            }
+            aside.mobile-open {
+                transform: translateX(0);
+            }
+        }
+        /* Loading indicator */
+        .page-loading {
+            opacity: 0.5;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .content-fade-in {
+            animation: fadeIn 0.3s ease;
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 via-purple-50 to-gray-100 min-h-screen">
+<body class="bg-gray-50 min-h-screen">
 
-    <!-- Enhanced Navbar -->
-    <nav class="bg-gradient-to-r from-[#343A40] via-[#3d444a] to-[#343A40] shadow-2xl border-b border-gray-700/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-24">
-                <!-- Brand -->
-                <div class="flex items-center">
-                    <div class="text-white">
-                        <h1 class="text-2xl font-bold tracking-wide">PELITA</h1>
-                        <p class="text-xs text-gray-300 -mt-1">Pencatatan Elektronik List Terpusat Aset</p>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="w-64 bg-white border-r border-gray-200 flex flex-col fixed h-full z-50 sidebar-animate md:translate-x-0">
+            <!-- Logo Section -->
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
                     </div>
+                    <h1 class="text-xl font-bold text-gray-800">PELITA</h1>
                 </div>
+            </div>
 
-                <!-- Navigation Menu -->
-                <div class="hidden md:block">
-                    <div class="flex items-center space-x-2">
-                        <a href="{{ route('dashboard') }}"
-                           class="{{ request()->routeIs('dashboard') ? 'bg-purple-600 text-white shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center space-x-2">
+            <!-- Menu Items -->
+            <nav class="flex-1 overflow-y-auto py-4">
+                <div class="px-3 space-y-1">
+                    <!-- Dashboard -->
+                    <a href="{{ route('dashboard') }}" data-navigate
+                       class="nav-link flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('dashboard') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                        <div class="flex items-center space-x-3">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                             </svg>
                             <span>Dashboard</span>
-                        </a>
+                        </div>
+                    </a>
 
-                        <a href="{{ route('data-aset.index') }}"
-                           class="{{ request()->routeIs('data-aset.*') ? 'bg-purple-600 text-white shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center space-x-2">
+                    <!-- Data Aset -->
+                    <a href="{{ route('data-aset.index') }}" data-navigate
+                       class="nav-link flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('data-aset.*') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                        <div class="flex items-center space-x-3">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                             <span>Data Aset</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- User Info and Logout -->
-                <div class="hidden md:flex items-center space-x-4">
-                    <div class="text-right">
-                        <p class="text-white text-sm font-semibold">{{ Auth::user()->name ?? 'Administrator' }}</p>
-                        <p class="text-gray-400 text-xs">{{ Auth::user()->email ?? '' }}</p>
-                    </div>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center space-x-2 shadow-md">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
-                            <span>Keluar</span>
-                        </button>
-                    </form>
-                </div>
-
-                <!-- Mobile menu button -->
-                <div class="md:hidden">
-                    <button id="mobile-menu-btn" class="text-gray-300 hover:text-white p-2">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </div>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
+                    </a>
 
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-gray-800 border-t border-gray-700 slide-down">
-            <div class="px-4 py-3 space-y-2">
-                <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'bg-purple-600 text-white' : 'text-gray-300 hover:bg-gray-700' }} block px-3 py-2 rounded-md text-base font-medium">Dashboard</a>
-                <a href="{{ route('data-aset.index') }}" class="{{ request()->routeIs('data-aset.*') ? 'bg-purple-600 text-white' : 'text-gray-300 hover:bg-gray-700' }} block px-3 py-2 rounded-md text-base font-medium">Data Aset</a>
-                <form method="POST" action="{{ route('logout') }}" class="pt-2 border-t border-gray-700">
+                    <!-- Kategori Aset -->
+                    <a href="#"
+                       class="flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 text-gray-700 hover:bg-gray-100">
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                            </svg>
+                            <span>Kategori Aset</span>
+                        </div>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+
+                    <!-- Lokasi -->
+                    <a href="#"
+                       class="flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 text-gray-700 hover:bg-gray-100">
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span>Lokasi</span>
+                        </div>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+
+                    <!-- Pemeliharaan -->
+                    <a href="#"
+                       class="flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 text-gray-700 hover:bg-gray-100">
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span>Pemeliharaan</span>
+                        </div>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+
+                    <!-- Laporan -->
+                    <a href="#"
+                       class="flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 text-gray-700 hover:bg-gray-100">
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span>Laporan</span>
+                        </div>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+
+                    <!-- Pengaturan -->
+                    <a href="#"
+                       class="flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 text-gray-700 hover:bg-gray-100">
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                            </svg>
+                            <span>Pengaturan</span>
+                        </div>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </div>
+            </nav>
+
+            <!-- Logout Button -->
+            <div class="p-4 border-t border-gray-200">
+                <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="w-full text-left text-red-400 hover:bg-gray-700 px-3 py-2 rounded-md text-base font-medium">
-                        Logout
+                    <button type="submit" class="w-full flex items-center space-x-3 px-4 py-3 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors duration-150">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        <span>Keluar Akun</span>
                     </button>
                 </form>
             </div>
-        </div>
-    </nav>
+        </aside>
 
-    <main class="min-h-screen">
-        @yield('content')
-    </main>
+        <!-- Mobile Overlay -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-40 hidden md:hidden"></div>
+
+        <!-- Mobile Sidebar Toggle -->
+        <button id="mobile-sidebar-toggle" class="md:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-lg">
+            <svg class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+
+        <!-- Main Content -->
+        <main class="flex-1 ml-0 md:ml-64 overflow-y-auto bg-gray-50">
+            <!-- Top Bar -->
+            <div class="bg-white border-b border-gray-200 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-gray-800 ml-12 md:ml-0">@yield('page-title', 'Dashboard')</h2>
+                    <div class="flex items-center space-x-3">
+                        <div class="text-right hidden sm:block">
+                            <p class="text-sm font-medium text-gray-800">{{ Auth::user()->name ?? 'Administrator' }}</p>
+                            <p class="text-xs text-gray-500">{{ Auth::user()->email ?? '' }}</p>
+                        </div>
+                        <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+                            <span class="text-sm font-semibold text-gray-700">{{ substr(Auth::user()->name ?? 'A', 0, 1) }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Content -->
+            <div id="main-content" class="p-6">
+                @yield('content')
+            </div>
+        </main>
+    </div>
 
     <script>
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-btn')?.addEventListener('click', function() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
+        // SPA Navigation System
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainContent = document.getElementById('main-content');
+            const pageTitle = document.querySelector('main .bg-white h2');
+            const navLinks = document.querySelectorAll('a[data-navigate]');
+
+            // Handle navigation clicks
+            navLinks.forEach(link => {
+                link.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    const url = this.getAttribute('href');
+
+                    // Update active state
+                    navLinks.forEach(l => {
+                        l.classList.remove('bg-blue-500', 'text-white');
+                        l.classList.add('text-gray-700', 'hover:bg-gray-100');
+                    });
+                    this.classList.remove('text-gray-700', 'hover:bg-gray-100');
+                    this.classList.add('bg-blue-500', 'text-white');
+
+                    // Add loading state
+                    mainContent.classList.add('page-loading');
+
+                    try {
+                        // Fetch new content
+                        const response = await fetch(url, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+
+                        const html = await response.text();
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+
+                        // Extract content
+                        const newContent = doc.querySelector('#main-content');
+                        const newTitle = doc.querySelector('main .bg-white h2');
+                        const newPageTitle = doc.querySelector('title');
+
+                        // Update content with fade
+                        if (newContent) {
+                            mainContent.innerHTML = newContent.innerHTML;
+                            mainContent.classList.remove('page-loading');
+                            mainContent.classList.add('content-fade-in');
+                            setTimeout(() => mainContent.classList.remove('content-fade-in'), 300);
+                        }
+
+                        // Update page title
+                        if (newTitle && pageTitle) {
+                            pageTitle.textContent = newTitle.textContent;
+                        }
+
+                        if (newPageTitle) {
+                            document.title = newPageTitle.textContent;
+                        }
+
+                        // Update URL
+                        window.history.pushState({}, '', url);
+
+                        // Reinitialize scripts if needed (for DataTables, etc)
+                        const scripts = mainContent.querySelectorAll('script');
+                        scripts.forEach(script => {
+                            const newScript = document.createElement('script');
+                            if (script.src) {
+                                newScript.src = script.src;
+                            } else {
+                                newScript.textContent = script.textContent;
+                            }
+                            document.body.appendChild(newScript);
+                            setTimeout(() => newScript.remove(), 100);
+                        });
+
+                    } catch (error) {
+                        console.error('Navigation error:', error);
+                        mainContent.classList.remove('page-loading');
+                        // Fallback to normal navigation
+                        window.location.href = url;
+                    }
+                });
+            });
+
+            // Handle browser back/forward
+            window.addEventListener('popstate', function() {
+                location.reload();
+            });
         });
+
+        // Mobile sidebar toggle
+        const sidebarToggle = document.getElementById('mobile-sidebar-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('mobile-open');
+                sidebarOverlay.classList.toggle('hidden');
+            });
+
+            sidebarOverlay.addEventListener('click', function() {
+                sidebar.classList.remove('mobile-open');
+                sidebarOverlay.classList.add('hidden');
+            });
+        }
     </script>
 
 </body>
