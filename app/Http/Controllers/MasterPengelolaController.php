@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\MasterPengelola;
+use App\Exports\MasterPengelolaExport;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MasterPengelolaController extends Controller
 {
@@ -73,5 +75,17 @@ class MasterPengelolaController extends Controller
 
         return redirect()->route('master.pengelola.index')
             ->with('success', 'Pengelola berhasil dihapus!');
+    }
+
+    public function export($format)
+    {
+        $timestamp = now()->format('Y-m-d_His');
+        $filename = "master-pengelola_{$timestamp}.{$format}";
+
+        if ($format === 'csv') {
+            return Excel::download(new MasterPengelolaExport, $filename, \Maatwebsite\Excel\Excel::CSV);
+        }
+
+        return Excel::download(new MasterPengelolaExport, $filename, \Maatwebsite\Excel\Excel::XLSX);
     }
 }
