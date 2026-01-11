@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\MasterKondisi;
+use App\Exports\MasterKondisiExport;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MasterKondisiController extends Controller
 {
@@ -71,5 +73,17 @@ class MasterKondisiController extends Controller
 
         return redirect()->route('master.kondisi.index')
             ->with('success', 'Kondisi berhasil dihapus!');
+    }
+
+    public function export($format)
+    {
+        $timestamp = now()->format('Y-m-d_His');
+        $filename = "master-kondisi_{$timestamp}.{$format}";
+
+        if ($format === 'csv') {
+            return Excel::download(new MasterKondisiExport, $filename, \Maatwebsite\Excel\Excel::CSV);
+        }
+
+        return Excel::download(new MasterKondisiExport, $filename, \Maatwebsite\Excel\Excel::XLSX);
     }
 }
