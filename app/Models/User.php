@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_super_admin',
+        'is_active',
     ];
 
     /**
@@ -41,5 +43,72 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_super_admin' => 'boolean',
+        'is_active' => 'boolean',
     ];
+
+    /**
+     * Permissions yang dimiliki user
+     */
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'user_permissions');
+    }
+
+    /**
+     * Cek apakah user memiliki permission
+     */
+    public function hasPermission($permissionName)
+    {
+        // Super admin memiliki semua akses
+        if ($this->is_super_admin) {
+            return true;
+        }
+
+        return $this->permissions()->where('name', $permissionName)->exists();
+    }
+
+    /**
+     * Cek apakah user memiliki salah satu dari beberapa permissions
+     */
+    public function hasAnyPermission($permissions)
+    {
+        if ($this->is_super_admin) {
+            return true;
+        }
+
+        return $this->permissions()->whereIn('name', $permissions)->exists();
+    }
+
+    /**
+     * Berikan permission ke user
+     */
+    public function givePermission($permissionName)
+    {
+        $permission = Permission::where('name', $permissionName)->first();
+
+        if ($permission && !$this->hasPermission($permissionName)) {
+            $this->permissions()->attach($permission->id);
+        }
+    }
+
+    /**
+     * Cabut permission dari user
+     */
+    public function revokePermission($permissionName)
+    {
+        $permission = Permission::where('name', $permissionName)->first();
+
+        if ($permission) {
+            $this->permissions()->detach($permission->id);
+        }
+    }
+
+    /**
+     * Sync permissions user
+     */
+    public function syncPermissions($permissionIds)
+    {
+        $this->permissions()->sync($permissionIds);
+    }
 }

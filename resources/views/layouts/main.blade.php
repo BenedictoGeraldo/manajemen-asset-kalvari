@@ -81,10 +81,11 @@
                 </button>
             </div>
 
-            <!-- Menu Items -->
+            <!-- Menu Items with Scrollable Area -->
             <nav class="flex-1 overflow-y-auto py-4">
                 <div class="px-3 space-y-1">
                     <!-- Dashboard -->
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('dashboard.view'))
                     <a href="{{ route('dashboard') }}" data-navigate data-route="dashboard"
                        :class="sidebarMinimized ? 'justify-center' : ''"
                        class="nav-link flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('dashboard') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-100' }}"
@@ -101,8 +102,10 @@
                               x-transition:leave-end="opacity-0"
                               class="ml-3 whitespace-nowrap">Dashboard</span>
                     </a>
+                    @endif
 
                     <!-- Data Aset -->
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('data-aset.view'))
                     <a href="{{ route('data-aset.index') }}" data-navigate data-route="data-aset"
                        :class="sidebarMinimized ? 'justify-center' : ''"
                        class="nav-link flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('data-aset.*') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-100' }}"
@@ -119,8 +122,10 @@
                               x-transition:leave-end="opacity-0"
                               class="ml-3 whitespace-nowrap">Data Aset</span>
                     </a>
+                    @endif
 
                     <!-- Data Master Dropdown -->
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasAnyPermission(['master.kategori.view', 'master.lokasi.view', 'master.kondisi.view', 'master.pengelola.view']))
                     <div class="relative" x-data="{ open: {{ request()->routeIs('master.*') ? 'true' : 'false' }} }">
                         <button @click="open = !open"
                                 :class="sidebarMinimized ? 'justify-center' : 'justify-between'"
@@ -137,7 +142,7 @@
                                       x-transition:leave="transition ease-in duration-150"
                                       x-transition:leave-start="opacity-100"
                                       x-transition:leave-end="opacity-0"
-                                      class="ml-3 whitespace-nowrap">Data Master</span>
+                                      class="whitespace-nowrap">Data Master</span>
                             </div>
                             <svg x-show="!sidebarMinimized" class="w-4 h-4 transition-transform duration-200" :class="{ 'rotate-90': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -155,6 +160,7 @@
                              class="mt-1 ml-4 space-y-1">
 
                             <!-- Master Kategori -->
+                            @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('master.kategori.view'))
                             <a href="{{ route('master.kategori.index') }}" data-navigate data-route="master.kategori"
                                class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('master.kategori.*') ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
                                 <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -162,18 +168,23 @@
                                 </svg>
                                 <span class="whitespace-nowrap">Kategori</span>
                             </a>
+                            @endif
 
                             <!-- Master Lokasi -->
+                            @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('master.lokasi.view'))
                             <a href="{{ route('master.lokasi.index') }}" data-navigate data-route="master.lokasi"
                                class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('master.lokasi.*') ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
                                 <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
                                 <span class="whitespace-nowrap">Lokasi</span>
                             </a>
+                            @endif
 
                             <!-- Master Kondisi -->
+                            @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('master.kondisi.view'))
                             <a href="{{ route('master.kondisi.index') }}" data-navigate data-route="master.kondisi"
                                class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('master.kondisi.*') ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
                                 <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -181,8 +192,10 @@
                                 </svg>
                                 <span class="whitespace-nowrap">Kondisi</span>
                             </a>
+                            @endif
 
                             <!-- Master Pengelola -->
+                            @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('master.pengelola.view'))
                             <a href="{{ route('master.pengelola.index') }}" data-navigate data-route="master.pengelola"
                                class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('master.pengelola.*') ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
                                 <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -190,68 +203,32 @@
                                 </svg>
                                 <span class="whitespace-nowrap">Pengelola</span>
                             </a>
+                            @endif
                         </div>
                     </div>
+                    @endif
 
-                        {{-- <!-- Pemeliharaan -->
-                        <a href="#"
-                        :class="sidebarMinimized ? 'justify-center' : ''"
-                        :title="sidebarMinimized ? 'Pemeliharaan' : ''"
-                        class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 text-gray-700 hover:bg-gray-100">
-                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            <span x-show="!sidebarMinimized"
-                                x-transition:enter="transition ease-out duration-200"
-                                x-transition:enter-start="opacity-0"
-                                x-transition:enter-end="opacity-100"
-                                x-transition:leave="transition ease-in duration-150"
-                                x-transition:leave-start="opacity-100"
-                                x-transition:leave-end="opacity-0"
-                                class="ml-3 whitespace-nowrap">Pemeliharaan</span>
-                        </a>
-
-                        <!-- Laporan -->
-                        <a href="#"
-                        :class="sidebarMinimized ? 'justify-center' : ''"
-                        :title="sidebarMinimized ? 'Laporan' : ''"
-                        class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 text-gray-700 hover:bg-gray-100">
-                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            <span x-show="!sidebarMinimized"
-                                x-transition:enter="transition ease-out duration-200"
-                                x-transition:enter-start="opacity-0"
-                                x-transition:enter-end="opacity-100"
-                                x-transition:leave="transition ease-in duration-150"
-                                x-transition:leave-start="opacity-100"
-                                x-transition:leave-end="opacity-0"
-                                class="ml-3 whitespace-nowrap">Laporan</span>
-                        </a>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </a>
-
-                        <!-- Pengaturan -->
-                        <a href="#"
-                        :class="sidebarMinimized ? 'justify-center' : ''"
-                        :title="sidebarMinimized ? 'Pengaturan' : ''"
-                        class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 text-gray-700 hover:bg-gray-100">
-                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                            </svg>
-                            <span x-show="!sidebarMinimized"
-                                x-transition:enter="transition ease-out duration-200"
-                                x-transition:enter-start="opacity-0"
-                                x-transition:enter-end="opacity-100"
-                                x-transition:leave="transition ease-in duration-150"
-                                x-transition:leave-start="opacity-100"
-                                x-transition:leave-end="opacity-0"
-                                class="ml-3 whitespace-nowrap">Pengaturan</span>
-                        </a>
-                    </div>
-                </nav> --}}
+                    <!-- Manajemen User (Super Admin Only) -->
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('user-management.view'))
+                    <a href="{{ route('user-management.index') }}" data-navigate data-route="user-management"
+                       :class="sidebarMinimized ? 'justify-center' : ''"
+                       :title="sidebarMinimized ? 'Manajemen User' : ''"
+                       class="nav-link flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 {{ request()->routeIs('user-management.*') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <span x-show="!sidebarMinimized"
+                              x-transition:enter="transition ease-out duration-200"
+                              x-transition:enter-start="opacity-0"
+                              x-transition:enter-end="opacity-100"
+                              x-transition:leave="transition ease-in duration-150"
+                              x-transition:leave-start="opacity-100"
+                              x-transition:leave-end="opacity-0"
+                              class="ml-3 whitespace-nowrap">Manajemen User</span>
+                    </a>
+                    @endif
+                </div>
+            </nav>
 
             <!-- Logout Button -->
             <div class="p-4 border-t border-gray-200">

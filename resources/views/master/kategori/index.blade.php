@@ -25,6 +25,7 @@
         </div>
         <div class="flex space-x-3">
             <!-- Export Dropdown -->
+            @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('master.kategori.view'))
             <div class="relative" x-data="{ open: false }">
                 <button @click="open = !open" @click.away="open = false"
                         class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
@@ -62,7 +63,9 @@
                     </div>
                 </div>
             </div>
+            @endif
 
+            @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('master.kategori.create'))
             <a href="{{ route('master.kategori.create') }}" data-navigate
                class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,6 +73,7 @@
                 </svg>
                 Tambah Kategori
             </a>
+            @endif
         </div>
     </div>
 
@@ -115,12 +119,15 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
+                                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('master.kategori.edit'))
                                     <a href="{{ route('master.kategori.edit', $kategori->id) }}" data-navigate
                                        class="text-blue-600 hover:text-blue-900">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
                                     </a>
+                                    @endif
+                                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('master.kategori.delete'))
                                     <form action="{{ route('master.kategori.destroy', $kategori->id) }}" method="POST" class="inline"
                                           onsubmit="return confirm('Yakin ingin menghapus kategori ini?');">
                                         @csrf
@@ -131,6 +138,7 @@
                                             </svg>
                                         </button>
                                     </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
