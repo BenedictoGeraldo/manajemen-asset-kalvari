@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\MasterKategori;
+use App\Exports\MasterKategoriExport;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MasterKategoriController extends Controller
 {
@@ -67,5 +69,17 @@ class MasterKategoriController extends Controller
 
         return redirect()->route('master.kategori.index')
             ->with('success', 'Kategori berhasil dihapus!');
+    }
+
+    public function export($format)
+    {
+        $timestamp = now()->format('Y-m-d_His');
+        $filename = "master-kategori_{$timestamp}.{$format}";
+
+        if ($format === 'csv') {
+            return Excel::download(new MasterKategoriExport, $filename, \Maatwebsite\Excel\Excel::CSV);
+        }
+
+        return Excel::download(new MasterKategoriExport, $filename, \Maatwebsite\Excel\Excel::XLSX);
     }
 }
