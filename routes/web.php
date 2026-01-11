@@ -39,13 +39,21 @@ Route::middleware('auth')->group(function () {
 
     // Rute untuk data aset kolektif
     Route::resource('data-aset', DataAsetKolektifController::class);
+    Route::get('data-aset-export/{format}', [DataAsetKolektifController::class, 'export'])->name('data-aset.export');
 
     // Rute untuk master data
     Route::prefix('master')->name('master.')->group(function () {
         Route::resource('kategori', MasterKategoriController::class)->except(['show']);
+        Route::get('kategori-export/{format}', [MasterKategoriController::class, 'export'])->name('kategori.export');
+
         Route::resource('lokasi', MasterLokasiController::class)->except(['show']);
+        Route::get('lokasi-export/{format}', [MasterLokasiController::class, 'export'])->name('lokasi.export');
+
         Route::resource('kondisi', MasterKondisiController::class)->except(['show']);
+        Route::get('kondisi-export/{format}', [MasterKondisiController::class, 'export'])->name('kondisi.export');
+
         Route::resource('pengelola', MasterPengelolaController::class)->except(['show']);
+        Route::get('pengelola-export/{format}', [MasterPengelolaController::class, 'export'])->name('pengelola.export');
     });
 
     // Rute untuk logout
