@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\MasterLokasi;
+use App\Exports\MasterLokasiExport;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MasterLokasiController extends Controller
 {
@@ -73,5 +75,17 @@ class MasterLokasiController extends Controller
 
         return redirect()->route('master.lokasi.index')
             ->with('success', 'Lokasi berhasil dihapus!');
+    }
+
+    public function export($format)
+    {
+        $timestamp = now()->format('Y-m-d_His');
+        $filename = "master-lokasi_{$timestamp}.{$format}";
+
+        if ($format === 'csv') {
+            return Excel::download(new MasterLokasiExport, $filename, \Maatwebsite\Excel\Excel::CSV);
+        }
+
+        return Excel::download(new MasterLokasiExport, $filename, \Maatwebsite\Excel\Excel::XLSX);
     }
 }
