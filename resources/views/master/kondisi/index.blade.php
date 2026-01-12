@@ -99,24 +99,16 @@
                                 <div class="text-sm text-gray-500">{{ $kondisi->keterangan ?? '-' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $kondisi->kode_warna }}-100 text-{{ $kondisi->kode_warna }}-800">
-                                    {{ $kondisi->nama_kondisi }}
-                                </span>
+                                <div class="text-sm text-gray-900">{{ $kondisi->nama_kondisi }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                    {{ $kondisi->data_aset_count }} aset
-                                </span>
+                                <div class="text-sm text-gray-900">{{ $kondisi->data_aset_count }} aset</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @if($kondisi->is_active)
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        Aktif
-                                    </span>
+                                    <div class="text-sm text-gray-900">Aktif</div>
                                 @else
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                        Nonaktif
-                                    </span>
+                                    <div class="text-sm text-gray-500">Nonaktif</div>
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
