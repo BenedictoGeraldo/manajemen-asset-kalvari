@@ -184,41 +184,6 @@
                     @endif
                 </div>
             </div>
-
-            <!-- Metadata -->
-            <div class="bg-white rounded-lg shadow p-6">
-                <h4 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Informasi Sistem</h4>
-                <div class="space-y-3">
-                    <div>
-                        <label class="text-sm font-medium text-gray-500">Dibuat</label>
-                        <p class="mt-1 text-sm text-gray-900">{{ $aset->created_at->format('d M Y H:i') }}</p>
-                    </div>
-                    <div>
-                        <label class="text-sm font-medium text-gray-500">Terakhir Diupdate</label>
-                        <p class="mt-1 text-sm text-gray-900">{{ $aset->updated_at->format('d M Y H:i') }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Actions -->
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <h4 class="text-sm font-semibold text-blue-800 mb-3">Aksi Cepat</h4>
-                <div class="space-y-2">
-                    <a href="{{ route('data-aset.edit', $aset->id) }}" data-navigate
-                       class="block w-full text-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
-                        Edit Aset
-                    </a>
-                    <form action="{{ route('data-aset.destroy', $aset->id) }}" method="POST"
-                          onsubmit="return confirm('Yakin ingin menghapus aset ini?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit"
-                                class="block w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
-                            Hapus Aset
-                        </button>
-                    </form>
-                </div>
-            </div>
         </div>
     </div>
 </div>
