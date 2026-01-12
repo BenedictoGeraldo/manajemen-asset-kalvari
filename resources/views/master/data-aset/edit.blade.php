@@ -11,7 +11,7 @@
             <h3 class="text-2xl font-bold text-gray-800">Edit Aset</h3>
             <p class="text-sm text-gray-600 mt-1">{{ $aset->nama_aset }} ({{ $aset->kode_aset }})</p>
         </div>
-        <a href="{{ route('data-aset.show', $aset->id) }}" data-navigate
+        <a href="{{ route('data-aset.index') }}" data-navigate
            class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -328,7 +328,7 @@
 
         <!-- Actions -->
         <div class="flex justify-end space-x-4">
-            <a href="{{ route('data-aset.show', $aset->id) }}" data-navigate
+            <a href="{{ route('data-aset.index') }}" data-navigate
                class="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors duration-150">
                 Batal
             </a>
