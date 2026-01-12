@@ -19,7 +19,7 @@ class DataAsetKolektifController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('data-aset.index', compact('asets'));
+        return view('master.data-aset.index', compact('asets'));
     }
 
     public function show(string $id)
@@ -27,7 +27,7 @@ class DataAsetKolektifController extends Controller
         $aset = DataAsetKolektif::with(['kategori', 'lokasi', 'kondisi', 'pengelola'])
             ->findOrFail($id);
 
-        return view('data-aset.show', compact('aset'));
+        return view('master.data-aset.show', compact('aset'));
     }
 
     public function create()
@@ -37,7 +37,7 @@ class DataAsetKolektifController extends Controller
         $kondisis = MasterKondisi::active()->ordered()->get();
         $pengelolas = MasterPengelola::active()->orderBy('nama_pengelola')->get();
 
-        return view('data-aset.create', compact('kategoris', 'lokasis', 'kondisis', 'pengelolas'));
+        return view('master.data-aset.create', compact('kategoris', 'lokasis', 'kondisis', 'pengelolas'));
     }
 
     public function store(Request $request)
@@ -77,7 +77,7 @@ class DataAsetKolektifController extends Controller
         $kondisis = MasterKondisi::active()->ordered()->get();
         $pengelolas = MasterPengelola::active()->orderBy('nama_pengelola')->get();
 
-        return view('data-aset.edit', compact('aset', 'kategoris', 'lokasis', 'kondisis', 'pengelolas'));
+        return view('master.data-aset.edit', compact('aset', 'kategoris', 'lokasis', 'kondisis', 'pengelolas'));
     }
 
     public function update(Request $request, string $id)
