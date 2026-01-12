@@ -13,13 +13,33 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class DataAsetKolektifController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $asets = DataAsetKolektif::with(['kategori', 'lokasi', 'kondisi', 'pengelola'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $search = $request->input('search');
+        $perPage = $request->input('per_page', 10);
 
-        return view('master.data-aset.index', compact('asets'));
+        $query = DataAsetKolektif::with(['kategori', 'lokasi', 'kondisi', 'pengelola'])
+            ->orderBy('created_at', 'desc');
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('nama_aset', 'like', "%$search%")
+                  ->orWhere('kode_aset', 'like', "%$search%")
+                  ->orWhereHas('kategori', function($k) use ($search) {
+                      $k->where('nama_kategori', 'like', "%$search%");
+                  })
+                  ->orWhereHas('lokasi', function($l) use ($search) {
+                      $l->where('nama_lokasi', 'like', "%$search%");
+                  })
+                  ->orWhereHas('pengelola', function($p) use ($search) {
+                      $p->where('nama_pengelola', 'like', "%$search%");
+                  });
+            });
+        }
+
+        $asets = $query->paginate($perPage)->appends($request->except('page'));
+
+        return view('master.data-aset.index', compact('asets', 'search', 'perPage'));
     }
 
     public function show(string $id)
