@@ -4,13 +4,14 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -18,11 +19,20 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'department_id',
+        'role_id',
         'name',
+        'username',
         'email',
+        'phone',
         'password',
-        'is_super_admin',
+        'profile_picture',
         'is_active',
+        'last_login_at',
+        'created_by',
+        'updated_by',
+        'deleted_by',
+        'is_super_admin',
     ];
 
     /**
@@ -45,10 +55,51 @@ class User extends Authenticatable
         'password' => 'hashed',
         'is_super_admin' => 'boolean',
         'is_active' => 'boolean',
+        'last_login_at' => 'datetime',
     ];
 
     /**
-     * Permissions yang dimiliki user
+     * Get the department that the user belongs to.
+     */
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    /**
+     * Get the role that the user has.
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * Get the user who created this user.
+     */
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * Get the user who last updated this user.
+     */
+    public function updater()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    /**
+     * Get the user who deleted this user.
+     */
+    public function deleter()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+    /**
+     * Permissions yang dimiliki user (legacy compatibility)
      */
     public function permissions()
     {
@@ -65,6 +116,12 @@ class User extends Authenticatable
             return true;
         }
 
+        // Check via role permissions (new system)
+        if ($this->role) {
+            return $this->role->permissions()->where('slug', $permissionName)->exists();
+        }
+
+        // Check direct permissions (legacy system)
         return $this->permissions()->where('name', $permissionName)->exists();
     }
 
