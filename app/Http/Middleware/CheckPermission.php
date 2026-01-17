@@ -20,6 +20,7 @@ class CheckPermission
             return redirect()->route('login')->with('error', 'Anda harus login terlebih dahulu.');
         }
 
+        /** @var \App\Models\User $user */
         $user = auth()->user();
 
         // Super admin selalu lolos
