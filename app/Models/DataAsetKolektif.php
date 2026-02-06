@@ -96,16 +96,4 @@ class DataAsetKolektif extends Model
     {
         return 'Rp ' . number_format($this->nilai_pengadaan_per_unit, 0, ',', '.');
     }
-
-    // Boot method untuk generate kode aset otomatis
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            if (empty($model->kode_aset)) {
-                $model->kode_aset = 'AST-' . date('Y') . '-' . str_pad(static::withTrashed()->count() + 1, 5, '0', STR_PAD_LEFT);
-            }
-        });
-    }
 }
