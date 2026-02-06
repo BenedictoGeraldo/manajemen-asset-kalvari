@@ -24,8 +24,9 @@ class DataAset extends Model
     protected $guarded = ['id'];
 
     /**
+     * Enable timestamps
      *
      * @var bool
      */
-    public $timestamps = false;
+    public $timestamps = true;
 }
