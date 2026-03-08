@@ -20,6 +20,15 @@ class MasterPengelolaController extends Controller
         return view('master.pengelola.create');
     }
 
+    public function show(string $id)
+    {
+        $pengelola = MasterPengelola::with(['dataAset.kategori', 'dataAset.lokasi', 'dataAset.kondisi'])
+            ->withCount('dataAset')
+            ->findOrFail($id);
+
+        return view('master.pengelola.show', compact('pengelola'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([

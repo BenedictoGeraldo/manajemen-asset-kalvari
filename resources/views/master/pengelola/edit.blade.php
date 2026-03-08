@@ -58,7 +58,7 @@
                         Perbarui
                     </button>
                     <a href="{{ route('master.pengelola.index') }}" data-navigate
-                       class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-150">
+                       class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-gray-100 text-sm font-medium rounded-lg transition-colors duration-150">
                         Batal
                     </a>
                 </div>
