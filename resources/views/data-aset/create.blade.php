@@ -231,7 +231,7 @@
             <h4 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Anggaran & Nilai Pengadaan</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label for="budget" class="block text-sm font-medium text-gray-700">Budget (Rp)</label>
+                    <label for="budget" class="block text-sm font-medium text-gray-700">Budget (Rp) <span class="text-red-500">*</span></label>
                     <input type="number" name="budget" id="budget" min="0" step="1000"
                            value="{{ old('budget') }}"
                            placeholder="Contoh: 5000000"
@@ -243,7 +243,7 @@
 
                 <div>
                     <label for="keterangan_budget" class="block text-sm font-medium text-gray-700">
-                        Keterangan Budget
+                        Keterangan Budget <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="keterangan_budget" id="keterangan_budget"
                            value="{{ old('keterangan_budget') }}"
@@ -261,6 +261,7 @@
                     <input type="number" name="nilai_pengadaan_total" id="nilai_pengadaan_total" required min="0" step="1000"
                            value="{{ old('nilai_pengadaan_total') }}"
                            placeholder="Contoh: 4500000"
+                           required
                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('nilai_pengadaan_total') border-red-500 @enderror">
                     @error('nilai_pengadaan_total')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -269,9 +270,9 @@
 
                 <div>
                     <label for="nilai_pengadaan_per_unit" class="block text-sm font-medium text-gray-700">
-                        Nilai Per Unit (Rp)
+                        Nilai Per Unit (Rp) <span class="text-red-500">*</span>
                     </label>
-                    <input type="number" name="nilai_pengadaan_per_unit" id="nilai_pengadaan_per_unit" min="0" step="1000"
+                    <input type="number" name="nilai_pengadaan_per_unit" id="nilai_pengadaan_per_unit" required min="0" step="1000"
                            value="{{ old('nilai_pengadaan_per_unit') }}"
                            placeholder="Contoh: 750000"
                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('nilai_pengadaan_per_unit') border-red-500 @enderror">

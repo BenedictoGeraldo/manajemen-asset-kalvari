@@ -33,13 +33,13 @@ class DataAsetKolektifController extends Controller
         $search = $filters['search'];
         $perPage = $filters['per_page'];
 
-        return view('master.data-aset.index', compact('asets', 'search', 'perPage'));
+        return view('data-aset.index', compact('asets', 'search', 'perPage'));
     }
 
     public function show(string $id)
     {
         $aset = $this->dataAsetService->getAsetById($id);
-        return view('master.data-aset.show', compact('aset'));
+        return view('data-aset.show', compact('aset'));
     }
 
     public function create()
@@ -49,7 +49,7 @@ class DataAsetKolektifController extends Controller
         $kondisis = $this->masterDataService->getActiveKondisis();
         $pengelolas = $this->masterDataService->getActivePengelolas();
 
-        return view('master.data-aset.create', compact('kategoris', 'lokasis', 'kondisis', 'pengelolas'));
+        return view('data-aset.create', compact('kategoris', 'lokasis', 'kondisis', 'pengelolas'));
     }
 
     public function store(StoreDataAsetRequest $request)
@@ -68,7 +68,7 @@ class DataAsetKolektifController extends Controller
         $kondisis = $this->masterDataService->getActiveKondisis();
         $pengelolas = $this->masterDataService->getActivePengelolas();
 
-        return view('master.data-aset.edit', compact('aset', 'kategoris', 'lokasis', 'kondisis', 'pengelolas'));
+        return view('data-aset.edit', compact('aset', 'kategoris', 'lokasis', 'kondisis', 'pengelolas'));
     }
 
     public function update(UpdateDataAsetRequest $request, string $id)
