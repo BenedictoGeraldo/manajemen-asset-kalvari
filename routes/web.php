@@ -81,6 +81,7 @@ Route::middleware('auth')->group(function () {
         Route::get('pengelola', [MasterPengelolaController::class, 'index'])->name('pengelola.index')->middleware('permission:master.pengelola.view');
         Route::get('pengelola/create', [MasterPengelolaController::class, 'create'])->name('pengelola.create')->middleware('permission:master.pengelola.create');
         Route::post('pengelola', [MasterPengelolaController::class, 'store'])->name('pengelola.store')->middleware('permission:master.pengelola.create');
+        Route::get('pengelola/{pengelola}', [MasterPengelolaController::class, 'show'])->name('pengelola.show')->middleware('permission:master.pengelola.view');
         Route::get('pengelola/{pengelola}/edit', [MasterPengelolaController::class, 'edit'])->name('pengelola.edit')->middleware('permission:master.pengelola.edit');
         Route::put('pengelola/{pengelola}', [MasterPengelolaController::class, 'update'])->name('pengelola.update')->middleware('permission:master.pengelola.edit');
         Route::delete('pengelola/{pengelola}', [MasterPengelolaController::class, 'destroy'])->name('pengelola.destroy')->middleware('permission:master.pengelola.delete');
