@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DataAsetKolektif;
 use App\Services\DataAsetService;
 use App\Services\MasterDataService;
 use App\Http\Requests\StoreDataAsetRequest;
 use App\Http\Requests\UpdateDataAsetRequest;
 use App\Exports\DataAsetExport;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Maatwebsite\Excel\Facades\Excel;
 
 class DataAsetKolektifController extends Controller
@@ -54,7 +54,14 @@ class DataAsetKolektifController extends Controller
 
     public function store(StoreDataAsetRequest $request)
     {
-        $this->dataAsetService->createAset($request->validated());
+        $data = $request->validated();
+        unset($data['gambar_aset']);
+
+        if ($request->hasFile('gambar_aset')) {
+            $data['gambar_aset_base64'] = $this->convertImageToBase64($request->file('gambar_aset'));
+        }
+
+        $this->dataAsetService->createAset($data);
 
         return redirect()->route('data-aset.index')
             ->with('success', 'Data aset berhasil ditambahkan!');
@@ -73,7 +80,29 @@ class DataAsetKolektifController extends Controller
 
     public function update(UpdateDataAsetRequest $request, string $id)
     {
-        $this->dataAsetService->updateAset($id, $request->validated());
+        $aset = $this->dataAsetService->getAsetById($id);
+        $data = $request->validated();
+        unset($data['gambar_aset']);
+        $hapusGambarAset = (bool) ($request->input('hapus_gambar_aset', false));
+        unset($data['hapus_gambar_aset']);
+
+        if ($aset->gambar_aset_base64 && !$hapusGambarAset && $request->hasFile('gambar_aset')) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors([
+                    'gambar_aset' => 'Gambar lama masih ada. Hapus gambar aset terlebih dahulu sebelum menambahkan gambar baru.'
+                ]);
+        }
+
+        if ($hapusGambarAset) {
+            $data['gambar_aset_base64'] = null;
+        }
+
+        if ($request->hasFile('gambar_aset')) {
+            $data['gambar_aset_base64'] = $this->convertImageToBase64($request->file('gambar_aset'));
+        }
+
+        $this->dataAsetService->updateAset($id, $data);
 
         return redirect()->route('data-aset.index')
             ->with('success', 'Data aset berhasil diperbarui!');
@@ -97,5 +126,13 @@ class DataAsetKolektifController extends Controller
         }
 
         return Excel::download(new DataAsetExport, $filename, \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    private function convertImageToBase64(UploadedFile $file): string
+    {
+        $mimeType = $file->getMimeType() ?: 'image/jpeg';
+        $encoded = base64_encode(file_get_contents($file->getRealPath()));
+
+        return "data:{$mimeType};base64,{$encoded}";
     }
 }
