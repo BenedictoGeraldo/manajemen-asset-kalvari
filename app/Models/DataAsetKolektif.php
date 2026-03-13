@@ -16,6 +16,7 @@ class DataAsetKolektif extends Model
         'nama_aset',
         'kategori_id',
         'deskripsi_aset',
+        'gambar_aset_base64',
         'ukuran',
         'deskripsi_ukuran_bentuk',
         'lokasi_id',
