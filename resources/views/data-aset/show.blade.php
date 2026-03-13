@@ -36,6 +36,14 @@
             <!-- Informasi Dasar -->
             <div class="bg-white rounded-lg shadow p-6">
                 <h4 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Informasi Dasar</h4>
+                @if($aset->gambar_aset_base64)
+                    <div class="mb-4">
+                        <label class="text-sm font-medium text-gray-500">Gambar Aset</label>
+                        <div class="mt-2 rounded-lg overflow-hidden border border-gray-200 bg-gray-50 p-2">
+                            <img src="{{ $aset->gambar_aset_base64 }}" alt="Gambar {{ $aset->nama_aset }}" class="max-h-72 w-auto object-contain mx-auto rounded">
+                        </div>
+                    </div>
+                @endif
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="text-sm font-medium text-gray-500">Kode Aset</label>

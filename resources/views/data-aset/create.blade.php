@@ -21,7 +21,7 @@
     </div>
 
     <!-- Form -->
-    <form action="{{ route('data-aset.store') }}" method="POST" class="space-y-6">
+    <form action="{{ route('data-aset.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
 
         <!-- Informasi Dasar -->
@@ -77,6 +77,18 @@
                     <textarea name="deskripsi_aset" id="deskripsi_aset" rows="3"
                               class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('deskripsi_aset') border-red-500 @enderror">{{ old('deskripsi_aset') }}</textarea>
                     @error('deskripsi_aset')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="md:col-span-2">
+                    <label for="gambar_aset" class="block text-sm font-medium text-gray-700">
+                        Gambar Aset
+                    </label>
+                    <input type="file" name="gambar_aset" id="gambar_aset" accept="image/png,image/jpeg,image/jpg,image/webp"
+                           class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('gambar_aset') border-red-500 @enderror">
+                    <p class="mt-1 text-xs text-gray-500">Opsional. Format: JPG, JPEG, PNG, WEBP. Maksimal 2MB.</p>
+                    @error('gambar_aset')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
