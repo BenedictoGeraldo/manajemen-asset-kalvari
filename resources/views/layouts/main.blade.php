@@ -208,6 +208,7 @@
                     @endif
 
                     <!-- Data Transaksional Dropdown -->
+                    @if(auth()->user()->is_super_admin)
                     <div class="relative" x-data="{ open: {{ request()->routeIs('transaksi.*') ? 'true' : 'false' }} }">
                         <button @click="open = !open"
                                 :class="sidebarMinimized ? 'justify-center' : 'justify-between'"
@@ -242,8 +243,8 @@
                              class="mt-1 ml-4 space-y-1">
 
                             <!-- Pembelian -->
-                            <a href="#" data-navigate
-                               class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 text-gray-600 hover:bg-gray-100">
+                                     <a href="{{ route('transaksi.pembelian.index') }}" data-navigate data-route="transaksi-pembelian"
+                                         class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('transaksi.pembelian.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                                 <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                                 </svg>
@@ -288,6 +289,7 @@
                             </a> --}}
                         </div>
                     </div>
+                    @endif
 
                     <!-- Laporan -->
                     <a href="#" data-navigate

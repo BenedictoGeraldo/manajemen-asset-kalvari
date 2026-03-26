@@ -12,7 +12,10 @@ class Permission extends Model
 
     protected $fillable = [
         'name',
-        'slug'
+        'slug',
+        'display_name',
+        'group',
+        'description'
     ];
 
     /**

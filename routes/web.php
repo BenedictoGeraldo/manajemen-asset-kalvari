@@ -9,6 +9,7 @@ use App\Http\Controllers\MasterKategoriController;
 use App\Http\Controllers\MasterLokasiController;
 use App\Http\Controllers\MasterKondisiController;
 use App\Http\Controllers\MasterPengelolaController;
+use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\UserManagementController;
 
 /*
@@ -95,6 +96,18 @@ Route::middleware('auth')->group(function () {
     Route::get('user-management/{user}/edit', [UserManagementController::class, 'edit'])->name('user-management.edit')->middleware('permission:user-management.edit');
     Route::put('user-management/{user}', [UserManagementController::class, 'update'])->name('user-management.update')->middleware('permission:user-management.edit');
     Route::delete('user-management/{user}', [UserManagementController::class, 'destroy'])->name('user-management.destroy')->middleware('permission:user-management.delete');
+
+    // Rute untuk data transaksional
+    Route::prefix('transaksi')->name('transaksi.')->middleware('superadmin')->group(function () {
+        Route::get('pembelian', [PembelianController::class, 'index'])->name('pembelian.index')->middleware('permission:transaksi.pembelian.view');
+        Route::get('pembelian/create', [PembelianController::class, 'create'])->name('pembelian.create')->middleware('permission:transaksi.pembelian.create');
+        Route::post('pembelian', [PembelianController::class, 'store'])->name('pembelian.store')->middleware('permission:transaksi.pembelian.create');
+        Route::get('pembelian/{pembelian}', [PembelianController::class, 'show'])->name('pembelian.show')->middleware('permission:transaksi.pembelian.view');
+        Route::get('pembelian/{pembelian}/edit', [PembelianController::class, 'edit'])->name('pembelian.edit')->middleware('permission:transaksi.pembelian.edit');
+        Route::put('pembelian/{pembelian}', [PembelianController::class, 'update'])->name('pembelian.update')->middleware('permission:transaksi.pembelian.edit');
+        Route::delete('pembelian/{pembelian}', [PembelianController::class, 'destroy'])->name('pembelian.destroy')->middleware('permission:transaksi.pembelian.delete');
+        Route::post('pembelian/{pembelian}/approve', [PembelianController::class, 'approve'])->name('pembelian.approve')->middleware('permission:transaksi.pembelian.approve');
+    });
 
     // Rute untuk logout
     Route::post('logout', [AuthenticatedSessionController::class, 'logout'])->name('logout');

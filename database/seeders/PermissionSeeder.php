@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Permission;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Arr;
 
 class PermissionSeeder extends Seeder
 {
@@ -182,10 +183,49 @@ class PermissionSeeder extends Seeder
                 'group' => 'Pengaturan',
                 'description' => 'Dapat menghapus user'
             ],
+
+            // Transaksi Pembelian
+            [
+                'name' => 'transaksi.pembelian.view',
+                'slug' => 'transaksi.pembelian.view',
+                'display_name' => 'Lihat Pembelian',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat melihat daftar transaksi pembelian'
+            ],
+            [
+                'name' => 'transaksi.pembelian.create',
+                'slug' => 'transaksi.pembelian.create',
+                'display_name' => 'Tambah Pembelian',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat menambah transaksi pembelian baru'
+            ],
+            [
+                'name' => 'transaksi.pembelian.edit',
+                'slug' => 'transaksi.pembelian.edit',
+                'display_name' => 'Edit Pembelian',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat mengedit transaksi pembelian'
+            ],
+            [
+                'name' => 'transaksi.pembelian.delete',
+                'slug' => 'transaksi.pembelian.delete',
+                'display_name' => 'Hapus Pembelian',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat menghapus transaksi pembelian'
+            ],
+            [
+                'name' => 'transaksi.pembelian.approve',
+                'slug' => 'transaksi.pembelian.approve',
+                'display_name' => 'Setujui Pembelian',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat menyetujui pembelian dan posting ke data aset'
+            ],
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(
+            $permission = Arr::add($permission, 'slug', $permission['name']);
+
+            Permission::updateOrCreate(
                 ['name' => $permission['name']],
                 $permission
             );
