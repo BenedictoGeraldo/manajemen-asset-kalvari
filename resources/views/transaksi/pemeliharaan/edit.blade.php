@@ -14,7 +14,7 @@
         <form method="POST" action="{{ route('transaksi.pemeliharaan.update', $pemeliharaan->id) }}">
             @csrf
             @method('PUT')
-            @include('transaksi.pemeliharaan._form', ['submitLabel' => 'Simpan Perubahan'])
+            @include('transaksi.pemeliharaan.form', ['submitLabel' => 'Simpan Perubahan'])
         </form>
     </div>
 </div>

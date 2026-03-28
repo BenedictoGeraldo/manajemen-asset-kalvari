@@ -13,7 +13,7 @@
     <div class="bg-white rounded-lg shadow p-6">
         <form method="POST" action="{{ route('transaksi.pemeliharaan.store') }}">
             @csrf
-            @include('transaksi.pemeliharaan._form', ['submitLabel' => 'Simpan Pengajuan'])
+            @include('transaksi.pemeliharaan.form', ['submitLabel' => 'Simpan Pengajuan'])
         </form>
     </div>
 </div>

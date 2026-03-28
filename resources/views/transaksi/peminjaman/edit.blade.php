@@ -14,7 +14,7 @@
         <form method="POST" action="{{ route('transaksi.peminjaman.update', $peminjaman->id) }}">
             @csrf
             @method('PUT')
-            @include('transaksi.peminjaman._form', ['submitLabel' => 'Simpan Perubahan'])
+            @include('transaksi.peminjaman.form', ['submitLabel' => 'Simpan Perubahan'])
         </form>
     </div>
 </div>

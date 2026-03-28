@@ -10,7 +10,7 @@
             <form action="{{ route('transaksi.pembelian.update', $pembelian->id) }}" method="POST">
                 @csrf
                 @method('PUT')
-                @include('transaksi.pembelian._form', ['pembelian' => $pembelian, 'submitLabel' => 'Perbarui'])
+                @include('transaksi.pembelian.form', ['pembelian' => $pembelian, 'submitLabel' => 'Perbarui'])
             </form>
         </div>
     </div>
