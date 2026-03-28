@@ -100,6 +100,7 @@ Route::middleware('auth')->group(function () {
     // Rute untuk data transaksional
     Route::prefix('transaksi')->name('transaksi.')->middleware('superadmin')->group(function () {
         Route::get('pembelian', [PembelianController::class, 'index'])->name('pembelian.index')->middleware('permission:transaksi.pembelian.view');
+        Route::get('pembelian-export/{format}', [PembelianController::class, 'export'])->name('pembelian.export')->middleware('permission:transaksi.pembelian.view');
         Route::get('pembelian/create', [PembelianController::class, 'create'])->name('pembelian.create')->middleware('permission:transaksi.pembelian.create');
         Route::post('pembelian', [PembelianController::class, 'store'])->name('pembelian.store')->middleware('permission:transaksi.pembelian.create');
         Route::get('pembelian/{pembelian}', [PembelianController::class, 'show'])->name('pembelian.show')->middleware('permission:transaksi.pembelian.view');

@@ -45,14 +45,14 @@
                          class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
                         <div class="py-1">
                             <a href="{{ route('data-aset.export', 'xlsx') }}"
-                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
+                               class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
                                 <svg class="w-4 h-4 mr-2 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z"/>
                                 </svg>
                                 Export ke Excel (.xlsx)
                             </a>
                             <a href="{{ route('data-aset.export', 'csv') }}"
-                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
+                               class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
                                 <svg class="w-4 h-4 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z"/>
                                 </svg>

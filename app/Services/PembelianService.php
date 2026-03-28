@@ -6,6 +6,7 @@ use App\Models\DataAsetKolektif;
 use App\Models\TransaksiPembelian;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 
 class PembelianService
 {
@@ -41,29 +42,41 @@ class PembelianService
 
     public function create(array $data, ?int $userId = null): TransaksiPembelian
     {
-        return DB::transaction(function () use ($data, $userId) {
-            $items = $data['items'];
-            unset($data['items']);
+        $maxAttempts = 5;
 
-            $totalNilai = $this->calculateTotal($items);
+        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+            try {
+                return DB::transaction(function () use ($data, $userId) {
+                    $items = $data['items'];
+                    unset($data['items']);
 
-            $pembelian = TransaksiPembelian::create([
-                ...$data,
-                'nomor_pembelian' => $this->generateNomorPembelian($data['tanggal_pembelian']),
-                'total_nilai' => $totalNilai,
-                'created_by' => $userId,
-                'updated_by' => $userId,
-            ]);
+                    $totalNilai = $this->calculateTotal($items);
 
-            foreach ($items as $item) {
-                $pembelian->items()->create([
-                    ...$item,
-                    'subtotal' => (float) $item['jumlah'] * (float) $item['harga_satuan'],
-                ]);
+                    $pembelian = TransaksiPembelian::create([
+                        ...$data,
+                        'nomor_pembelian' => $this->generateNomorPembelian($data['tanggal_pembelian']),
+                        'total_nilai' => $totalNilai,
+                        'created_by' => $userId,
+                        'updated_by' => $userId,
+                    ]);
+
+                    foreach ($items as $item) {
+                        $pembelian->items()->create([
+                            ...$item,
+                            'subtotal' => (float) $item['jumlah'] * (float) $item['harga_satuan'],
+                        ]);
+                    }
+
+                    return $pembelian->load('items');
+                });
+            } catch (QueryException $e) {
+                if (!$this->isDuplicateNomorPembelianException($e) || $attempt === $maxAttempts) {
+                    throw $e;
+                }
             }
+        }
 
-            return $pembelian->load('items');
-        });
+        throw new \RuntimeException('Gagal membuat transaksi pembelian karena bentrok nomor pembelian.');
     }
 
     public function update(int $id, array $data, ?int $userId = null): TransaksiPembelian
@@ -176,16 +189,23 @@ class PembelianService
         $date = date_create($tanggal);
         $prefix = 'PB-' . date_format($date, 'Ym');
 
-        $last = TransaksiPembelian::where('nomor_pembelian', 'like', $prefix . '-%')
-            ->orderByDesc('id')
-            ->first();
+        $maxSequence = (int) TransaksiPembelian::withTrashed()
+            ->where('nomor_pembelian', 'like', $prefix . '-%')
+            ->lockForUpdate()
+            ->selectRaw('COALESCE(MAX(CAST(RIGHT(nomor_pembelian, 4) AS UNSIGNED)), 0) as max_sequence')
+            ->value('max_sequence');
 
-        $sequence = 1;
-        if ($last) {
-            $parts = explode('-', $last->nomor_pembelian);
-            $sequence = ((int) end($parts)) + 1;
-        }
+        return sprintf('%s-%04d', $prefix, $maxSequence + 1);
+    }
 
-        return sprintf('%s-%04d', $prefix, $sequence);
+    private function isDuplicateNomorPembelianException(QueryException $e): bool
+    {
+        $sqlState = $e->errorInfo[0] ?? null;
+        $driverCode = (int) ($e->errorInfo[1] ?? 0);
+        $message = $e->getMessage();
+
+        return $sqlState === '23000'
+            && $driverCode === 1062
+            && str_contains($message, 'nomor_pembelian');
     }
 }

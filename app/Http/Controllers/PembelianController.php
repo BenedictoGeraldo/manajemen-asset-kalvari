@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TransaksiPembelianExport;
 use App\Http\Requests\StorePembelianRequest;
 use App\Http\Requests\UpdatePembelianRequest;
 use App\Services\MasterDataService;
 use App\Services\PembelianService;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PembelianController extends Controller
 {
@@ -107,6 +109,18 @@ class PembelianController extends Controller
 
         return redirect()->route('transaksi.pembelian.show', $id)
             ->with('success', 'Pembelian disetujui dan berhasil diposting ke Data Aset.');
+    }
+
+    public function export($format)
+    {
+        $timestamp = now()->format('Y-m-d_His');
+        $filename = "transaksi-pembelian_{$timestamp}.{$format}";
+
+        if ($format === 'csv') {
+            return Excel::download(new TransaksiPembelianExport, $filename, \Maatwebsite\Excel\Excel::CSV);
+        }
+
+        return Excel::download(new TransaksiPembelianExport, $filename, \Maatwebsite\Excel\Excel::XLSX);
     }
 
     private function masterDataOptions(): array
