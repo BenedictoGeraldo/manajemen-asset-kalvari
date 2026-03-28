@@ -252,8 +252,8 @@
                             </a>
 
                             <!-- Peminjaman Aset -->
-                            <a href="#" data-navigate
-                               class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 text-gray-600 hover:bg-gray-100">
+                            <a href="{{ route('transaksi.peminjaman.index') }}" data-navigate data-route="transaksi-peminjaman"
+                               class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('transaksi.peminjaman.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                                 <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                                 </svg>

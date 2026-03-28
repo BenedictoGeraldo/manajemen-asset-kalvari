@@ -10,6 +10,7 @@ use App\Http\Controllers\MasterLokasiController;
 use App\Http\Controllers\MasterKondisiController;
 use App\Http\Controllers\MasterPengelolaController;
 use App\Http\Controllers\PembelianController;
+use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\UserManagementController;
 
 /*
@@ -108,6 +109,21 @@ Route::middleware('auth')->group(function () {
         Route::put('pembelian/{pembelian}', [PembelianController::class, 'update'])->name('pembelian.update')->middleware('permission:transaksi.pembelian.edit');
         Route::delete('pembelian/{pembelian}', [PembelianController::class, 'destroy'])->name('pembelian.destroy')->middleware('permission:transaksi.pembelian.delete');
         Route::post('pembelian/{pembelian}/approve', [PembelianController::class, 'approve'])->name('pembelian.approve')->middleware('permission:transaksi.pembelian.approve');
+
+        Route::get('peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index')->middleware('permission:transaksi.peminjaman.view');
+        Route::get('peminjaman-export/{format}', [PeminjamanController::class, 'export'])->name('peminjaman.export')->middleware('permission:transaksi.peminjaman.export');
+        Route::get('peminjaman/create', [PeminjamanController::class, 'create'])->name('peminjaman.create')->middleware('permission:transaksi.peminjaman.create');
+        Route::post('peminjaman', [PeminjamanController::class, 'store'])->name('peminjaman.store')->middleware('permission:transaksi.peminjaman.create');
+        Route::get('peminjaman/{peminjaman}', [PeminjamanController::class, 'show'])->name('peminjaman.show')->middleware('permission:transaksi.peminjaman.view');
+        Route::get('peminjaman/{peminjaman}/edit', [PeminjamanController::class, 'edit'])->name('peminjaman.edit')->middleware('permission:transaksi.peminjaman.edit');
+        Route::put('peminjaman/{peminjaman}', [PeminjamanController::class, 'update'])->name('peminjaman.update')->middleware('permission:transaksi.peminjaman.edit');
+        Route::delete('peminjaman/{peminjaman}', [PeminjamanController::class, 'destroy'])->name('peminjaman.destroy')->middleware('permission:transaksi.peminjaman.delete');
+        Route::post('peminjaman/{peminjaman}/approve', [PeminjamanController::class, 'approve'])->name('peminjaman.approve')->middleware('permission:transaksi.peminjaman.approve');
+        Route::post('peminjaman/{peminjaman}/reject', [PeminjamanController::class, 'reject'])->name('peminjaman.reject')->middleware('permission:transaksi.peminjaman.approve');
+        Route::get('peminjaman/{peminjaman}/handover', [PeminjamanController::class, 'handoverForm'])->name('peminjaman.handover.form')->middleware('permission:transaksi.peminjaman.handover');
+        Route::post('peminjaman/{peminjaman}/handover', [PeminjamanController::class, 'handover'])->name('peminjaman.handover')->middleware('permission:transaksi.peminjaman.handover');
+        Route::get('peminjaman/{peminjaman}/return', [PeminjamanController::class, 'returnForm'])->name('peminjaman.return.form')->middleware('permission:transaksi.peminjaman.return');
+        Route::post('peminjaman/{peminjaman}/return', [PeminjamanController::class, 'returnAssets'])->name('peminjaman.return')->middleware('permission:transaksi.peminjaman.return');
     });
 
     // Rute untuk logout

@@ -220,6 +220,64 @@ class PermissionSeeder extends Seeder
                 'group' => 'Data Transaksional',
                 'description' => 'Dapat menyetujui pembelian dan posting ke data aset'
             ],
+
+            // Transaksi Peminjaman
+            [
+                'name' => 'transaksi.peminjaman.view',
+                'slug' => 'transaksi.peminjaman.view',
+                'display_name' => 'Lihat Peminjaman',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat melihat daftar transaksi peminjaman'
+            ],
+            [
+                'name' => 'transaksi.peminjaman.export',
+                'slug' => 'transaksi.peminjaman.export',
+                'display_name' => 'Export Peminjaman',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat mengexport data transaksi peminjaman ke Excel/CSV'
+            ],
+            [
+                'name' => 'transaksi.peminjaman.create',
+                'slug' => 'transaksi.peminjaman.create',
+                'display_name' => 'Tambah Peminjaman',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat menambah transaksi peminjaman baru'
+            ],
+            [
+                'name' => 'transaksi.peminjaman.edit',
+                'slug' => 'transaksi.peminjaman.edit',
+                'display_name' => 'Edit Peminjaman',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat mengedit transaksi peminjaman'
+            ],
+            [
+                'name' => 'transaksi.peminjaman.delete',
+                'slug' => 'transaksi.peminjaman.delete',
+                'display_name' => 'Hapus Peminjaman',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat menghapus transaksi peminjaman'
+            ],
+            [
+                'name' => 'transaksi.peminjaman.approve',
+                'slug' => 'transaksi.peminjaman.approve',
+                'display_name' => 'Setujui/Tolak Peminjaman',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat menyetujui atau menolak transaksi peminjaman'
+            ],
+            [
+                'name' => 'transaksi.peminjaman.handover',
+                'slug' => 'transaksi.peminjaman.handover',
+                'display_name' => 'Serah Terima Peminjaman',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat memproses serah terima aset yang dipinjam'
+            ],
+            [
+                'name' => 'transaksi.peminjaman.return',
+                'slug' => 'transaksi.peminjaman.return',
+                'display_name' => 'Pengembalian Peminjaman',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat memproses pengembalian aset yang dipinjam'
+            ],
         ];
 
         foreach ($permissions as $permission) {
