@@ -12,6 +12,7 @@ use App\Http\Controllers\MasterPengelolaController;
 use App\Http\Controllers\PemeliharaanController;
 use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\MutasiAsetController;
 use App\Http\Controllers\UserManagementController;
 
 /*
@@ -139,6 +140,20 @@ Route::middleware('auth')->group(function () {
         Route::post('pemeliharaan/{pemeliharaan}/process', [PemeliharaanController::class, 'startProcess'])->name('pemeliharaan.process')->middleware('permission:transaksi.pemeliharaan.process');
         Route::get('pemeliharaan/{pemeliharaan}/complete', [PemeliharaanController::class, 'completeForm'])->name('pemeliharaan.complete.form')->middleware('permission:transaksi.pemeliharaan.complete');
         Route::post('pemeliharaan/{pemeliharaan}/complete', [PemeliharaanController::class, 'complete'])->name('pemeliharaan.complete')->middleware('permission:transaksi.pemeliharaan.complete');
+
+        Route::get('mutasi-aset', [MutasiAsetController::class, 'index'])->name('mutasi_aset.index')->middleware('permission:transaksi.mutasi_aset.view');
+        Route::get('mutasi-aset-export/{format}', [MutasiAsetController::class, 'export'])->name('mutasi_aset.export')->middleware('permission:transaksi.mutasi_aset.export');
+        Route::get('mutasi-aset/create', [MutasiAsetController::class, 'create'])->name('mutasi_aset.create')->middleware('permission:transaksi.mutasi_aset.create');
+        Route::post('mutasi-aset', [MutasiAsetController::class, 'store'])->name('mutasi_aset.store')->middleware('permission:transaksi.mutasi_aset.create');
+        Route::get('mutasi-aset/{mutasi_aset}', [MutasiAsetController::class, 'show'])->name('mutasi_aset.show')->middleware('permission:transaksi.mutasi_aset.view');
+        Route::get('mutasi-aset/{mutasi_aset}/edit', [MutasiAsetController::class, 'edit'])->name('mutasi_aset.edit')->middleware('permission:transaksi.mutasi_aset.edit');
+        Route::put('mutasi-aset/{mutasi_aset}', [MutasiAsetController::class, 'update'])->name('mutasi_aset.update')->middleware('permission:transaksi.mutasi_aset.edit');
+        Route::delete('mutasi-aset/{mutasi_aset}', [MutasiAsetController::class, 'destroy'])->name('mutasi_aset.destroy')->middleware('permission:transaksi.mutasi_aset.delete');
+        Route::post('mutasi-aset/{mutasi_aset}/approve', [MutasiAsetController::class, 'approve'])->name('mutasi_aset.approve')->middleware('permission:transaksi.mutasi_aset.approve');
+        Route::post('mutasi-aset/{mutasi_aset}/reject', [MutasiAsetController::class, 'reject'])->name('mutasi_aset.reject')->middleware('permission:transaksi.mutasi_aset.approve');
+        Route::post('mutasi-aset/{mutasi_aset}/process', [MutasiAsetController::class, 'process'])->name('mutasi_aset.process')->middleware('permission:transaksi.mutasi_aset.process');
+        Route::get('mutasi-aset/{mutasi_aset}/complete', [MutasiAsetController::class, 'completeForm'])->name('mutasi_aset.complete.form')->middleware('permission:transaksi.mutasi_aset.complete');
+        Route::post('mutasi-aset/{mutasi_aset}/complete', [MutasiAsetController::class, 'complete'])->name('mutasi_aset.complete')->middleware('permission:transaksi.mutasi_aset.complete');
     });
 
     // Rute untuk logout

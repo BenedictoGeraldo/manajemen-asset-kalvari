@@ -336,6 +336,64 @@ class PermissionSeeder extends Seeder
                 'group' => 'Data Transaksional',
                 'description' => 'Dapat menyelesaikan pemeliharaan dan memperbarui kondisi aset'
             ],
+
+            // Transaksi Mutasi Aset
+            [
+                'name' => 'transaksi.mutasi_aset.view',
+                'slug' => 'transaksi.mutasi_aset.view',
+                'display_name' => 'Lihat Mutasi Aset',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat melihat daftar transaksi mutasi aset'
+            ],
+            [
+                'name' => 'transaksi.mutasi_aset.export',
+                'slug' => 'transaksi.mutasi_aset.export',
+                'display_name' => 'Export Mutasi Aset',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat mengexport data transaksi mutasi aset ke Excel/CSV'
+            ],
+            [
+                'name' => 'transaksi.mutasi_aset.create',
+                'slug' => 'transaksi.mutasi_aset.create',
+                'display_name' => 'Tambah Mutasi Aset',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat menambah transaksi mutasi aset baru'
+            ],
+            [
+                'name' => 'transaksi.mutasi_aset.edit',
+                'slug' => 'transaksi.mutasi_aset.edit',
+                'display_name' => 'Edit Mutasi Aset',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat mengedit transaksi mutasi aset'
+            ],
+            [
+                'name' => 'transaksi.mutasi_aset.delete',
+                'slug' => 'transaksi.mutasi_aset.delete',
+                'display_name' => 'Hapus Mutasi Aset',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat menghapus transaksi mutasi aset'
+            ],
+            [
+                'name' => 'transaksi.mutasi_aset.approve',
+                'slug' => 'transaksi.mutasi_aset.approve',
+                'display_name' => 'Setujui/Tolak Mutasi Aset',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat menyetujui atau menolak transaksi mutasi aset'
+            ],
+            [
+                'name' => 'transaksi.mutasi_aset.process',
+                'slug' => 'transaksi.mutasi_aset.process',
+                'display_name' => 'Proses Mutasi Aset',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat memulai proses mutasi aset yang telah disetujui'
+            ],
+            [
+                'name' => 'transaksi.mutasi_aset.complete',
+                'slug' => 'transaksi.mutasi_aset.complete',
+                'display_name' => 'Selesaikan Mutasi Aset',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat menyelesaikan mutasi aset dan memperbarui data aset'
+            ],
         ];
 
         foreach ($permissions as $permission) {
