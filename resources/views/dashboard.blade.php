@@ -55,12 +55,7 @@
 <div class="mb-6 bg-white rounded-lg shadow p-6">
     <h1 class="text-2xl font-bold text-gray-800 mb-1">Dashboard PELITA</h1>
     <p class="text-gray-600">Sistem Manajemen Aset Gereja Kalvari Lubang Buaya</p>
-    <div class="flex items-center mt-2 text-gray-500 text-sm">
-        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-        {{ now()->isoFormat('dddd, D MMMM Y') }}
-    </div>
+
 </div>
 
 <!-- Statistics Cards Grid -->
@@ -176,72 +171,77 @@
     </div>
 </div>
 
-<!-- Kondisi Aset Overview -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-    <!-- Kondisi Aset Card -->
-    <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center">
+<!-- Satu Chart Utama -->
+<div class="mb-6 bg-white rounded-lg shadow p-6">
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-gray-800 flex items-center">
             <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3v18m4-14v10m4-6v6M7 13v4" />
             </svg>
-            Distribusi Kondisi Aset
+            Grafik penambahan Aset
         </h3>
-
-        @php
-            $totalRecordForPercentage = $totalRecord > 0 ? $totalRecord : 1;
-        @endphp
-
-        <div class="space-y-5">
-            @forelse($distribusiKondisi as $item)
-                @php
-                    $persentase = round(($item->total / $totalRecordForPercentage) * 100);
-                @endphp
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm font-medium text-gray-700 flex items-center">
-                            <span class="w-3 h-3 rounded-full bg-{{ $item->kondisi->kode_warna }}-500 mr-2"></span>
-                            {{ $item->kondisi->nama_kondisi }}
-                        </span>
-                        <span class="text-sm font-bold text-gray-800">{{ $item->total }} ({{ $persentase }}%)</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
-                        <div class="bg-{{ $item->kondisi->kode_warna }}-500 h-2.5 rounded-full" style="width: {{ $persentase }}%"></div>
-                    </div>
-                </div>
-            @empty
-                <p class="text-sm text-gray-500 text-center py-4">Belum ada data kondisi aset</p>
-            @endforelse
-        </div>
+        <span class="text-xs text-gray-500">Berdasarkan jumlah barang ditambahkan per bulan</span>
     </div>
-
-    <!-- Quick Info Card -->
-    <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center">
-            <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z" />
-            </svg>
-            Top 5 Kategori Aset
-        </h3>
-
-        <div class="space-y-3">
-            @forelse($distribusiKategori as $item)
-                @php
-                    $persentase = round(($item->total / $totalRecord) * 100);
-                @endphp
-                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div class="flex-1">
-                        <span class="text-sm font-medium text-gray-700">{{ $item->kategori->nama_kategori }}</span>
-                        <div class="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden mt-2">
-                            <div class="bg-blue-500 h-1.5 rounded-full" style="width: {{ $persentase }}%"></div>
-                        </div>
-                    </div>
-                    <span class="text-sm font-bold text-blue-600 ml-4">{{ $item->total }}</span>
-                </div>
-            @empty
-                <p class="text-sm text-gray-500 text-center py-4">Belum ada data kategori</p>
-            @endforelse
-        </div>
+    <div class="h-80">
+        <canvas id="asetTrendChart"></canvas>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const chartEl = document.getElementById('asetTrendChart');
+        if (!chartEl) {
+            return;
+        }
+
+        new Chart(chartEl, {
+            type: 'line',
+            data: {
+                labels: @json($trendLabels ?? []),
+                datasets: [{
+                    label: 'Jumlah Barang Masuk',
+                    data: @json($trendValues ?? []),
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.15)',
+                    fill: true,
+                    tension: 0.35,
+                    borderWidth: 3,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0,
+                        },
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.2)',
+                        },
+                    },
+                    x: {
+                        grid: {
+                            display: false,
+                        },
+                    },
+                },
+            },
+        });
+    });
+</script>
 @endsection
 
