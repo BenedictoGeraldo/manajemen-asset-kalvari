@@ -19,6 +19,7 @@ function initSpaNavigation() {
 
             const linkPath = new URL(linkHref, window.location.origin).pathname;
             const isSubmenu = link.classList.contains("submenu-link");
+            const dataRoute = link.getAttribute("data-route") || "";
 
             link.classList.remove(
                 "bg-blue-50",
@@ -36,6 +37,8 @@ function initSpaNavigation() {
             link.classList.add("hover:bg-gray-100");
 
             const isActive =
+                (dataRoute === "laporan" &&
+                    currentPath.startsWith("/laporan")) ||
                 currentPath === linkPath ||
                 currentPath.startsWith(linkPath + "/");
             if (isActive) {
@@ -57,6 +60,7 @@ function initSpaNavigation() {
                 (group === "master" && currentPath.startsWith("/master")) ||
                 (group === "transaksi" &&
                     currentPath.startsWith("/transaksi")) ||
+                (group === "laporan" && currentPath.startsWith("/laporan")) ||
                 (group === "pengaturan" &&
                     currentPath.startsWith("/user-management"));
 

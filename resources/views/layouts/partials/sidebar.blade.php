@@ -3,6 +3,7 @@
     $isMasterActive = request()->routeIs('master.*');
     $isDataAsetActive = request()->routeIs('data-aset.*');
     $isTransaksiActive = request()->routeIs('transaksi.*');
+    $isLaporanActive = request()->routeIs('laporan.*');
     $isPengaturanActive = request()->routeIs('user-management.*');
 @endphp
 
@@ -151,10 +152,37 @@
             </div>
             @endif
 
-            <a href="#" data-navigate :class="sidebarMinimized ? 'justify-center' : ''" :title="sidebarMinimized ? 'Laporan' : ''" class="nav-link flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 text-gray-700 hover:bg-gray-100">
-                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                <span x-show="!sidebarMinimized" class="ml-3 whitespace-nowrap">Laporan</span>
-            </a>
+            <div class="relative" x-data="{ open: {{ $isLaporanActive ? 'true' : 'false' }} }">
+                <button @click="open = !open"
+                        data-sidebar-parent="laporan"
+                        :class="sidebarMinimized ? 'justify-center' : 'justify-between'"
+                        :title="sidebarMinimized ? 'Laporan' : ''"
+                        class="w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 {{ $isLaporanActive ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                    <div class="flex items-center" :class="sidebarMinimized ? '' : 'space-x-3'">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        <span x-show="!sidebarMinimized" class="whitespace-nowrap">Laporan</span>
+                    </div>
+                    <svg x-show="!sidebarMinimized" class="w-4 h-4 transition-transform duration-200" :class="{ 'rotate-90': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                </button>
+
+                <div x-show="open && !sidebarMinimized" class="mt-1 ml-4 space-y-1">
+                    <a href="{{ route('laporan.data-aset.index') }}" data-navigate data-route="laporan-data-aset"
+                       class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('laporan.data-aset.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
+                        <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6" /></svg>
+                        <span class="whitespace-nowrap">Laporan Data Aset</span>
+                    </a>
+                    <a href="{{ route('laporan.mutasi-aset.index') }}" data-navigate data-route="laporan-mutasi-aset"
+                       class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('laporan.mutasi-aset.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
+                        <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
+                        <span class="whitespace-nowrap">Laporan Mutasi Aset</span>
+                    </a>
+                    <a href="{{ route('laporan.pembelian.index') }}" data-navigate data-route="laporan-pembelian"
+                       class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('laporan.pembelian.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
+                        <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4" /></svg>
+                        <span class="whitespace-nowrap">Laporan Pembelian</span>
+                    </a>
+                </div>
+            </div>
 
             @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('user-management.view'))
             <div class="relative" x-data="{ open: {{ $isPengaturanActive ? 'true' : 'false' }} }">

@@ -13,6 +13,7 @@ use App\Http\Controllers\PemeliharaanController;
 use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\MutasiAsetController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\UserManagementController;
 
 /*
@@ -154,6 +155,16 @@ Route::middleware('auth')->group(function () {
         Route::post('mutasi-aset/{mutasi_aset}/process', [MutasiAsetController::class, 'process'])->name('mutasi_aset.process')->middleware('permission:transaksi.mutasi_aset.process');
         Route::get('mutasi-aset/{mutasi_aset}/complete', [MutasiAsetController::class, 'completeForm'])->name('mutasi_aset.complete.form')->middleware('permission:transaksi.mutasi_aset.complete');
         Route::post('mutasi-aset/{mutasi_aset}/complete', [MutasiAsetController::class, 'complete'])->name('mutasi_aset.complete')->middleware('permission:transaksi.mutasi_aset.complete');
+    });
+
+    // Rute untuk laporan
+    Route::prefix('laporan')->name('laporan.')->group(function () {
+        Route::get('data-aset', [LaporanController::class, 'dataAset'])->name('data-aset.index');
+        Route::get('data-aset-export/{format}', [LaporanController::class, 'exportDataAset'])->name('data-aset.export');
+        Route::get('mutasi-aset', [LaporanController::class, 'mutasiAset'])->name('mutasi-aset.index');
+        Route::get('mutasi-aset-export/{format}', [LaporanController::class, 'exportMutasiAset'])->name('mutasi-aset.export');
+        Route::get('pembelian', [LaporanController::class, 'pembelian'])->name('pembelian.index');
+        Route::get('pembelian-export/{format}', [LaporanController::class, 'exportPembelian'])->name('pembelian.export');
     });
 
     // Rute untuk logout
