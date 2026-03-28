@@ -278,6 +278,64 @@ class PermissionSeeder extends Seeder
                 'group' => 'Data Transaksional',
                 'description' => 'Dapat memproses pengembalian aset yang dipinjam'
             ],
+
+            // Transaksi Pemeliharaan
+            [
+                'name' => 'transaksi.pemeliharaan.view',
+                'slug' => 'transaksi.pemeliharaan.view',
+                'display_name' => 'Lihat Pemeliharaan',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat melihat daftar transaksi pemeliharaan'
+            ],
+            [
+                'name' => 'transaksi.pemeliharaan.export',
+                'slug' => 'transaksi.pemeliharaan.export',
+                'display_name' => 'Export Pemeliharaan',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat mengexport data transaksi pemeliharaan ke Excel/CSV'
+            ],
+            [
+                'name' => 'transaksi.pemeliharaan.create',
+                'slug' => 'transaksi.pemeliharaan.create',
+                'display_name' => 'Tambah Pemeliharaan',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat menambah transaksi pemeliharaan baru'
+            ],
+            [
+                'name' => 'transaksi.pemeliharaan.edit',
+                'slug' => 'transaksi.pemeliharaan.edit',
+                'display_name' => 'Edit Pemeliharaan',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat mengedit transaksi pemeliharaan'
+            ],
+            [
+                'name' => 'transaksi.pemeliharaan.delete',
+                'slug' => 'transaksi.pemeliharaan.delete',
+                'display_name' => 'Hapus Pemeliharaan',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat menghapus transaksi pemeliharaan'
+            ],
+            [
+                'name' => 'transaksi.pemeliharaan.approve',
+                'slug' => 'transaksi.pemeliharaan.approve',
+                'display_name' => 'Setujui/Tolak Pemeliharaan',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat menyetujui atau menolak transaksi pemeliharaan'
+            ],
+            [
+                'name' => 'transaksi.pemeliharaan.process',
+                'slug' => 'transaksi.pemeliharaan.process',
+                'display_name' => 'Proses Pemeliharaan',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat memulai proses pemeliharaan yang telah disetujui'
+            ],
+            [
+                'name' => 'transaksi.pemeliharaan.complete',
+                'slug' => 'transaksi.pemeliharaan.complete',
+                'display_name' => 'Selesaikan Pemeliharaan',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat menyelesaikan pemeliharaan dan memperbarui kondisi aset'
+            ],
         ];
 
         foreach ($permissions as $permission) {

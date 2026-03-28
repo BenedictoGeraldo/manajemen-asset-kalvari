@@ -9,6 +9,7 @@ use App\Http\Controllers\MasterKategoriController;
 use App\Http\Controllers\MasterLokasiController;
 use App\Http\Controllers\MasterKondisiController;
 use App\Http\Controllers\MasterPengelolaController;
+use App\Http\Controllers\PemeliharaanController;
 use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\UserManagementController;
@@ -124,6 +125,20 @@ Route::middleware('auth')->group(function () {
         Route::post('peminjaman/{peminjaman}/handover', [PeminjamanController::class, 'handover'])->name('peminjaman.handover')->middleware('permission:transaksi.peminjaman.handover');
         Route::get('peminjaman/{peminjaman}/return', [PeminjamanController::class, 'returnForm'])->name('peminjaman.return.form')->middleware('permission:transaksi.peminjaman.return');
         Route::post('peminjaman/{peminjaman}/return', [PeminjamanController::class, 'returnAssets'])->name('peminjaman.return')->middleware('permission:transaksi.peminjaman.return');
+
+        Route::get('pemeliharaan', [PemeliharaanController::class, 'index'])->name('pemeliharaan.index')->middleware('permission:transaksi.pemeliharaan.view');
+        Route::get('pemeliharaan-export/{format}', [PemeliharaanController::class, 'export'])->name('pemeliharaan.export')->middleware('permission:transaksi.pemeliharaan.export');
+        Route::get('pemeliharaan/create', [PemeliharaanController::class, 'create'])->name('pemeliharaan.create')->middleware('permission:transaksi.pemeliharaan.create');
+        Route::post('pemeliharaan', [PemeliharaanController::class, 'store'])->name('pemeliharaan.store')->middleware('permission:transaksi.pemeliharaan.create');
+        Route::get('pemeliharaan/{pemeliharaan}', [PemeliharaanController::class, 'show'])->name('pemeliharaan.show')->middleware('permission:transaksi.pemeliharaan.view');
+        Route::get('pemeliharaan/{pemeliharaan}/edit', [PemeliharaanController::class, 'edit'])->name('pemeliharaan.edit')->middleware('permission:transaksi.pemeliharaan.edit');
+        Route::put('pemeliharaan/{pemeliharaan}', [PemeliharaanController::class, 'update'])->name('pemeliharaan.update')->middleware('permission:transaksi.pemeliharaan.edit');
+        Route::delete('pemeliharaan/{pemeliharaan}', [PemeliharaanController::class, 'destroy'])->name('pemeliharaan.destroy')->middleware('permission:transaksi.pemeliharaan.delete');
+        Route::post('pemeliharaan/{pemeliharaan}/approve', [PemeliharaanController::class, 'approve'])->name('pemeliharaan.approve')->middleware('permission:transaksi.pemeliharaan.approve');
+        Route::post('pemeliharaan/{pemeliharaan}/reject', [PemeliharaanController::class, 'reject'])->name('pemeliharaan.reject')->middleware('permission:transaksi.pemeliharaan.approve');
+        Route::post('pemeliharaan/{pemeliharaan}/process', [PemeliharaanController::class, 'startProcess'])->name('pemeliharaan.process')->middleware('permission:transaksi.pemeliharaan.process');
+        Route::get('pemeliharaan/{pemeliharaan}/complete', [PemeliharaanController::class, 'completeForm'])->name('pemeliharaan.complete.form')->middleware('permission:transaksi.pemeliharaan.complete');
+        Route::post('pemeliharaan/{pemeliharaan}/complete', [PemeliharaanController::class, 'complete'])->name('pemeliharaan.complete')->middleware('permission:transaksi.pemeliharaan.complete');
     });
 
     // Rute untuk logout
