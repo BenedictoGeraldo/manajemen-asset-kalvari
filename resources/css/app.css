@@ -38,10 +38,19 @@
            disabled:shadow-none;
     }
 
+    .btn-a:hover,
+    .btn-primary:hover {
+        @apply !bg-primary-700 !text-white !opacity-100;
+    }
+
     .btn-a-sm {
         @apply inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700
             !text-white hover:!text-white text-sm font-medium rounded-lg transition-colors duration-150
            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500;
+    }
+
+    .btn-a-sm:hover {
+        @apply !bg-primary-700 !text-white !opacity-100;
     }
 
     /* ─────────────────────────────────────────────────────────────────────

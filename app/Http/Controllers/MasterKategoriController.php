@@ -19,10 +19,21 @@ class MasterKategoriController extends Controller
         $this->masterDataService = $masterDataService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $kategoris = MasterKategori::withCount('dataAset')->orderBy('nama_kategori')->get();
-        return view('master.kategori.index', compact('kategoris'));
+        $search = $request->input('search');
+
+        $kategoris = MasterKategori::withCount('dataAset')
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama_kategori', 'like', "%{$search}%")
+                        ->orWhere('deskripsi', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('nama_kategori')
+            ->get();
+
+        return view('master.kategori.index', compact('kategoris', 'search'));
     }
 
     public function create()

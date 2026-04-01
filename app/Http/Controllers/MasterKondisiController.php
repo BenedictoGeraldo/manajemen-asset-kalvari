@@ -9,10 +9,21 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class MasterKondisiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $kondisis = MasterKondisi::withCount('dataAset')->ordered()->get();
-        return view('master.kondisi.index', compact('kondisis'));
+        $search = $request->input('search');
+
+        $kondisis = MasterKondisi::withCount('dataAset')
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama_kondisi', 'like', "%{$search}%")
+                        ->orWhere('keterangan', 'like', "%{$search}%");
+                });
+            })
+            ->ordered()
+            ->get();
+
+        return view('master.kondisi.index', compact('kondisis', 'search'));
     }
 
     public function create()

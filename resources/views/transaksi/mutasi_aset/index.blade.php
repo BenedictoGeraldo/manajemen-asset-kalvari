@@ -23,7 +23,7 @@
         <div class="w-full flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0">
             <form method="GET" class="flex-1">
                 <input type="text" name="search" value="{{ $filters['search'] ?? '' }}" placeholder="Cari mutasi berdasarkan nomor atau aset..."
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off">
+                      class="flex-1 w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off">
             </form>
 
             <div class="flex space-x-3 mt-2 sm:mt-0">

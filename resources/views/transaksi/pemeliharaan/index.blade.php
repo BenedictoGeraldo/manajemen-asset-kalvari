@@ -26,7 +26,7 @@
         <div class="w-full flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0">
             <form method="GET" class="flex-1">
                 <input type="text" name="search" value="{{ $search }}" placeholder="Cari pemeliharaan berdasarkan nomor, aset, vendor..."
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off">
+                      class="flex-1 w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off">
                 <input type="hidden" name="status" value="{{ $status }}">
                 <input type="hidden" name="jenis" value="{{ $jenis }}">
                 <input type="hidden" name="per_page" value="{{ $perPage }}">

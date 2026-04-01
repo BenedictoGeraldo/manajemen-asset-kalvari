@@ -9,10 +9,25 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class MasterLokasiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $lokasis = MasterLokasi::withCount('dataAset')->orderBy('gedung')->orderBy('lantai')->get();
-        return view('master.lokasi.index', compact('lokasis'));
+        $search = $request->input('search');
+
+        $lokasis = MasterLokasi::withCount('dataAset')
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama_lokasi', 'like', "%{$search}%")
+                        ->orWhere('keterangan_lokasi', 'like', "%{$search}%")
+                        ->orWhere('gedung', 'like', "%{$search}%")
+                        ->orWhere('lantai', 'like', "%{$search}%")
+                        ->orWhere('ruangan', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('gedung')
+            ->orderBy('lantai')
+            ->get();
+
+        return view('master.lokasi.index', compact('lokasis', 'search'));
     }
 
     public function create()

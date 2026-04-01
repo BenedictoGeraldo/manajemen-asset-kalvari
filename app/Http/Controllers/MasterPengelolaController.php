@@ -9,10 +9,24 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class MasterPengelolaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $pengelolas = MasterPengelola::withCount('dataAset')->orderBy('nama_pengelola')->get();
-        return view('master.pengelola.index', compact('pengelolas'));
+        $search = $request->input('search');
+
+        $pengelolas = MasterPengelola::withCount('dataAset')
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama_pengelola', 'like', "%{$search}%")
+                        ->orWhere('jabatan', 'like', "%{$search}%")
+                        ->orWhere('departemen', 'like', "%{$search}%")
+                        ->orWhere('kontak', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('nama_pengelola')
+            ->get();
+
+        return view('master.pengelola.index', compact('pengelolas', 'search'));
     }
 
     public function create()
