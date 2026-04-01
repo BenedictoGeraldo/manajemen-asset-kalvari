@@ -54,11 +54,11 @@
                     </div>
                 </div>
                 <div class="mt-6 flex items-center space-x-3">
-                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
+                    <button type="submit" class="btn-a-sm">
                         Perbarui
                     </button>
                     <a href="{{ route('master.pengelola.index') }}" data-navigate
-                       class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-gray-100 text-sm font-medium rounded-lg transition-colors duration-150">
+                       class="btn-c-sm">
                         Batal
                     </a>
                 </div>
@@ -67,3 +67,4 @@
     </div>
 </div>
 @endsection
+

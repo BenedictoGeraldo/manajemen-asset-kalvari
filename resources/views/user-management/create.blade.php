@@ -243,11 +243,11 @@
             <!-- Action Buttons -->
             <div class="flex justify-end space-x-3 mt-6 pt-6 border-t">
                 <a href="{{ route('user-management.index') }}" data-navigate
-                   class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                   class="btn-c-outline">
                     Batal
                 </a>
                 <button type="submit"
-                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                        class="btn-a-sm">
                     Simpan User
                 </button>
             </div>
@@ -285,3 +285,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endsection
+

@@ -92,12 +92,12 @@
                 <!-- Action Buttons -->
                 <div class="mt-8 flex items-center space-x-3">
                     <button type="submit"
-                            class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg shadow-sm transition-all duration-150">
+                            class="btn-a">
                         Perbarui Lokasi
                     </button>
                     <a href="{{ route('master.lokasi.index') }}"
                        data-navigate
-                       class="px-6 py-2.5 bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold rounded-lg shadow-sm transition-all duration-150">
+                       class="btn-c">
                         Batal
                     </a>
                 </div>
@@ -106,3 +106,4 @@
     </div>
 </div>
 @endsection
+

@@ -215,7 +215,7 @@
             <button type="submit"
                     :class="sidebarMinimized ? 'justify-center' : ''"
                     :title="sidebarMinimized ? 'Keluar Akun' : ''"
-                    class="w-full flex items-center px-4 py-3 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors duration-150">
+                    class="btn-danger-sm w-full flex items-center justify-center">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                 <span x-show="!sidebarMinimized" class="ml-3 whitespace-nowrap">Keluar Akun</span>
             </button>
@@ -230,3 +230,4 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
     </svg>
 </button>
+

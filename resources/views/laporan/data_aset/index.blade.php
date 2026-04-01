@@ -100,12 +100,12 @@
 
                 <div class="flex items-end gap-2">
                     <button type="submit"
-                            class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
+                            class="btn-a-sm">
                         Terapkan Filter
                     </button>
                     <a href="{{ route('laporan.data-aset.index') }}"
                        data-navigate
-                       class="inline-flex items-center px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-medium rounded-lg transition-colors duration-150">
+                       class="btn-c-outline">
                         Reset
                     </a>
                 </div>
@@ -117,7 +117,7 @@
         <div class="relative" x-data="{ open: false }">
             <button @click="open = !open"
                     @click.away="open = false"
-                    class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
+                    class="btn-export-sm">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
@@ -138,11 +138,11 @@
                  class="absolute right-0 mt-2 w-52 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
                 <div class="py-1">
                     <a href="{{ route('laporan.data-aset.export', array_merge(['format' => 'xlsx'], request()->except('page'))) }}"
-                       class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
+                       class="dropdown-export-item">
                         Export ke Excel (.xlsx)
                     </a>
                     <a href="{{ route('laporan.data-aset.export', array_merge(['format' => 'csv'], request()->except('page'))) }}"
-                       class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
+                       class="dropdown-export-item">
                         Export ke CSV (.csv)
                     </a>
                 </div>
@@ -202,3 +202,4 @@
     </div>
 </div>
 @endsection
+

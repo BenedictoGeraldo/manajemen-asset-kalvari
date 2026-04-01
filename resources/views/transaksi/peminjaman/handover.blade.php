@@ -66,10 +66,11 @@
             </div>
 
             <div class="mt-6 flex items-center space-x-3">
-                <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">Proses Serah Terima</button>
-                <a href="{{ route('transaksi.peminjaman.show', $peminjaman->id) }}" data-navigate class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">Batal</a>
+                <button type="submit" class="btn-a-sm">Proses Serah Terima</button>
+                <a href="{{ route('transaksi.peminjaman.show', $peminjaman->id) }}" data-navigate class="btn-c-sm">Batal</a>
             </div>
         </form>
     </div>
 </div>
 @endsection
+

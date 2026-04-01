@@ -24,7 +24,7 @@
             <p class="text-sm text-gray-600 mt-1">Kelola user dan hak akses per user</p>
         </div>
         <a href="{{ route('user-management.create') }}" data-navigate
-           class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
+           class="btn-a-sm">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
@@ -101,7 +101,7 @@
                                   onsubmit="return confirm('Apakah Anda yakin ingin menghapus user ini?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-900">
+                                <button type="submit" class="action-delete">
                                     Hapus
                                 </button>
                             </form>
@@ -121,3 +121,4 @@
     </div>
 </div>
 @endsection
+

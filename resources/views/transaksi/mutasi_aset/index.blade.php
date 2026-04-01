@@ -30,7 +30,7 @@
                 @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.mutasi_aset.export'))
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open" @click.away="open = false"
-                            class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
+                            class="btn-export">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
@@ -41,12 +41,12 @@
                     </button>
                     <div x-show="open" class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
                         <div class="py-1">
-                            <a href="{{ route('transaksi.mutasi_aset.export', 'xlsx') }}" class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
-                                <svg class="w-4 h-4 mr-2 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z"/></svg>
+                            <a href="{{ route('transaksi.mutasi_aset.export', 'xlsx') }}" class="dropdown-export-item">
+                                <svg class="w-4 h-4 mr-2 export-icon-xlsx" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z"/></svg>
                                 Export ke Excel (.xlsx)
                             </a>
-                            <a href="{{ route('transaksi.mutasi_aset.export', 'csv') }}" class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
-                                <svg class="w-4 h-4 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z"/></svg>
+                            <a href="{{ route('transaksi.mutasi_aset.export', 'csv') }}" class="dropdown-export-item">
+                                <svg class="w-4 h-4 mr-2 export-icon-csv" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z"/></svg>
                                 Export ke CSV (.csv)
                             </a>
                         </div>
@@ -56,7 +56,7 @@
 
                 @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.mutasi_aset.create'))
                 <a href="{{ route('transaksi.mutasi_aset.create') }}" data-navigate
-                   class="inline-flex items-center px-5 py-2.5 !bg-blue-600 hover:!bg-blue-800 !text-white hover:!text-white text-sm font-semibold rounded-lg shadow-sm hover:shadow-md transition-all duration-200">
+                   class="btn-a">
                     <svg class="w-5 h-5 mr-2 !text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
@@ -145,11 +145,11 @@
             <p class="text-gray-600 mb-4">Anda akan menghapus mutasi aset <span x-text="deleteNomor" class="font-medium"></span>. Tindakan ini tidak dapat dibatalkan.</p>
             <div class="flex gap-3">
                 <form :action="`{{ route('transaksi.mutasi_aset.destroy', '') }}/${deleteId}`" method="POST" class="flex-1">@csrf @method('DELETE')
-                    <button type="submit" class="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors">
+                    <button type="submit" class="btn-danger-sm w-full">
                         Hapus
                     </button>
                 </form>
-                <button @click="showDelete = false" class="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg text-sm font-medium transition-colors">
+                <button @click="showDelete = false" class="btn-c-outline flex-1">
                     Batal
                 </button>
             </div>
@@ -157,3 +157,4 @@
     </div>
 </div>
 @endsection
+

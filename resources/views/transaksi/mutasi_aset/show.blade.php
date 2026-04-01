@@ -12,7 +12,7 @@
             <p class="text-sm text-gray-600 mt-1">Informasi lengkap transaksi {{ $mutasi->nomor_mutasi }}</p>
         </div>
         <div class="flex space-x-2 items-center">
-            <a href="{{ route('transaksi.mutasi_aset.index') }}" data-navigate class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
+            <a href="{{ route('transaksi.mutasi_aset.index') }}" data-navigate class="btn-c-sm">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
@@ -20,7 +20,7 @@
             </a>
 
             @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.mutasi_aset.edit')) && $mutasi->canEdit())
-                <a href="{{ route('transaksi.mutasi_aset.edit', $mutasi->id) }}" data-navigate class="inline-flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
+                <a href="{{ route('transaksi.mutasi_aset.edit', $mutasi->id) }}" data-navigate class="btn-b-sm">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
@@ -31,7 +31,7 @@
             @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.mutasi_aset.approve')) && in_array($mutasi->status, ['draft', 'diajukan']))
                 <form action="{{ route('transaksi.mutasi_aset.approve', $mutasi->id) }}" method="POST" class="inline-flex">
                     @csrf
-                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
+                    <button type="submit" class="btn-export-sm">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
@@ -41,7 +41,7 @@
 
                 <form action="{{ route('transaksi.mutasi_aset.reject', $mutasi->id) }}" method="POST" class="inline-flex">
                     @csrf
-                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
+                    <button type="submit" class="btn-danger-sm">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -53,7 +53,7 @@
             @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.mutasi_aset.process')) && $mutasi->status === 'disetujui')
                 <form action="{{ route('transaksi.mutasi_aset.process', $mutasi->id) }}" method="POST" class="inline-flex">
                     @csrf
-                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
+                    <button type="submit" class="btn-a-sm">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                         </svg>
@@ -63,7 +63,7 @@
             @endif
 
             @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.mutasi_aset.complete')) && $mutasi->status === 'proses')
-                <a href="{{ route('transaksi.mutasi_aset.complete.form', $mutasi->id) }}" data-navigate class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
+                <a href="{{ route('transaksi.mutasi_aset.complete.form', $mutasi->id) }}" data-navigate class="btn-a-sm">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
@@ -72,7 +72,7 @@
             @endif
 
             @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.mutasi_aset.delete')) && $mutasi->canDelete())
-                <button @click="showDelete = true" class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
+                <button @click="showDelete = true" class="btn-danger-sm">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
@@ -309,10 +309,10 @@
                 <form action="{{ route('transaksi.mutasi_aset.destroy', $mutasi->id) }}" method="POST" class="flex gap-3">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors">
+                    <button type="submit" class="btn-danger-sm flex-1">
                         Hapus
                     </button>
-                    <button type="button" @click="showDelete = false" class="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg text-sm font-medium transition-colors">
+                    <button type="button" @click="showDelete = false" class="btn-c-outline flex-1">
                         Batal
                     </button>
                 </form>
@@ -321,3 +321,4 @@
     </div>
 </div>
 @endsection
+

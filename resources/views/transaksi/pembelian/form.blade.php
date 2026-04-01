@@ -95,7 +95,7 @@
 <div class="mt-8 border-t pt-6">
     <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-semibold text-gray-800">Item Pembelian</h3>
-        <button type="button" id="btn-add-item" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm">Tambah Item</button>
+        <button type="button" id="btn-add-item" class="btn-a-sm">Tambah Item</button>
     </div>
 
     @error('items')<p class="mb-3 text-sm text-red-600">{{ $message }}</p>@enderror
@@ -110,11 +110,11 @@
 
 <div class="mt-6 flex items-center space-x-3">
     <button type="submit"
-            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
+            class="btn-a-sm">
         {{ $submitLabel }}
     </button>
     <a href="{{ route('transaksi.pembelian.index') }}" data-navigate
-       class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
+       class="btn-c-sm">
         Batal
     </a>
 </div>
@@ -146,7 +146,7 @@
         <div class="border border-gray-200 rounded-lg p-4 item-row">
             <div class="flex items-center justify-between mb-3">
                 <h4 class="font-medium text-gray-800">Item #${index + 1}</h4>
-                <button type="button" class="text-red-600 text-sm btn-remove-item">Hapus</button>
+                <button type="button" class="action-delete-inline btn-remove-item">Hapus</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -302,3 +302,4 @@
     bindRowEvents();
     calculateGrandTotal();
 </script>
+

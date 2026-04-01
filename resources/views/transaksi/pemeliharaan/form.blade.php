@@ -110,10 +110,11 @@
 </div>
 
 <div class="mt-6 flex items-center space-x-3">
-    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
+    <button type="submit" class="btn-a-sm">
         {{ $submitLabel }}
     </button>
-    <a href="{{ route('transaksi.pemeliharaan.index') }}" data-navigate class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
+    <a href="{{ route('transaksi.pemeliharaan.index') }}" data-navigate class="btn-c-sm">
         Batal
     </a>
 </div>
+
