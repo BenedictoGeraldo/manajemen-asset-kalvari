@@ -36,12 +36,6 @@
                 transform: translateX(0);
             }
         }
-        /* Loading indicator */
-        .page-loading {
-            opacity: 0.5;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
