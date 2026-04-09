@@ -114,7 +114,7 @@
             </a>
             @endif
 
-            @if(auth()->user()->is_super_admin)
+            @if(auth()->user()->is_super_admin || auth()->user()->hasAnyPermission(['transaksi.pembelian.view', 'transaksi.peminjaman.view', 'transaksi.pemeliharaan.view', 'transaksi.mutasi_aset.view']))
             <div class="relative" x-data="{ open: {{ $isTransaksiActive ? 'true' : 'false' }} }">
                 <button @click="open = !open"
                         data-sidebar-parent="transaksi"
@@ -129,29 +129,38 @@
                 </button>
 
                 <div x-show="open && !sidebarMinimized" class="mt-1 ml-4 space-y-1">
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.pembelian.view'))
                     <a href="{{ route('transaksi.pembelian.index') }}" data-navigate data-route="transaksi-pembelian" class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('transaksi.pembelian.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                         <span class="whitespace-nowrap">Pembelian</span>
                     </a>
+                    @endif
 
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.peminjaman.view'))
                     <a href="{{ route('transaksi.peminjaman.index') }}" data-navigate data-route="transaksi-peminjaman" class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('transaksi.peminjaman.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
                         <span class="whitespace-nowrap">Peminjaman Aset</span>
                     </a>
+                    @endif
 
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.pemeliharaan.view'))
                     <a href="{{ route('transaksi.pemeliharaan.index') }}" data-navigate data-route="transaksi-pemeliharaan" class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('transaksi.pemeliharaan.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                         <span class="whitespace-nowrap">Pemeliharaan</span>
                     </a>
+                    @endif
 
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.mutasi_aset.view'))
                     <a href="{{ route('transaksi.mutasi_aset.index') }}" data-navigate data-route="transaksi-mutasi_aset" class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('transaksi.mutasi_aset.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
                         <span class="whitespace-nowrap">Mutasi Aset</span>
                     </a>
+                    @endif
                 </div>
             </div>
             @endif
 
+            @if(auth()->user()->is_super_admin || optional(auth()->user()->role)->slug === 'admin-divisi')
             <div class="relative" x-data="{ open: {{ $isLaporanActive ? 'true' : 'false' }} }">
                 <button @click="open = !open"
                         data-sidebar-parent="laporan"
@@ -183,6 +192,7 @@
                     </a>
                 </div>
             </div>
+            @endif
 
             @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('user-management.view'))
             <div class="relative" x-data="{ open: {{ $isPengaturanActive ? 'true' : 'false' }} }">

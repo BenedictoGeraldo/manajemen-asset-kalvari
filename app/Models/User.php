@@ -134,6 +134,12 @@ class User extends Authenticatable
             return true;
         }
 
+        if ($this->role) {
+            if ($this->role->permissions()->whereIn('slug', $permissions)->exists()) {
+                return true;
+            }
+        }
+
         return $this->permissions()->whereIn('name', $permissions)->exists();
     }
 
