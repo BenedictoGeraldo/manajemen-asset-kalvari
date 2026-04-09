@@ -105,123 +105,38 @@
             <div x-data="{ isSuperAdmin: {{ old('is_super_admin') ? 'true' : 'false' }} }"
                  x-on:super-admin-changed.window="isSuperAdmin = $event.detail.checked">
                 <div x-show="!isSuperAdmin" class="border-t pt-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Pengaturan Hak Akses</h3>
-                    <p class="text-sm text-gray-600 mb-4">Pilih hak akses yang akan diberikan kepada user ini</p>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Pengaturan Role & Divisi</h3>
+                    <p class="text-sm text-gray-600 mb-4">Pilih role dan departemen divisi user ini bekerja</p>
 
-                    <!-- Tabel Penjelasan Permission -->
-                    <div class="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <h4 class="text-sm font-semibold text-blue-800 mb-3 flex items-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            Penjelasan Hak Akses
-                        </h4>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full text-sm">
-                                <thead class="bg-blue-100">
-                                    <tr>
-                                        <th class="px-3 py-2 text-left font-semibold text-blue-900">Permission</th>
-                                        <th class="px-3 py-2 text-left font-semibold text-blue-900">Akses Yang Diberikan</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-blue-200">
-                                    <tr class="bg-white">
-                                        <td class="px-3 py-2 font-medium text-gray-700">Lihat Dashboard</td>
-                                        <td class="px-3 py-2 text-gray-600">Dapat melihat halaman dashboard dengan statistik aset</td>
-                                    </tr>
-                                    <tr class="bg-blue-50">
-                                        <td class="px-3 py-2 font-medium text-gray-700">Lihat Data Aset</td>
-                                        <td class="px-3 py-2 text-gray-600">Dapat melihat daftar data aset (hanya baca, tidak bisa edit/hapus)</td>
-                                    </tr>
-                                    <tr class="bg-white">
-                                        <td class="px-3 py-2 font-medium text-gray-700">Tambah Data Aset</td>
-                                        <td class="px-3 py-2 text-gray-600">Dapat menambahkan data aset baru</td>
-                                    </tr>
-                                    <tr class="bg-blue-50">
-                                        <td class="px-3 py-2 font-medium text-gray-700">Edit Data Aset</td>
-                                        <td class="px-3 py-2 text-gray-600">Dapat mengedit data aset yang sudah ada</td>
-                                    </tr>
-                                    <tr class="bg-white">
-                                        <td class="px-3 py-2 font-medium text-gray-700">Hapus Data Aset</td>
-                                        <td class="px-3 py-2 text-gray-600">Dapat menghapus data aset</td>
-                                    </tr>
-                                    <tr class="bg-blue-50">
-                                        <td class="px-3 py-2 font-medium text-gray-700">Export Data Aset</td>
-                                        <td class="px-3 py-2 text-gray-600">Dapat mengekspor data aset ke Excel/CSV</td>
-                                    </tr>
-                                    <tr class="bg-white">
-                                        <td class="px-3 py-2 font-medium text-gray-700">Lihat Master [X]</td>
-                                        <td class="px-3 py-2 text-gray-600">Dapat melihat daftar master data (Kategori/Lokasi/Kondisi/Pengelola)</td>
-                                    </tr>
-                                    <tr class="bg-blue-50">
-                                        <td class="px-3 py-2 font-medium text-gray-700">Tambah Master [X]</td>
-                                        <td class="px-3 py-2 text-gray-600">Dapat menambah master data baru</td>
-                                    </tr>
-                                    <tr class="bg-white">
-                                        <td class="px-3 py-2 font-medium text-gray-700">Edit Master [X]</td>
-                                        <td class="px-3 py-2 text-gray-600">Dapat mengedit master data yang sudah ada</td>
-                                    </tr>
-                                    <tr class="bg-blue-50">
-                                        <td class="px-3 py-2 font-medium text-gray-700">Hapus Master [X]</td>
-                                        <td class="px-3 py-2 text-gray-600">Dapat menghapus master data</td>
-                                    </tr>
-                                    <tr class="bg-white">
-                                        <td class="px-3 py-2 font-medium text-gray-700">Lihat Manajemen User</td>
-                                        <td class="px-3 py-2 text-gray-600">Dapat melihat daftar user dan hak aksesnya</td>
-                                    </tr>
-                                    <tr class="bg-blue-50">
-                                        <td class="px-3 py-2 font-medium text-gray-700">Tambah User</td>
-                                        <td class="px-3 py-2 text-gray-600">Dapat menambah user baru dan mengatur hak aksesnya</td>
-                                    </tr>
-                                    <tr class="bg-white">
-                                        <td class="px-3 py-2 font-medium text-gray-700">Edit User</td>
-                                        <td class="px-3 py-2 text-gray-600">Dapat mengedit user dan mengubah hak aksesnya</td>
-                                    </tr>
-                                    <tr class="bg-blue-50">
-                                        <td class="px-3 py-2 font-medium text-gray-700">Hapus User</td>
-                                        <td class="px-3 py-2 text-gray-600">Dapat menghapus user dari sistem</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <p class="mt-3 text-xs text-blue-700">
-                            <strong>Catatan:</strong> Setiap permission bersifat independen. User hanya bisa melakukan aksi sesuai permission yang diberikan.
-                        </p>
-                    </div>
-
-                    @error('permissions')
-                        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                            {{ $message }}
-                        </div>
-                    @enderror
-
-                    <div class="space-y-6">
-                        @foreach($permissions as $group => $groupPermissions)
-                        <div class="bg-gray-50 rounded-lg p-4">
-                            <div class="flex items-center justify-between mb-3">
-                                <h4 class="text-md font-semibold text-gray-800">{{ $group }}</h4>
-                                <label class="inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" class="select-all-group h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                                           data-group="{{ Str::slug($group) }}"
-                                           onchange="toggleGroupPermissions(this)">
-                                    <span class="ml-2 text-sm text-gray-600">Pilih Semua</span>
-                                </label>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                @foreach($groupPermissions as $permission)
-                                <div class="flex items-center">
-                                    <input type="checkbox" id="permission_{{ $permission->id }}"
-                                           name="permissions[]" value="{{ $permission->id }}"
-                                           class="permission-checkbox group-{{ Str::slug($group) }} h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                                           {{ in_array($permission->id, old('permissions', [])) ? 'checked' : '' }}>
-                                    <label for="permission_{{ $permission->id }}" class="ml-2 text-sm text-gray-700">
-                                        {{ $permission->display_name }}
-                                    </label>
-                                </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="role_id" class="block text-sm font-medium text-gray-700 mb-2">
+                                Role User <span class="text-red-500">*</span>
+                            </label>
+                            <select id="role_id" name="role_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">-- Pilih Role --</option>
+                                @foreach($roles as $role)
+                                    <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
                                 @endforeach
-                            </div>
+                            </select>
+                            @error('role_id')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
-                        @endforeach
+                        <div>
+                            <label for="department_id" class="block text-sm font-medium text-gray-700 mb-2">
+                                Departemen / Divisi <span class="text-red-500">*</span>
+                            </label>
+                            <select id="department_id" name="department_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">-- Pilih Departemen --</option>
+                                @foreach($departments as $dept)
+                                    <option value="{{ $dept->id }}" {{ old('department_id') == $dept->id ? 'selected' : '' }}>{{ $dept->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('department_id')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
                 </div>
 
@@ -255,34 +170,5 @@
     </div>
 </div>
 
-<script>
-function toggleGroupPermissions(checkbox) {
-    const group = checkbox.dataset.group;
-    const checkboxes = document.querySelectorAll(`.group-${group}`);
-    checkboxes.forEach(cb => {
-        cb.checked = checkbox.checked;
-    });
-}
-
-// Check if all group checkboxes are checked to update "Select All"
-document.addEventListener('DOMContentLoaded', function() {
-    const groupCheckboxes = document.querySelectorAll('.permission-checkbox');
-    groupCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const groupClass = Array.from(this.classList).find(cls => cls.startsWith('group-'));
-            if (groupClass) {
-                const group = groupClass.replace('group-', '');
-                const allGroupCheckboxes = document.querySelectorAll(`.${groupClass}`);
-                const selectAllCheckbox = document.querySelector(`[data-group="${group}"]`);
-
-                if (selectAllCheckbox) {
-                    const allChecked = Array.from(allGroupCheckboxes).every(cb => cb.checked);
-                    selectAllCheckbox.checked = allChecked;
-                }
-            }
-        });
-    });
-});
-</script>
 @endsection
 

@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Permission;
+use App\Models\Role;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
@@ -12,14 +13,15 @@ class UserManagementController extends Controller
 {
     public function index()
     {
-        $users = User::withCount('permissions')->orderBy('name')->get();
+        $users = User::with(['role', 'department'])->orderBy('name')->get();
         return view('user-management.index', compact('users'));
     }
 
     public function create()
     {
-        $permissions = Permission::orderBy('group')->orderBy('display_name')->get()->groupBy('group');
-        return view('user-management.create', compact('permissions'));
+        $roles = Role::orderBy('name')->get();
+        $departments = Department::orderBy('name')->get();
+        return view('user-management.create', compact('roles', 'departments'));
     }
 
     public function store(Request $request)
@@ -30,22 +32,21 @@ class UserManagementController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'is_super_admin' => ['boolean'],
             'is_active' => ['boolean'],
-            'permissions' => ['array'],
-            'permissions.*' => ['exists:permissions,id']
+            'role_id' => ['nullable', 'exists:roles,id'],
+            'department_id' => ['nullable', 'exists:departments,id']
         ]);
+
+        $is_super_admin = $request->boolean('is_super_admin');
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'is_super_admin' => $request->boolean('is_super_admin'),
+            'is_super_admin' => $is_super_admin,
             'is_active' => $request->boolean('is_active', true),
+            'role_id' => !$is_super_admin ? $request->role_id : null,
+            'department_id' => !$is_super_admin ? $request->department_id : null,
         ]);
-
-        // Sync permissions jika bukan super admin
-        if (!$user->is_super_admin && $request->has('permissions')) {
-            $user->syncPermissions($request->permissions);
-        }
 
         return redirect()->route('user-management.index')
             ->with('success', 'User berhasil ditambahkan!');
@@ -53,10 +54,10 @@ class UserManagementController extends Controller
 
     public function edit(User $user)
     {
-        $permissions = Permission::orderBy('group')->orderBy('display_name')->get()->groupBy('group');
-        $userPermissionIds = $user->permissions->pluck('id')->toArray();
+        $roles = Role::orderBy('name')->get();
+        $departments = Department::orderBy('name')->get();
 
-        return view('user-management.edit', compact('user', 'permissions', 'userPermissionIds'));
+        return view('user-management.edit', compact('user', 'roles', 'departments'));
     }
 
     public function update(Request $request, User $user)
@@ -67,30 +68,27 @@ class UserManagementController extends Controller
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
             'is_super_admin' => ['boolean'],
             'is_active' => ['boolean'],
-            'permissions' => ['array'],
-            'permissions.*' => ['exists:permissions,id']
+            'role_id' => ['nullable', 'exists:roles,id'],
+            'department_id' => ['nullable', 'exists:departments,id']
         ]);
 
-        $user->update([
+        $is_super_admin = $request->boolean('is_super_admin');
+
+        $data = [
             'name' => $request->name,
             'email' => $request->email,
-            'is_super_admin' => $request->boolean('is_super_admin'),
+            'is_super_admin' => $is_super_admin,
             'is_active' => $request->boolean('is_active'),
-        ]);
+            'role_id' => !$is_super_admin ? $request->role_id : null,
+            'department_id' => !$is_super_admin ? $request->department_id : null,
+        ];
 
         // Update password jika diisi
         if ($request->filled('password')) {
-            $user->update([
-                'password' => Hash::make($request->password)
-            ]);
+            $data['password'] = Hash::make($request->password);
         }
 
-        // Sync permissions jika bukan super admin
-        if (!$user->is_super_admin && $request->has('permissions')) {
-            $user->syncPermissions($request->permissions);
-        } elseif (!$user->is_super_admin) {
-            $user->syncPermissions([]);
-        }
+        $user->update($data);
 
         return redirect()->route('user-management.index')
             ->with('success', 'User berhasil diupdate!');
