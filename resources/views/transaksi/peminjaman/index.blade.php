@@ -5,17 +5,7 @@
 
 @section('content')
 <div class="p-6">
-    @if(session('success'))
-        <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-            <span class="block sm:inline">{{ session('success') }}</span>
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            <span class="block sm:inline">{{ session('error') }}</span>
-        </div>
-    @endif
+    <x-session-alerts />
 
     <div class="mb-4">
         <h3 class="text-lg font-semibold text-gray-800">Data Transaksi Peminjaman</h3>
@@ -120,20 +110,8 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $peminjaman->items_count }} item</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ optional($peminjaman->tanggal_rencana_kembali)->format('d/m/Y') ?: '-' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                @php
-                                    $statusColors = [
-                                        'draft' => 'bg-gray-100 text-gray-700',
-                                        'diajukan' => 'bg-yellow-100 text-yellow-800',
-                                        'disetujui' => 'bg-blue-100 text-blue-800',
-                                        'ditolak' => 'bg-red-100 text-red-700',
-                                        'dipinjam' => 'bg-indigo-100 text-indigo-800',
-                                        'dikembalikan' => 'bg-green-100 text-green-800',
-                                        'terlambat' => 'bg-orange-100 text-orange-800',
-                                        'dibatalkan' => 'bg-gray-200 text-gray-700',
-                                    ];
-                                @endphp
-                                <span class="px-2 py-1 rounded-full text-xs font-medium {{ $statusColors[$peminjaman->status] ?? 'bg-gray-100 text-gray-700' }}">
-                                    {{ ucfirst($peminjaman->status) }}
+                                <span class="px-2 py-1 rounded-full text-xs font-medium {{ $peminjaman->status->color() }}">
+                                    {{ $peminjaman->status->label() }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -180,55 +158,7 @@
     </div>
 </div>
 
-<div x-data="{ show: false, deleteId: null, nomorPeminjaman: '' }"
-     @delete-modal.window="show = true; deleteId = $event.detail.id; nomorPeminjaman = $event.detail.nomor"
-     x-show="show"
-     x-cloak
-     class="fixed inset-0 z-50 overflow-y-auto"
-     aria-labelledby="modal-title"
-     role="dialog"
-     aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div x-show="show" class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="show = false" aria-hidden="true"></div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+<x-delete-modal action-url="{{ url('transaksi/peminjaman') }}" />
 
-        <div x-show="show"
-             class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Konfirmasi Hapus Peminjaman</h3>
-                <div class="mt-2">
-                    <p class="text-sm text-gray-500">Apakah Anda yakin ingin menghapus transaksi <strong x-text="nomorPeminjaman"></strong>?</p>
-                </div>
-            </div>
-            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button type="button"
-                        @click="
-                            const form = document.createElement('form');
-                            form.method = 'POST';
-                            form.action = '{{ url('transaksi/peminjaman') }}/' + deleteId;
-                            const csrfInput = document.createElement('input');
-                            csrfInput.type = 'hidden';
-                            csrfInput.name = '_token';
-                            csrfInput.value = '{{ csrf_token() }}';
-                            const methodInput = document.createElement('input');
-                            methodInput.type = 'hidden';
-                            methodInput.name = '_method';
-                            methodInput.value = 'DELETE';
-                            form.appendChild(csrfInput);
-                            form.appendChild(methodInput);
-                            document.body.appendChild(form);
-                            form.submit();
-                        "
-                        class="btn-danger-sm w-full inline-flex justify-center sm:ml-3 sm:w-auto sm:text-sm">
-                    Hapus
-                </button>
-                <button type="button" @click="show = false"
-                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                    Batal
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
