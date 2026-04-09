@@ -42,6 +42,7 @@ class TransaksiPeminjaman extends Model
         'tanggal_disetujui' => 'datetime',
         'tanggal_serah_terima' => 'datetime',
         'tanggal_dikembalikan' => 'datetime',
+        'status' => \App\Enums\PeminjamanStatus::class,
     ];
 
     public function items()
@@ -79,11 +80,21 @@ class TransaksiPeminjaman extends Model
 
     public function canEdit(): bool
     {
-        return in_array($this->status, ['draft', 'diajukan', 'ditolak', 'dibatalkan'], true);
+        return in_array($this->status, [
+            \App\Enums\PeminjamanStatus::DRAFT, 
+            \App\Enums\PeminjamanStatus::DIAJUKAN, 
+            \App\Enums\PeminjamanStatus::DITOLAK, 
+            \App\Enums\PeminjamanStatus::DIBATALKAN
+        ], true);
     }
 
     public function canDelete(): bool
     {
-        return in_array($this->status, ['draft', 'diajukan', 'ditolak', 'dibatalkan'], true);
+        return in_array($this->status, [
+            \App\Enums\PeminjamanStatus::DRAFT, 
+            \App\Enums\PeminjamanStatus::DIAJUKAN, 
+            \App\Enums\PeminjamanStatus::DITOLAK, 
+            \App\Enums\PeminjamanStatus::DIBATALKAN
+        ], true);
     }
 }
