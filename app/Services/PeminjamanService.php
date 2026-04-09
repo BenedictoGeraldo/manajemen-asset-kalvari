@@ -136,12 +136,12 @@ class PeminjamanService
         return DB::transaction(function () use ($id, $userId, $catatan) {
             $peminjaman = TransaksiPeminjaman::findOrFail($id);
 
-            if (!in_array($peminjaman->status, ['draft', 'diajukan'], true)) {
+            if (!in_array($peminjaman->status, [\App\Enums\PeminjamanStatus::DRAFT, \App\Enums\PeminjamanStatus::DIAJUKAN], true)) {
                 throw new \RuntimeException('Status transaksi tidak dapat disetujui.');
             }
 
             $peminjaman->update([
-                'status' => 'disetujui',
+                'status' => \App\Enums\PeminjamanStatus::DISETUJUI,
                 'tanggal_disetujui' => now(),
                 'approved_by' => $userId,
                 'catatan_approval' => $catatan,
@@ -157,12 +157,12 @@ class PeminjamanService
         return DB::transaction(function () use ($id, $userId, $catatan) {
             $peminjaman = TransaksiPeminjaman::findOrFail($id);
 
-            if (!in_array($peminjaman->status, ['draft', 'diajukan'], true)) {
+            if (!in_array($peminjaman->status, [\App\Enums\PeminjamanStatus::DRAFT, \App\Enums\PeminjamanStatus::DIAJUKAN], true)) {
                 throw new \RuntimeException('Status transaksi tidak dapat ditolak.');
             }
 
             $peminjaman->update([
-                'status' => 'ditolak',
+                'status' => \App\Enums\PeminjamanStatus::DITOLAK,
                 'catatan_approval' => $catatan,
                 'updated_by' => $userId,
             ]);
@@ -176,7 +176,7 @@ class PeminjamanService
         return DB::transaction(function () use ($id, $data, $userId) {
             $peminjaman = TransaksiPeminjaman::with('items.aset')->findOrFail($id);
 
-            if ($peminjaman->status !== 'disetujui') {
+            if ($peminjaman->status !== \App\Enums\PeminjamanStatus::DISETUJUI) {
                 throw new \RuntimeException('Serah terima hanya dapat dilakukan pada transaksi disetujui.');
             }
 
@@ -202,7 +202,7 @@ class PeminjamanService
             }
 
             $peminjaman->update([
-                'status' => 'dipinjam',
+                'status' => \App\Enums\PeminjamanStatus::DIPINJAM,
                 'tanggal_serah_terima' => $data['tanggal_serah_terima'] ?? now(),
                 'handover_by' => $userId,
                 'catatan_serah_terima' => $data['catatan_serah_terima'] ?? null,
@@ -218,7 +218,7 @@ class PeminjamanService
         return DB::transaction(function () use ($id, $data, $userId) {
             $peminjaman = TransaksiPeminjaman::with('items.aset')->findOrFail($id);
 
-            if (!in_array($peminjaman->status, ['dipinjam', 'terlambat'], true)) {
+            if (!in_array($peminjaman->status, [\App\Enums\PeminjamanStatus::DIPINJAM, \App\Enums\PeminjamanStatus::TERLAMBAT], true)) {
                 throw new \RuntimeException('Pengembalian hanya dapat dilakukan pada transaksi dipinjam/terlambat.');
             }
 
@@ -241,7 +241,7 @@ class PeminjamanService
             }
 
             $peminjaman->update([
-                'status' => 'dikembalikan',
+                'status' => \App\Enums\PeminjamanStatus::DIKEMBALIKAN,
                 'tanggal_dikembalikan' => $data['tanggal_dikembalikan'] ?? now(),
                 'returned_by' => $userId,
                 'catatan_pengembalian' => $data['catatan_pengembalian'] ?? null,
@@ -279,10 +279,10 @@ class PeminjamanService
     private function syncOverdueStatuses(): void
     {
         TransaksiPeminjaman::query()
-            ->where('status', 'dipinjam')
+            ->where('status', \App\Enums\PeminjamanStatus::DIPINJAM)
             ->whereNotNull('tanggal_rencana_kembali')
             ->whereDate('tanggal_rencana_kembali', '<', now()->toDateString())
-            ->update(['status' => 'terlambat']);
+            ->update(['status' => \App\Enums\PeminjamanStatus::TERLAMBAT]);
     }
 
     private function generateNomorPeminjaman(string $tanggal): string
