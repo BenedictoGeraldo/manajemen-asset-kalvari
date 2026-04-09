@@ -134,7 +134,7 @@ class PeminjamanController extends Controller
     {
         $peminjaman = $this->peminjamanService->getById((int) $id);
 
-        if ($peminjaman->status !== 'disetujui') {
+        if ($peminjaman->status !== \App\Enums\PeminjamanStatus::DISETUJUI) {
             return redirect()->route('transaksi.peminjaman.show', $id)
                 ->with('error', 'Serah terima hanya dapat dilakukan pada transaksi disetujui.');
         }
@@ -161,7 +161,7 @@ class PeminjamanController extends Controller
     {
         $peminjaman = $this->peminjamanService->getById((int) $id);
 
-        if (!in_array($peminjaman->status, ['dipinjam', 'terlambat'], true)) {
+        if (!in_array($peminjaman->status, [\App\Enums\PeminjamanStatus::DIPINJAM, \App\Enums\PeminjamanStatus::TERLAMBAT], true)) {
             return redirect()->route('transaksi.peminjaman.show', $id)
                 ->with('error', 'Pengembalian hanya dapat dilakukan pada transaksi dipinjam/terlambat.');
         }

@@ -135,7 +135,12 @@ class LaporanController extends Controller
         $search = trim((string) ($filters['search'] ?? ''));
 
         return DataAsetKolektif::query()
-            ->with(['kategori', 'lokasi', 'kondisi', 'pengelola'])
+            ->with([
+                'kategori:id,nama_kategori', 
+                'lokasi:id,nama_lokasi,gedung', 
+                'kondisi:id,nama_kondisi', 
+                'pengelola:id,nama_pengelola'
+            ])
             ->when($search !== '', function (Builder $query) use ($search) {
                 $query->where(function (Builder $subQuery) use ($search) {
                     $subQuery->where('nama_aset', 'like', "%{$search}%")
@@ -170,7 +175,11 @@ class LaporanController extends Controller
     private function buildMutasiAsetQuery(array $filters): Builder
     {
         return TransaksiMutasiAset::query()
-            ->with(['aset', 'lokasiLama', 'lokasiBaru'])
+            ->with([
+                'aset:id,kode_aset,nama_aset', 
+                'lokasiLama:id,nama_lokasi,gedung', 
+                'lokasiBaru:id,nama_lokasi,gedung'
+            ])
             ->search($filters['search'] ?? null)
             ->when($filters['status'] ?? null, function (Builder $query, $status) {
                 $query->where('status', $status);
