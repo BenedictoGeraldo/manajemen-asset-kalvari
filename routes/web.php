@@ -20,11 +20,7 @@ use App\Http\Controllers\UserManagementController;
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Di sini Anda mendaftarkan rute web untuk aplikasi Anda. Rute-rute ini
-| dimuat oleh RouteServiceProvider dan semuanya akan
-| ditugaskan ke grup middleware "web".
-|
+
 */
 
 // Rute dasar akan dialihkan ke halaman login
