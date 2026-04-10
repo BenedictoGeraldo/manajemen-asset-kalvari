@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\SyncOverduePeminjaman;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -12,7 +13,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Sync status peminjaman terlambat setiap hari pukul 00:05
+        // Ini menggantikan syncOverdueStatuses() yang sebelumnya dipanggil di setiap request
+        $schedule->command(SyncOverduePeminjaman::class)->dailyAt('00:05');
     }
 
     /**
