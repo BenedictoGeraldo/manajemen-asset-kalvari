@@ -62,19 +62,11 @@ class DataAsetService
      */
     public function createAset(array $data): DataAsetKolektif
     {
-        DB::beginTransaction();
-        try {
+        return DB::transaction(function () use ($data) {
             $aset = DataAsetKolektif::create($data);
-
-            // Clear cache after creating
             $this->clearRelatedCache();
-
-            DB::commit();
             return $aset;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        });
     }
 
     /**
@@ -86,20 +78,12 @@ class DataAsetService
      */
     public function updateAset(int $id, array $data): DataAsetKolektif
     {
-        DB::beginTransaction();
-        try {
+        return DB::transaction(function () use ($id, $data) {
             $aset = DataAsetKolektif::findOrFail($id);
             $aset->update($data);
-
-            // Clear cache after updating
             $this->clearRelatedCache();
-
-            DB::commit();
             return $aset;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        });
     }
 
     /**
@@ -110,20 +94,12 @@ class DataAsetService
      */
     public function deleteAset(int $id): bool
     {
-        DB::beginTransaction();
-        try {
+        return DB::transaction(function () use ($id) {
             $aset = DataAsetKolektif::findOrFail($id);
             $result = $aset->delete();
-
-            // Clear cache after deleting
             $this->clearRelatedCache();
-
-            DB::commit();
             return $result;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        });
     }
 
     /**
@@ -142,6 +118,36 @@ class DataAsetService
                 'distribusi_kategori' => $this->getDistribusiKategori(),
             ];
         });
+    }
+
+    /**
+     * Get monthly asset addition trend for the last N months.
+     * Menghitung tren penambahan aset per bulan untuk ditampilkan di dashboard.
+     *
+     * @param int $months Jumlah bulan ke belakang
+     * @return array{labels: string[], values: int[]}
+     */
+    public function getMonthlyTrend(int $months = 12): array
+    {
+        $startMonth = now()->startOfMonth()->subMonths($months - 1);
+
+        $monthlyRaw = DataAsetKolektif::query()
+            ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as bulan, SUM(jumlah_barang) as total_barang")
+            ->where('created_at', '>=', $startMonth)
+            ->groupBy('bulan')
+            ->orderBy('bulan')
+            ->pluck('total_barang', 'bulan');
+
+        $labels = [];
+        $values = [];
+
+        for ($i = 0; $i < $months; $i++) {
+            $month = $startMonth->copy()->addMonths($i);
+            $labels[] = $month->isoFormat('MMM YY');
+            $values[] = (int) ($monthlyRaw[$month->format('Y-m')] ?? 0);
+        }
+
+        return compact('labels', 'values');
     }
 
     /**

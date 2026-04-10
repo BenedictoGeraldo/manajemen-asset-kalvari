@@ -6,14 +6,15 @@ use App\Models\DataAsetKolektif;
 use App\Models\TransaksiPeminjaman;
 use Illuminate\Database\QueryException;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class PeminjamanService
 {
     public function getPaginatedPeminjaman(array $filters = []): LengthAwarePaginator
     {
+        // Sync status terlambat — di-cache 1 hari agar tidak UPDATE tiap request
         $this->syncOverdueStatuses();
-
         $search = $filters['search'] ?? null;
         $status = $filters['status'] ?? null;
         $perPage = $filters['per_page'] ?? 10;
@@ -32,8 +33,8 @@ class PeminjamanService
 
     public function getById(int $id): TransaksiPeminjaman
     {
+        // Sync status terlambat — di-cache 1 hari agar tidak UPDATE tiap request
         $this->syncOverdueStatuses();
-
         return TransaksiPeminjaman::with([
             'items.aset.kategori',
             'items.aset.lokasi',
@@ -276,13 +277,28 @@ class PeminjamanService
         return $normalized;
     }
 
-    private function syncOverdueStatuses(): void
+    /**
+     * Sinkronisasi status peminjaman yang terlambat ke DB.
+     *
+     * Menggunakan cache harian agar query UPDATE hanya berjalan SEKALI per hari,
+     * bukan setiap request. Admin tetap melihat status terlambat yang akurat
+     * karena sync dijalankan pada request pertama setiap harinya.
+     *
+     * Juga bisa dijalankan manual via: php artisan peminjaman:sync-overdue
+     */
+    public function syncOverdueStatuses(): void
     {
-        TransaksiPeminjaman::query()
-            ->where('status', \App\Enums\PeminjamanStatus::DIPINJAM)
-            ->whereNotNull('tanggal_rencana_kembali')
-            ->whereDate('tanggal_rencana_kembali', '<', now()->toDateString())
-            ->update(['status' => \App\Enums\PeminjamanStatus::TERLAMBAT]);
+        $cacheKey = 'peminjaman_overdue_synced_' . today()->format('Y-m-d');
+
+        Cache::remember($cacheKey, now()->endOfDay(), function () {
+            TransaksiPeminjaman::query()
+                ->where('status', \App\Enums\PeminjamanStatus::DIPINJAM)
+                ->whereNotNull('tanggal_rencana_kembali')
+                ->whereDate('tanggal_rencana_kembali', '<', now()->toDateString())
+                ->update(['status' => \App\Enums\PeminjamanStatus::TERLAMBAT]);
+
+            return true;
+        });
     }
 
     private function generateNomorPeminjaman(string $tanggal): string
