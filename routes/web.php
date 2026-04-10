@@ -102,7 +102,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('user-management/{user}', [UserManagementController::class, 'destroy'])->name('user-management.destroy')->middleware('permission:user-management.delete');
 
     // Rute untuk data transaksional
-    Route::prefix('transaksi')->name('transaksi.')->middleware('superadmin')->group(function () {
+    Route::prefix('transaksi')->name('transaksi.')->group(function () {
         Route::get('pembelian', [PembelianController::class, 'index'])->name('pembelian.index')->middleware('permission:transaksi.pembelian.view');
         Route::get('pembelian-export/{format}', [PembelianController::class, 'export'])->name('pembelian.export')->middleware('permission:transaksi.pembelian.view');
         Route::get('pembelian/create', [PembelianController::class, 'create'])->name('pembelian.create')->middleware('permission:transaksi.pembelian.create');
@@ -158,7 +158,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // Rute untuk laporan
-    Route::prefix('laporan')->name('laporan.')->group(function () {
+    Route::prefix('laporan')->name('laporan.')->middleware('laporan.access')->group(function () {
         Route::get('data-aset', [LaporanController::class, 'dataAset'])->name('data-aset.index');
         Route::get('data-aset-export/{format}', [LaporanController::class, 'exportDataAset'])->name('data-aset.export');
         Route::get('mutasi-aset', [LaporanController::class, 'mutasiAset'])->name('mutasi-aset.index');
