@@ -29,18 +29,23 @@ class StoreDataAsetRequest extends FormRequest
             'ukuran' => 'nullable|string|max:100',
             'deskripsi_ukuran_bentuk' => 'nullable|string',
             'lokasi_id' => 'required|exists:master_lokasi,id',
-            'kegunaan' => 'required|string',
+            'kegunaan' => 'nullable|string',
+            'label_penggunaan' => 'nullable|string',
             'keterangan_kegunaan' => 'nullable|string',
             'jumlah_barang' => 'required|integer|min:1',
-            'tipe_grup' => 'required|in:individual,set,grup',
+            'tipe_grup' => 'nullable|in:individual,set,grup',
+            'tipe_grup_v2' => 'nullable|string',
             'keterangan_tipe_grup' => 'nullable|string',
-            'budget' => 'nullable|numeric|min:0',
+            'nilai_budget' => 'nullable|numeric|min:0',
+            'sumber_dana' => 'nullable|string',
             'keterangan_budget' => 'nullable|string',
             'pengelola_id' => 'required|exists:master_pengelola,id',
             'tahun_pengadaan' => 'required|integer|min:1900|max:' . (date('Y') + 1),
             'nilai_pengadaan_total' => 'nullable|numeric|min:0',
             'nilai_pengadaan_per_unit' => 'nullable|numeric|min:0',
             'kondisi_id' => 'required|exists:master_kondisi,id',
+            'department_id' => 'required|exists:departments,id',
+            'ukuran_label' => 'nullable|string',
         ];
     }
 
@@ -65,6 +70,7 @@ class StoreDataAsetRequest extends FormRequest
             'nilai_pengadaan_total' => 'nilai pengadaan total',
             'nilai_pengadaan_per_unit' => 'nilai pengadaan per unit',
             'kondisi_id' => 'kondisi',
+            'department_id' => 'departemen',
         ];
     }
 }

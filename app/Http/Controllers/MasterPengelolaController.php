@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MasterPengelola;
+use App\Models\Department;
 use App\Exports\MasterPengelolaExport;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -13,12 +14,14 @@ class MasterPengelolaController extends Controller
     {
         $search = $request->input('search');
 
-        $pengelolas = MasterPengelola::withCount('dataAset')
+        $pengelolas = MasterPengelola::with(['department'])->withCount('dataAset')
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('nama_pengelola', 'like', "%{$search}%")
                         ->orWhere('jabatan', 'like', "%{$search}%")
-                        ->orWhere('departemen', 'like', "%{$search}%")
+                        ->orWhereHas('department', function($d) use ($search) {
+                            $d->where('name', 'like', "%{$search}%");
+                        })
                         ->orWhere('kontak', 'like', "%{$search}%")
                         ->orWhere('email', 'like', "%{$search}%");
                 });
@@ -31,12 +34,13 @@ class MasterPengelolaController extends Controller
 
     public function create()
     {
-        return view('master.pengelola.create');
+        $departments = Department::orderBy('name')->get();
+        return view('master.pengelola.create', compact('departments'));
     }
 
     public function show(string $id)
     {
-        $pengelola = MasterPengelola::with(['dataAset.kategori', 'dataAset.lokasi', 'dataAset.kondisi'])
+        $pengelola = MasterPengelola::with(['department', 'dataAset.kategori', 'dataAset.lokasi', 'dataAset.kondisi'])
             ->withCount('dataAset')
             ->findOrFail($id);
 
@@ -48,7 +52,7 @@ class MasterPengelolaController extends Controller
         $validated = $request->validate([
             'nama_pengelola' => 'required|string|max:100',
             'jabatan' => 'required|string|max:100',
-            'departemen' => 'required|string|max:100',
+            'department_id' => 'required|exists:departments,id',
             'kontak' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:100',
             'is_active' => 'boolean'
@@ -63,7 +67,8 @@ class MasterPengelolaController extends Controller
     public function edit(string $id)
     {
         $pengelola = MasterPengelola::findOrFail($id);
-        return view('master.pengelola.edit', compact('pengelola'));
+        $departments = Department::orderBy('name')->get();
+        return view('master.pengelola.edit', compact('pengelola', 'departments'));
     }
 
     public function update(Request $request, string $id)
@@ -73,7 +78,7 @@ class MasterPengelolaController extends Controller
         $validated = $request->validate([
             'nama_pengelola' => 'required|string|max:100',
             'jabatan' => 'required|string|max:100',
-            'departemen' => 'required|string|max:100',
+            'department_id' => 'required|exists:departments,id',
             'kontak' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:100',
             'is_active' => 'boolean'

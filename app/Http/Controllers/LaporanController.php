@@ -53,6 +53,12 @@ class LaporanController extends Controller
 
         $laporanAset = $this->buildDataAsetQuery($filters)->get();
 
+        if ($format === 'pdf') {
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.data_aset.pdf', compact('laporanAset', 'filters'))
+                ->setPaper('a4', 'landscape');
+            return $pdf->download('laporan-data-aset-' . now()->format('Ymd-His') . '.pdf');
+        }
+
         $extension = $format === 'csv' ? 'csv' : 'xlsx';
         $writerType = $extension === 'csv'
             ? \Maatwebsite\Excel\Excel::CSV
@@ -88,6 +94,12 @@ class LaporanController extends Controller
 
         $laporanMutasi = $this->buildMutasiAsetQuery($filters)->get();
 
+        if ($format === 'pdf') {
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.mutasi_aset.pdf', compact('laporanMutasi', 'filters'))
+                ->setPaper('a4', 'landscape');
+            return $pdf->download('laporan-mutasi-aset-' . now()->format('Ymd-His') . '.pdf');
+        }
+
         $extension = $format === 'csv' ? 'csv' : 'xlsx';
         $writerType = $extension === 'csv'
             ? \Maatwebsite\Excel\Excel::CSV
@@ -121,6 +133,12 @@ class LaporanController extends Controller
 
         $laporanPembelian = $this->buildPembelianQuery($filters)->get();
 
+        if ($format === 'pdf') {
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.pembelian.pdf', compact('laporanPembelian', 'filters'))
+                ->setPaper('a4', 'landscape');
+            return $pdf->download('laporan-pembelian-' . now()->format('Ymd-His') . '.pdf');
+        }
+
         $extension = $format === 'csv' ? 'csv' : 'xlsx';
         $writerType = $extension === 'csv'
             ? \Maatwebsite\Excel\Excel::CSV
@@ -128,6 +146,62 @@ class LaporanController extends Controller
         $filename = 'laporan-pembelian-' . now()->format('Ymd-His') . '.' . $extension;
 
         return Excel::download(new LaporanTransaksiPembelianExport($laporanPembelian), $filename, $writerType);
+    }
+
+    public function pemusnahan(Request $request)
+    {
+        $filters = [
+            'search' => $request->input('search'),
+            'per_page' => (int) $request->input('per_page', 10),
+        ];
+
+        $laporanPemusnahan = $this->buildPemusnahanQuery($filters)
+            ->paginate($filters['per_page'])
+            ->appends($request->query());
+
+        return view('laporan.pemusnahan.index', compact('laporanPemusnahan', 'filters'));
+    }
+
+    public function exportPemusnahan(Request $request, string $format)
+    {
+        $filters = [
+            'search' => $request->input('search'),
+        ];
+
+        $laporanPemusnahan = $this->buildPemusnahanQuery($filters)->get();
+
+        if ($format === 'pdf') {
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.pemusnahan.pdf', compact('laporanPemusnahan', 'filters'))
+                ->setPaper('a4', 'landscape');
+            return $pdf->download('laporan-pemusnahan-' . now()->format('Ymd-His') . '.pdf');
+        }
+
+        $extension = $format === 'csv' ? 'csv' : 'xlsx';
+        $writerType = $extension === 'csv'
+            ? \Maatwebsite\Excel\Excel::CSV
+            : \Maatwebsite\Excel\Excel::XLSX;
+        $filename = 'laporan-pemusnahan-' . now()->format('Ymd-His') . '.' . $extension;
+
+        // Note: LaporanPemusnahanExport needs to be created
+        return Excel::download(new \App\Exports\LaporanPemusnahanExport($laporanPemusnahan), $filename, $writerType);
+    }
+
+    private function buildPemusnahanQuery(array $filters): Builder
+    {
+        $search = trim((string) ($filters['search'] ?? ''));
+
+        return \App\Models\TransaksiPemusnahan::query()
+            ->with(['aset:id,kode_aset,nama_aset'])
+            ->when($search !== '', function (Builder $query) use ($search) {
+                $query->whereHas('aset', function (Builder $asetQuery) use ($search) {
+                    $asetQuery->where('nama_aset', 'like', "%{$search}%")
+                        ->orWhere('kode_aset', 'like', "%{$search}%");
+                })
+                ->orWhere('kode_transaksi', 'like', "%{$search}%")
+                ->orWhere('alasan_pemusnahan', 'like', "%{$search}%")
+                ->orWhere('metode_pemusnahan', 'like', "%{$search}%");
+            })
+            ->orderByDesc('tanggal_pemusnahan');
     }
 
     private function buildDataAsetQuery(array $filters): Builder

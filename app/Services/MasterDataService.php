@@ -6,6 +6,7 @@ use App\Models\MasterKategori;
 use App\Models\MasterLokasi;
 use App\Models\MasterKondisi;
 use App\Models\MasterPengelola;
+use App\Models\Department;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Collection;
 
@@ -31,7 +32,7 @@ class MasterDataService
     public function getActiveLokasis(): Collection
     {
         return Cache::remember('active_lokasis', 3600, function () {
-            return MasterLokasi::active()->orderBy('gedung')->orderBy('lantai')->get();
+            return MasterLokasi::active()->orderBy('kode_lokasi')->get();
         });
     }
 
@@ -60,6 +61,31 @@ class MasterDataService
     }
 
     /**
+     * Get top level departments
+     *
+     * @return Collection
+     */
+    public function getTopLevelDepartments(): Collection
+    {
+        return Cache::remember('top_level_departments', 3600, function () {
+            return Department::whereNull('parent_id')->orderBy('code')->get();
+        });
+    }
+
+    /**
+     * Get sub departments by parent ID
+     *
+     * @param int $parentId
+     * @return Collection
+     */
+    public function getSubDepartments(int $parentId): Collection
+    {
+        return Cache::remember("sub_departments_{$parentId}", 3600, function () use ($parentId) {
+            return Department::where('parent_id', $parentId)->orderBy('code')->get();
+        });
+    }
+
+    /**
      * Clear all master data cache
      *
      * @return void
@@ -70,5 +96,6 @@ class MasterDataService
         Cache::forget('active_lokasis');
         Cache::forget('active_kondisis');
         Cache::forget('active_pengelolas');
+        Cache::forget('top_level_departments');
     }
 }

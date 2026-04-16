@@ -4,27 +4,36 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasAuditColumns;
 
 class MasterPengelola extends Model
 {
-    use HasFactory;
+    use HasFactory, HasAuditColumns;
 
     protected $table = 'master_pengelola';
 
     protected $fillable = [
+        'kode_pengelola',
+        'department_id',
         'nama_pengelola',
         'jabatan',
-        'departemen',
         'kontak',
         'email',
-        'is_active'
+        'is_active',
+        'created_by',
+        'updated_by'
     ];
 
     protected $casts = [
         'is_active' => 'boolean'
     ];
 
-    // Relationship
+    // Relationships
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
+
     public function dataAset()
     {
         return $this->hasMany(DataAsetKolektif::class, 'pengelola_id');
@@ -39,6 +48,7 @@ class MasterPengelola extends Model
     // Accessor
     public function getNamaLengkapAttribute()
     {
-        return $this->nama_pengelola . ($this->jabatan ? ' - ' . $this->jabatan : '');
+        $fullName = $this->nama_pengelola . ($this->jabatan ? ' - ' . $this->jabatan : '');
+        return $this->kode_pengelola ? $this->kode_pengelola . ' - ' . $fullName : $fullName;
     }
 }

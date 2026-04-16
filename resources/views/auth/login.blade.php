@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - PELITA</title>
-    <link rel="icon" type="image/png" href="{{ asset('logo-pelita.png') }}">
+    <title>Login - {{ setting('app_name', 'PELITA') }}</title>
+    <link rel="icon" type="image/png" href="{{ setting('org_logo') ?: asset('logo-pelita.png') }}">
     @vite('resources/css/app.css')
 </head>
 <body class="bg-gradient-to-br from-purple-50 via-white to-purple-100 flex items-center justify-center min-h-screen p-4">
@@ -31,16 +31,16 @@
             <div class="relative z-10 text-center space-y-8">
                 <!-- Logo PELITA -->
                 <div class="flex justify-center mb-6">
-                    <img src="{{ asset('logo-pelita.png') }}" alt="Logo PELITA" class="w-40 h-40 drop-shadow-2xl">
+                    <img src="{{ setting('org_logo') ?: asset('logo-pelita.png') }}" alt="Logo {{ setting('org_name') }}" class="w-40 h-40 drop-shadow-2xl">
                 </div>
 
                 <div>
-                    <h1 class="text-5xl font-extrabold tracking-tight mb-4">PELITA</h1>
-                    <p class="text-xl font-medium leading-relaxed opacity-90">Pencatatan Elektronik List<br/>Terpusat Aset</p>
+                    <h1 class="text-5xl font-extrabold tracking-tight mb-4">{{ setting('org_name', 'PELITA') }}</h1>
+                    <p class="text-xl font-medium leading-relaxed opacity-90">{{ setting('org_full_name', 'Pencatatan Elektronik List Terpusat Aset') }}</p>
                 </div>
 
                 <div class="pt-4 border-t border-white border-opacity-30">
-                    <p class="text-sm opacity-80">Gereja Kalvari Lubang Buaya</p>
+                    <p class="text-sm opacity-80">{{ setting('org_full_name', 'Gereja Kalvari Lubang Buaya') }}</p>
                 </div>
             </div>
         </div>
@@ -49,8 +49,8 @@
         <div class="w-full md:w-1/2 p-8 md:p-12">
             <!-- Logo Mobile -->
             <div class="md:hidden flex flex-col items-center mb-8">
-                <img src="{{ asset('logo-pelita.png') }}" alt="Logo PELITA" class="w-24 h-24 mb-4">
-                <h1 class="text-3xl font-bold text-purple-800">PELITA</h1>
+                <img src="{{ setting('org_logo') ?: asset('logo-pelita.png') }}" alt="Logo {{ setting('org_name') }}" class="w-24 h-24 mb-4">
+                <h1 class="text-3xl font-bold text-purple-800">{{ setting('org_name', 'PELITA') }}</h1>
             </div>
 
             <div class="mb-8">
@@ -119,7 +119,7 @@
 
             <div class="mt-8 text-center">
                 <p class="text-xs text-gray-500">
-                    &copy; 2025 Gereja Kalvari Lubang Buaya. All rights reserved.
+                    &copy; {{ date('Y') }} {{ setting('org_full_name', 'Gereja Kalvari Lubang Buaya') }}. All rights reserved.
                 </p>
             </div>
         </div>

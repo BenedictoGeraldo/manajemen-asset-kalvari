@@ -26,14 +26,29 @@ class DataAsetKolektifController extends Controller
     {
         $filters = [
             'search' => $request->input('search'),
-            'per_page' => $request->input('per_page', 10)
+            'per_page' => $request->input('per_page', 10),
+            'department_id' => $request->input('department_id'),
+            'sub_department_id' => $request->input('sub_department_id')
         ];
 
         $asets = $this->dataAsetService->getPaginatedAsets($filters);
         $search = $filters['search'];
         $perPage = $filters['per_page'];
+        $departmentId = $filters['department_id'];
+        $subDepartmentId = $filters['sub_department_id'];
 
-        return view('data-aset.index', compact('asets', 'search', 'perPage'));
+        $departments = $this->masterDataService->getTopLevelDepartments();
+        $subDepartments = $departmentId ? $this->masterDataService->getSubDepartments((int)$departmentId) : collect();
+
+        if ($request->ajax()) {
+            return view('data-aset.partials.table', compact('asets'))->render();
+        }
+
+        return view('data-aset.index', compact(
+            'asets', 'search', 'perPage', 
+            'departments', 'subDepartments', 
+            'departmentId', 'subDepartmentId'
+        ));
     }
 
     public function show(string $id)
@@ -48,8 +63,9 @@ class DataAsetKolektifController extends Controller
         $lokasis = $this->masterDataService->getActiveLokasis();
         $kondisis = $this->masterDataService->getActiveKondisis();
         $pengelolas = $this->masterDataService->getActivePengelolas();
+        $departments = $this->masterDataService->getTopLevelDepartments();
 
-        return view('data-aset.create', compact('kategoris', 'lokasis', 'kondisis', 'pengelolas'));
+        return view('data-aset.create', compact('kategoris', 'lokasis', 'kondisis', 'pengelolas', 'departments'));
     }
 
     public function store(StoreDataAsetRequest $request)
@@ -74,8 +90,27 @@ class DataAsetKolektifController extends Controller
         $lokasis = $this->masterDataService->getActiveLokasis();
         $kondisis = $this->masterDataService->getActiveKondisis();
         $pengelolas = $this->masterDataService->getActivePengelolas();
+        $departments = $this->masterDataService->getTopLevelDepartments();
+        
+        $currentDepartmentId = null;
+        $currentSubDepartmentId = null;
+        
+        if ($aset->department_id) {
+            $dept = \App\Models\Department::find($aset->department_id);
+            if ($dept->parent_id) {
+                $currentDepartmentId = $dept->parent_id;
+                $currentSubDepartmentId = $dept->id;
+            } else {
+                $currentDepartmentId = $dept->id;
+            }
+        }
+        
+        $subDepartments = $currentDepartmentId ? $this->masterDataService->getSubDepartments($currentDepartmentId) : collect();
 
-        return view('data-aset.edit', compact('aset', 'kategoris', 'lokasis', 'kondisis', 'pengelolas'));
+        return view('data-aset.edit', compact(
+            'aset', 'kategoris', 'lokasis', 'kondisis', 'pengelolas', 
+            'departments', 'subDepartments', 'currentDepartmentId', 'currentSubDepartmentId'
+        ));
     }
 
     public function update(UpdateDataAsetRequest $request, string $id)
@@ -116,6 +151,17 @@ class DataAsetKolektifController extends Controller
             ->with('success', 'Data aset berhasil dihapus!');
     }
 
+    public function getSubDepartments(Request $request)
+    {
+        $parentId = $request->input('parent_id');
+        if (!$parentId) {
+            return response()->json([]);
+        }
+
+        $subDepartments = $this->masterDataService->getSubDepartments($parentId);
+        return response()->json($subDepartments);
+    }
+
     public function export($format)
     {
         $timestamp = now()->format('Y-m-d_His');
@@ -126,6 +172,12 @@ class DataAsetKolektifController extends Controller
         }
 
         return Excel::download(new DataAsetExport, $filename, \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    public function printLabel(string $id)
+    {
+        $aset = $this->dataAsetService->getAsetById($id);
+        return view('data-aset.label', compact('aset'));
     }
 
     private function convertImageToBase64(UploadedFile $file): string

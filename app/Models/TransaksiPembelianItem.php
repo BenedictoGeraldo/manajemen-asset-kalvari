@@ -10,10 +10,11 @@ use App\Models\MasterPengelola;
 use App\Models\TransaksiPembelian;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasAuditColumns;
 
 class TransaksiPembelianItem extends Model
 {
-    use HasFactory;
+    use HasFactory, HasAuditColumns;
 
     protected $table = 'transaksi_pembelian_items';
 
@@ -32,6 +33,9 @@ class TransaksiPembelianItem extends Model
         'tahun_pengadaan',
         'catatan',
         'aset_kolektif_id',
+        'created_by',
+        'updated_by',
+        'deleted_by',
     ];
 
     protected $casts = [

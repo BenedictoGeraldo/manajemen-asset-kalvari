@@ -15,6 +15,8 @@ use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\MutasiAsetController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\PemusnahanController;
+use App\Http\Controllers\PrintAsetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::put('data-aset/{data_aset}', [DataAsetKolektifController::class, 'update'])->name('data-aset.update')->middleware('permission:data-aset.edit');
     Route::delete('data-aset/{data_aset}', [DataAsetKolektifController::class, 'destroy'])->name('data-aset.destroy')->middleware('permission:data-aset.delete');
     Route::get('data-aset-export/{format}', [DataAsetKolektifController::class, 'export'])->name('data-aset.export')->middleware('permission:data-aset.export');
+    Route::get('data-aset/{data_aset}/label', [DataAsetKolektifController::class, 'printLabel'])->name('data-aset.label')->middleware('permission:data-aset.view');
+    Route::get('get-sub-departments', [DataAsetKolektifController::class, 'getSubDepartments'])->name('get-sub-departments');
 
     // Rute untuk master data
     Route::prefix('master')->name('master.')->group(function () {
@@ -96,6 +100,19 @@ Route::middleware('auth')->group(function () {
     Route::get('user-management/{user}/edit', [UserManagementController::class, 'edit'])->name('user-management.edit')->middleware('permission:user-management.edit');
     Route::put('user-management/{user}', [UserManagementController::class, 'update'])->name('user-management.update')->middleware('permission:user-management.edit');
     Route::delete('user-management/{user}', [UserManagementController::class, 'destroy'])->name('user-management.destroy')->middleware('permission:user-management.delete');
+
+    // Rute untuk department management
+    Route::resource('departments', \App\Http\Controllers\DepartmentController::class)->middleware('permission:user-management.view');
+    
+    // Rute untuk role management
+    Route::resource('roles', \App\Http\Controllers\RoleController::class)->middleware('permission:user-management.view');
+    
+    // Rute untuk permission management
+    Route::get('permissions', [\App\Http\Controllers\PermissionController::class, 'index'])->name('permissions.index')->middleware('permission:user-management.view');
+
+    // Rute untuk settings / profile organisasi
+    Route::get('settings', [App\Http\Controllers\SettingController::class, 'index'])->name('settings.index')->middleware('permission:user-management.view');
+    Route::post('settings', [App\Http\Controllers\SettingController::class, 'update'])->name('settings.update')->middleware('permission:user-management.view');
 
     // Rute untuk data transaksional
     Route::prefix('transaksi')->name('transaksi.')->group(function () {
@@ -151,6 +168,9 @@ Route::middleware('auth')->group(function () {
         Route::post('mutasi-aset/{mutasi_aset}/process', [MutasiAsetController::class, 'process'])->name('mutasi_aset.process')->middleware('permission:transaksi.mutasi_aset.process');
         Route::get('mutasi-aset/{mutasi_aset}/complete', [MutasiAsetController::class, 'completeForm'])->name('mutasi_aset.complete.form')->middleware('permission:transaksi.mutasi_aset.complete');
         Route::post('mutasi-aset/{mutasi_aset}/complete', [MutasiAsetController::class, 'complete'])->name('mutasi_aset.complete')->middleware('permission:transaksi.mutasi_aset.complete');
+        
+        // Pemusnahan Aset
+        Route::resource('pemusnahan', PemusnahanController::class);
     });
 
     // Rute untuk laporan
@@ -161,6 +181,12 @@ Route::middleware('auth')->group(function () {
         Route::get('mutasi-aset-export/{format}', [LaporanController::class, 'exportMutasiAset'])->name('mutasi-aset.export');
         Route::get('pembelian', [LaporanController::class, 'pembelian'])->name('pembelian.index');
         Route::get('pembelian-export/{format}', [LaporanController::class, 'exportPembelian'])->name('pembelian.export');
+        Route::get('pemusnahan', [LaporanController::class, 'pemusnahan'])->name('pemusnahan.index');
+        Route::get('pemusnahan-export/{format}', [LaporanController::class, 'exportPemusnahan'])->name('pemusnahan.export');
+        
+        // Print QR Code
+        Route::get('print-qr', [PrintAsetController::class, 'index'])->name('print-qr.index');
+        Route::get('print-qr/generate', [PrintAsetController::class, 'generate'])->name('print-qr.generate');
     });
 
     // Rute untuk logout

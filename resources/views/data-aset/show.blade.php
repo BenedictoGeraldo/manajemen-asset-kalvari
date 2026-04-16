@@ -77,7 +77,19 @@
                 <h4 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Ukuran & Bentuk</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="text-sm font-medium text-gray-500">Ukuran</label>
+                        <label class="text-sm font-medium text-gray-500">Skala Ukuran</label>
+                        <p class="mt-1 text-gray-900">
+                             @if($aset->ukuran_label)
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                    {{ $aset->ukuran_label }}
+                                </span>
+                             @else
+                                -
+                             @endif
+                        </p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Detail Ukuran (Dimensi)</label>
                         <p class="mt-1 text-gray-900">{{ $aset->ukuran ?? '-' }}</p>
                     </div>
                     <div>
@@ -105,8 +117,27 @@
                         </p>
                         <p class="text-sm text-gray-500 mt-1">{{ $aset->kondisi->keterangan }}</p>
                     </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Kategori Penggunaan</label>
+                        <p class="mt-1 text-gray-900">
+                            @if($aset->label_penggunaan)
+                                <span class="font-bold text-blue-600">{{ $aset->label_penggunaan }}</span>
+                                @php
+                                    $usageLabels = [
+                                        'A' => 'Lokasi tetap tidak berubah',
+                                        'B' => 'Lokasi berubah saat digunakan, penyimpanan tetap',
+                                        'C' => 'Frekuensi berpindah dan menetap tinggi',
+                                        'D' => 'Melekat pada PIC/Seseorang'
+                                    ];
+                                @endphp
+                                <span class="text-sm text-gray-600">- {{ $usageLabels[$aset->label_penggunaan] ?? '' }}</span>
+                            @else
+                                -
+                            @endif
+                        </p>
+                    </div>
                     <div class="md:col-span-2">
-                        <label class="text-sm font-medium text-gray-500">Kegunaan</label>
+                        <label class="text-sm font-medium text-gray-500">Fungsi / Kegunaan</label>
                         <p class="mt-1 text-gray-900">{{ $aset->kegunaan }}</p>
                         @if($aset->keterangan_kegunaan)
                             <p class="text-sm text-gray-500 mt-1">{{ $aset->keterangan_kegunaan }}</p>
@@ -127,7 +158,7 @@
                         <label class="text-sm font-medium text-gray-500">Tipe Grup</label>
                         <p class="mt-1">
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                                {{ ucfirst($aset->tipe_grup) }}
+                                {{ $aset->tipe_grup_v2 ?? 'Singular' }}
                             </span>
                         </p>
                         @if($aset->keterangan_tipe_grup)
@@ -142,8 +173,12 @@
                 <h4 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Anggaran & Nilai Pengadaan</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="text-sm font-medium text-gray-500">Budget</label>
-                        <p class="mt-1 text-gray-900">{{ $aset->budget ? 'Rp ' . number_format($aset->budget, 0, ',', '.') : '-' }}</p>
+                        <label class="text-sm font-medium text-gray-500">Sumber Dana</label>
+                        <p class="mt-1 text-gray-900 font-semibold">{{ $aset->sumber_dana ?? '-' }}</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Nilai Anggaran</label>
+                        <p class="mt-1 text-gray-900">{{ $aset->nilai_budget ? 'Rp ' . number_format((float)$aset->nilai_budget, 0, ',', '.') : '-' }}</p>
                         @if($aset->keterangan_budget)
                             <p class="text-sm text-gray-500 mt-1">{{ $aset->keterangan_budget }}</p>
                         @endif

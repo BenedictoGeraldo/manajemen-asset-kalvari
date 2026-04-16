@@ -116,7 +116,7 @@
                                 <div class="text-sm text-gray-700">{{ $pengelola->jabatan }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-700">{{ $pengelola->departemen }}</div>
+                                <div class="text-sm text-gray-700">{{ $pengelola->department->name ?? '-' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-500">{{ $pengelola->kontak ?? '-' }}</div>
