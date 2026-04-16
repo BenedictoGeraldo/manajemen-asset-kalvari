@@ -1,0 +1,164 @@
+@extends('layouts.main')
+
+@section('title', 'Transaksi Peminjaman')
+@section('page-title', 'Transaksi Peminjaman')
+
+@section('content')
+<div class="p-6">
+    <x-session-alerts />
+
+    <div class="mb-4">
+        <h3 class="text-lg font-semibold text-gray-800">Data Transaksi Peminjaman</h3>
+        <p class="text-sm text-gray-600 mt-1">Kelola pengajuan, serah terima, dan pengembalian aset.</p>
+    </div>
+
+    <div class="mb-6">
+        <div class="w-full flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0">
+            <form method="GET" class="flex-1">
+                <div class="search-input-wrapper">
+                    <input type="text" name="search" value="{{ $search }}" placeholder="Cari peminjaman berdasarkan nomor, nama peminjam, unit..."
+                          class="search-input-control flex-1 w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off">
+                    <button type="submit" class="search-submit-btn" aria-label="Cari">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </button>
+                </div>
+                <input type="hidden" name="status" value="{{ $status }}">
+                <input type="hidden" name="per_page" value="{{ $perPage }}">
+            </form>
+
+            <div class="flex space-x-3 mt-2 sm:mt-0">
+                @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.peminjaman.export') || auth()->user()->hasPermission('transaksi.peminjaman.view'))
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" @click.away="open = false"
+                            class="btn-export">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Export Data
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="open"
+                         x-transition:enter="transition ease-out duration-100"
+                         x-transition:enter-start="transform opacity-0 scale-95"
+                         x-transition:enter-end="transform opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-75"
+                         x-transition:leave-start="transform opacity-100 scale-100"
+                         x-transition:leave-end="transform opacity-0 scale-95"
+                         class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                        <div class="py-1">
+                            <a href="{{ route('transaksi.peminjaman.export', 'xlsx') }}"
+                               class="dropdown-export-item">
+                                <svg class="w-4 h-4 mr-2 export-icon-xlsx" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z"/>
+                                </svg>
+                                Export ke Excel (.xlsx)
+                            </a>
+                            <a href="{{ route('transaksi.peminjaman.export', 'csv') }}"
+                               class="dropdown-export-item">
+                                <svg class="w-4 h-4 mr-2 export-icon-csv" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z"/>
+                                </svg>
+                                Export ke CSV (.csv)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.peminjaman.create'))
+                <a href="{{ route('transaksi.peminjaman.create') }}" data-navigate
+                   class="btn-a">
+                    <svg class="w-5 h-5 mr-2 !text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    Tambah Peminjaman
+                </a>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No Peminjaman</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Peminjam</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rencana Kembali</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($peminjamans as $index => $peminjaman)
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ ($peminjamans->firstItem() ?? 1) + $index }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $peminjaman->nomor_peminjaman }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ optional($peminjaman->tanggal_pengajuan)->format('d/m/Y') }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">
+                                <div class="font-medium text-gray-900">{{ $peminjaman->nama_peminjam }}</div>
+                                <div class="text-xs text-gray-500">{{ $peminjaman->unit_peminjam ?: '-' }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $peminjaman->items_count }} item</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ optional($peminjaman->tanggal_rencana_kembali)->format('d/m/Y') ?: '-' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 rounded-full text-xs font-medium {{ $peminjaman->status->color() }}">
+                                    {{ $peminjaman->status->label() }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex space-x-2">
+                                    <a href="{{ route('transaksi.peminjaman.show', $peminjaman->id) }}" data-navigate class="action-view" title="Lihat Detail">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </a>
+
+                                    @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.peminjaman.edit')) && $peminjaman->canEdit())
+                                    <a href="{{ route('transaksi.peminjaman.edit', $peminjaman->id) }}" data-navigate class="action-edit" title="Edit">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </a>
+                                    @endif
+
+                                    @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.peminjaman.delete')) && $peminjaman->canDelete())
+                                    <button type="button"
+                                            @click="$dispatch('delete-modal', { id: {{ $peminjaman->id }}, nomor: '{{ $peminjaman->nomor_peminjaman }}' })"
+                                            class="action-delete" title="Hapus">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada transaksi peminjaman.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <div class="p-4 border-t border-gray-200">
+            {{ $peminjamans->withQueryString()->links() }}
+        </div>
+    </div>
+</div>
+
+<x-delete-modal action-url="{{ url('transaksi/peminjaman') }}" />
+
+@endsection
+

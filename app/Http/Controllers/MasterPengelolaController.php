@@ -3,19 +3,44 @@
 namespace App\Http\Controllers;
 
 use App\Models\MasterPengelola;
+use App\Exports\MasterPengelolaExport;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MasterPengelolaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $pengelolas = MasterPengelola::withCount('dataAset')->orderBy('nama_pengelola')->get();
-        return view('master.pengelola.index', compact('pengelolas'));
+        $search = $request->input('search');
+
+        $pengelolas = MasterPengelola::withCount('dataAset')
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama_pengelola', 'like', "%{$search}%")
+                        ->orWhere('jabatan', 'like', "%{$search}%")
+                        ->orWhere('departemen', 'like', "%{$search}%")
+                        ->orWhere('kontak', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('nama_pengelola')
+            ->get();
+
+        return view('master.pengelola.index', compact('pengelolas', 'search'));
     }
 
     public function create()
     {
         return view('master.pengelola.create');
+    }
+
+    public function show(string $id)
+    {
+        $pengelola = MasterPengelola::with(['dataAset.kategori', 'dataAset.lokasi', 'dataAset.kondisi'])
+            ->withCount('dataAset')
+            ->findOrFail($id);
+
+        return view('master.pengelola.show', compact('pengelola'));
     }
 
     public function store(Request $request)
@@ -73,5 +98,17 @@ class MasterPengelolaController extends Controller
 
         return redirect()->route('master.pengelola.index')
             ->with('success', 'Pengelola berhasil dihapus!');
+    }
+
+    public function export($format)
+    {
+        $timestamp = now()->format('Y-m-d_His');
+        $filename = "master-pengelola_{$timestamp}.{$format}";
+
+        if ($format === 'csv') {
+            return Excel::download(new MasterPengelolaExport, $filename, \Maatwebsite\Excel\Excel::CSV);
+        }
+
+        return Excel::download(new MasterPengelolaExport, $filename, \Maatwebsite\Excel\Excel::XLSX);
     }
 }

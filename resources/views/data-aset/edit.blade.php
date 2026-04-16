@@ -11,8 +11,8 @@
             <h3 class="text-2xl font-bold text-gray-800">Edit Aset</h3>
             <p class="text-sm text-gray-600 mt-1">{{ $aset->nama_aset }} ({{ $aset->kode_aset }})</p>
         </div>
-        <a href="{{ route('data-aset.show', $aset->id) }}" data-navigate
-           class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
+        <a href="{{ route('data-aset.index') }}" data-navigate
+           class="btn-c-sm">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -21,7 +21,93 @@
     </div>
 
     <!-- Form -->
-    <form action="{{ route('data-aset.update', $aset->id) }}" method="POST" class="space-y-6">
+    <form action="{{ route('data-aset.update', $aset->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6"
+          x-data="{
+              formChanged: false,
+              showModal: false,
+              originalData: {},
+              hasExistingImage: {{ $aset->gambar_aset_base64 ? 'true' : 'false' }},
+              removeImage: {{ old('hapus_gambar_aset') ? 'true' : 'false' }},
+              initialRemoveImage: {{ old('hapus_gambar_aset') ? 'true' : 'false' }},
+              imagePreviewUrl: '',
+              hasImageActionChange() {
+                  return this.removeImage !== this.initialRemoveImage || this.imagePreviewUrl !== '';
+              },
+              toggleRemoveImage() {
+                  const nextState = !this.removeImage;
+                  this.removeImage = nextState;
+
+                  if (!nextState) {
+                      this.clearSelectedImage();
+                  }
+
+                  this.$nextTick(() => this.checkChanges());
+                  this.formChanged = this.hasImageActionChange() || this.formChanged;
+              },
+              onImageSelected(event) {
+                  const file = event.target.files && event.target.files[0] ? event.target.files[0] : null;
+
+                  if (this.imagePreviewUrl && this.imagePreviewUrl.startsWith('blob:')) {
+                      URL.revokeObjectURL(this.imagePreviewUrl);
+                  }
+
+                  if (file) {
+                      this.imagePreviewUrl = URL.createObjectURL(file);
+                      if (this.hasExistingImage) {
+                          this.removeImage = true;
+                      }
+                  } else {
+                      this.imagePreviewUrl = '';
+                  }
+
+                  this.$nextTick(() => this.checkChanges());
+                  this.formChanged = this.hasImageActionChange() || this.formChanged;
+              },
+              clearSelectedImage() {
+                  const fileInput = document.getElementById('gambar_aset');
+                  if (fileInput) {
+                      fileInput.value = '';
+                  }
+
+                  if (this.imagePreviewUrl && this.imagePreviewUrl.startsWith('blob:')) {
+                      URL.revokeObjectURL(this.imagePreviewUrl);
+                  }
+
+                  this.imagePreviewUrl = '';
+              },
+              getComparableData(form) {
+                  const formData = new FormData(form);
+                  const comparable = {};
+
+                  for (const [key, value] of formData.entries()) {
+                      if (value instanceof File) {
+                          comparable[key] = value.name || '';
+                      } else {
+                          comparable[key] = value;
+                      }
+                  }
+
+                  return comparable;
+              },
+              init() {
+                  // Store original form data
+                  const form = this.$el;
+                  this.originalData = this.getComparableData(form);
+                  this.initialRemoveImage = this.removeImage;
+              },
+              checkChanges() {
+                  const form = this.$el;
+                  const current = this.getComparableData(form);
+
+                  // Compare current with original
+                  const baseChanged = JSON.stringify(current) !== JSON.stringify(this.originalData);
+                  const imageActionChanged = this.hasImageActionChange();
+
+                  this.formChanged = baseChanged || imageActionChanged;
+              }
+          }"
+          @input="checkChanges()"
+          @change="checkChanges()">
         @csrf
         @method('PUT')
 
@@ -78,6 +164,55 @@
                     <textarea name="deskripsi_aset" id="deskripsi_aset" rows="3"
                               class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('deskripsi_aset') border-red-500 @enderror">{{ old('deskripsi_aset', $aset->deskripsi_aset) }}</textarea>
                     @error('deskripsi_aset')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="md:col-span-2">
+                    <label for="gambar_aset" class="block text-sm font-medium text-gray-700">
+                        Gambar Aset
+                    </label>
+                    <input type="hidden" name="hapus_gambar_aset" :value="removeImage ? 1 : 0">
+                    @if($aset->gambar_aset_base64)
+                        <div x-show="hasExistingImage && !removeImage && !imagePreviewUrl" class="mt-2 mb-3 rounded-lg overflow-hidden border border-gray-200 bg-gray-50 p-2">
+                            <img src="{{ $aset->gambar_aset_base64 }}" alt="Gambar {{ $aset->nama_aset }}" class="max-h-64 w-auto object-contain mx-auto rounded">
+                        </div>
+
+                        <div class="mb-3">
+                            <button type="button"
+                                    @click="toggleRemoveImage()"
+                                    :class="removeImage ? 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200' : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100'"
+                                    class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg border transition-colors duration-150">
+                                <svg x-show="!removeImage" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                                <svg x-show="removeImage" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span x-show="!removeImage">Hapus Gambar</span>
+                                <span x-show="removeImage">Batal Hapus</span>
+                            </button>
+                        </div>
+                    @endif
+
+                    <div x-show="imagePreviewUrl" class="mt-2 mb-3 rounded-lg overflow-hidden border border-blue-200 bg-blue-50 p-2">
+                        <img :src="imagePreviewUrl" alt="Preview gambar baru" class="max-h-64 w-auto object-contain mx-auto rounded">
+                        <p class="mt-2 text-xs text-blue-700 text-center">Preview gambar baru</p>
+                    </div>
+
+                    <input type="file" name="gambar_aset" id="gambar_aset" accept="image/png,image/jpeg,image/jpg,image/webp"
+                           @change="onImageSelected($event)"
+                           :disabled="hasExistingImage && !removeImage"
+                           class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('gambar_aset') border-red-500 @enderror">
+                    <p class="mt-1 text-xs text-gray-500">Opsional. Maksimal 2MB. Jika gambar lama belum ditandai hapus, upload dinonaktifkan.</p>
+                    @if($aset->gambar_aset_base64)
+                        <p class="mt-1 text-xs text-amber-600" x-show="!removeImage">Upload dinonaktifkan karena aset sudah memiliki gambar.</p>
+                        <p class="mt-1 text-xs text-green-600" x-show="removeImage">Gambar lama ditandai dihapus. Anda bisa langsung pilih gambar baru lalu klik Update Aset.</p>
+                    @endif
+                    @error('hapus_gambar_aset')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                    @error('gambar_aset')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
@@ -307,15 +442,86 @@
 
         <!-- Actions -->
         <div class="flex justify-end space-x-4">
-            <a href="{{ route('data-aset.show', $aset->id) }}" data-navigate
-               class="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors duration-150">
+            <a href="{{ route('data-aset.index') }}" data-navigate
+               class="btn-c-sm">
                 Batal
             </a>
-            <button type="submit"
-                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-150">
+            <button type="button"
+                    @click="(formChanged || hasImageActionChange()) ? showModal = true : null"
+                    :disabled="!(formChanged || hasImageActionChange())"
+                    :class="(formChanged || hasImageActionChange()) ? 'bg-blue-600 hover:bg-blue-700 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'"
+                    class="px-6 py-2 text-white font-medium rounded-lg transition-colors duration-150">
                 Update Aset
             </button>
+        </div>
+
+        <!-- Update Confirmation Modal -->
+        <div x-show="showModal"
+             x-cloak
+             class="fixed inset-0 z-50 overflow-y-auto"
+             aria-labelledby="modal-title"
+             role="dialog"
+             aria-modal="true">
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <!-- Background overlay -->
+                <div x-show="showModal"
+                     x-transition:enter="ease-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+                     class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+                     @click="showModal = false"
+                     aria-hidden="true"></div>
+
+                <!-- Center modal -->
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+                <!-- Modal panel -->
+                <div x-show="showModal"
+                     x-transition:enter="ease-out duration-300"
+                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                     x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                     x-transition:leave="ease-in duration-200"
+                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                     class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
+                                <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                            </div>
+                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                    Konfirmasi Update Aset
+                                </h3>
+                                <div class="mt-2">
+                                    <p class="text-sm text-gray-500">
+                                        Apakah Anda yakin ingin menyimpan perubahan data aset <strong>{{ $aset->nama_aset }}</strong>?
+                                        Perubahan akan langsung tersimpan di sistem.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button type="submit"
+                                class="btn-a-sm w-full inline-flex justify-center sm:ml-3 sm:w-auto sm:text-sm">
+                            Update
+                        </button>
+                        <button type="button"
+                                @click="showModal = false"
+                                class="btn-c-outline mt-3 w-full inline-flex justify-center sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            Batal
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </form>
 </div>
 @endsection
+

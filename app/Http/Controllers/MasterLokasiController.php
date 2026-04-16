@@ -3,14 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Models\MasterLokasi;
+use App\Exports\MasterLokasiExport;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MasterLokasiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $lokasis = MasterLokasi::withCount('dataAset')->orderBy('gedung')->orderBy('lantai')->get();
-        return view('master.lokasi.index', compact('lokasis'));
+        $search = $request->input('search');
+
+        $lokasis = MasterLokasi::withCount('dataAset')
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama_lokasi', 'like', "%{$search}%")
+                        ->orWhere('keterangan_lokasi', 'like', "%{$search}%")
+                        ->orWhere('gedung', 'like', "%{$search}%")
+                        ->orWhere('lantai', 'like', "%{$search}%")
+                        ->orWhere('ruangan', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('gedung')
+            ->orderBy('lantai')
+            ->get();
+
+        return view('master.lokasi.index', compact('lokasis', 'search'));
     }
 
     public function create()
@@ -73,5 +90,17 @@ class MasterLokasiController extends Controller
 
         return redirect()->route('master.lokasi.index')
             ->with('success', 'Lokasi berhasil dihapus!');
+    }
+
+    public function export($format)
+    {
+        $timestamp = now()->format('Y-m-d_His');
+        $filename = "master-lokasi_{$timestamp}.{$format}";
+
+        if ($format === 'csv') {
+            return Excel::download(new MasterLokasiExport, $filename, \Maatwebsite\Excel\Excel::CSV);
+        }
+
+        return Excel::download(new MasterLokasiExport, $filename, \Maatwebsite\Excel\Excel::XLSX);
     }
 }

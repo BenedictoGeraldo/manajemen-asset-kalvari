@@ -12,7 +12,7 @@
             <p class="text-sm text-gray-600 mt-1">Isi formulir di bawah untuk menambah aset baru</p>
         </div>
         <a href="{{ route('data-aset.index') }}" data-navigate
-           class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
+           class="btn-c-sm">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -21,7 +21,7 @@
     </div>
 
     <!-- Form -->
-    <form action="{{ route('data-aset.store') }}" method="POST" class="space-y-6">
+    <form action="{{ route('data-aset.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
 
         <!-- Informasi Dasar -->
@@ -77,6 +77,18 @@
                     <textarea name="deskripsi_aset" id="deskripsi_aset" rows="3"
                               class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('deskripsi_aset') border-red-500 @enderror">{{ old('deskripsi_aset') }}</textarea>
                     @error('deskripsi_aset')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="md:col-span-2">
+                    <label for="gambar_aset" class="block text-sm font-medium text-gray-700">
+                        Gambar Aset
+                    </label>
+                    <input type="file" name="gambar_aset" id="gambar_aset" accept="image/png,image/jpeg,image/jpg,image/webp"
+                           class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('gambar_aset') border-red-500 @enderror">
+                    <p class="mt-1 text-xs text-gray-500">Opsional. Format: JPG, JPEG, PNG, WEBP. Maksimal 2MB.</p>
+                    @error('gambar_aset')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
@@ -231,7 +243,7 @@
             <h4 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Anggaran & Nilai Pengadaan</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label for="budget" class="block text-sm font-medium text-gray-700">Budget (Rp)</label>
+                    <label for="budget" class="block text-sm font-medium text-gray-700">Budget (Rp) <span class="text-red-500">*</span></label>
                     <input type="number" name="budget" id="budget" min="0" step="1000"
                            value="{{ old('budget') }}"
                            placeholder="Contoh: 5000000"
@@ -243,7 +255,7 @@
 
                 <div>
                     <label for="keterangan_budget" class="block text-sm font-medium text-gray-700">
-                        Keterangan Budget
+                        Keterangan Budget <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="keterangan_budget" id="keterangan_budget"
                            value="{{ old('keterangan_budget') }}"
@@ -261,6 +273,7 @@
                     <input type="number" name="nilai_pengadaan_total" id="nilai_pengadaan_total" required min="0" step="1000"
                            value="{{ old('nilai_pengadaan_total') }}"
                            placeholder="Contoh: 4500000"
+                           required
                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('nilai_pengadaan_total') border-red-500 @enderror">
                     @error('nilai_pengadaan_total')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -269,9 +282,9 @@
 
                 <div>
                     <label for="nilai_pengadaan_per_unit" class="block text-sm font-medium text-gray-700">
-                        Nilai Per Unit (Rp)
+                        Nilai Per Unit (Rp) <span class="text-red-500">*</span>
                     </label>
-                    <input type="number" name="nilai_pengadaan_per_unit" id="nilai_pengadaan_per_unit" min="0" step="1000"
+                    <input type="number" name="nilai_pengadaan_per_unit" id="nilai_pengadaan_per_unit" required min="0" step="1000"
                            value="{{ old('nilai_pengadaan_per_unit') }}"
                            placeholder="Contoh: 750000"
                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('nilai_pengadaan_per_unit') border-red-500 @enderror">
@@ -307,14 +320,15 @@
         <!-- Actions -->
         <div class="flex justify-end space-x-4">
             <a href="{{ route('data-aset.index') }}" data-navigate
-               class="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors duration-150">
+               class="btn-c-sm">
                 Batal
             </a>
             <button type="submit"
-                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-150">
+                    class="btn-a-sm">
                 Simpan Aset
             </button>
         </div>
     </form>
 </div>
 @endsection
+

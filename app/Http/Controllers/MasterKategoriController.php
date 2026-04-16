@@ -3,14 +3,37 @@
 namespace App\Http\Controllers;
 
 use App\Models\MasterKategori;
+use App\Services\MasterDataService;
+use App\Http\Requests\StoreMasterKategoriRequest;
+use App\Http\Requests\UpdateMasterKategoriRequest;
+use App\Exports\MasterKategoriExport;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MasterKategoriController extends Controller
 {
-    public function index()
+    protected $masterDataService;
+
+    public function __construct(MasterDataService $masterDataService)
     {
-        $kategoris = MasterKategori::withCount('dataAset')->orderBy('nama_kategori')->get();
-        return view('master.kategori.index', compact('kategoris'));
+        $this->masterDataService = $masterDataService;
+    }
+
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
+
+        $kategoris = MasterKategori::withCount('dataAset')
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama_kategori', 'like', "%{$search}%")
+                        ->orWhere('deskripsi', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('nama_kategori')
+            ->get();
+
+        return view('master.kategori.index', compact('kategoris', 'search'));
     }
 
     public function create()
@@ -18,15 +41,12 @@ class MasterKategoriController extends Controller
         return view('master.kategori.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreMasterKategoriRequest $request)
     {
-        $validated = $request->validate([
-            'nama_kategori' => 'required|string|max:100|unique:master_kategori',
-            'deskripsi' => 'nullable|string',
-            'is_active' => 'boolean'
-        ]);
+        MasterKategori::create($request->validated());
 
-        MasterKategori::create($validated);
+        // Clear cache
+        $this->masterDataService->clearMasterDataCache();
 
         return redirect()->route('master.kategori.index')
             ->with('success', 'Kategori berhasil ditambahkan!');
@@ -38,17 +58,13 @@ class MasterKategoriController extends Controller
         return view('master.kategori.edit', compact('kategori'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(UpdateMasterKategoriRequest $request, string $id)
     {
         $kategori = MasterKategori::findOrFail($id);
+        $kategori->update($request->validated());
 
-        $validated = $request->validate([
-            'nama_kategori' => 'required|string|max:100|unique:master_kategori,nama_kategori,' . $id,
-            'deskripsi' => 'nullable|string',
-            'is_active' => 'boolean'
-        ]);
-
-        $kategori->update($validated);
+        // Clear cache
+        $this->masterDataService->clearMasterDataCache();
 
         return redirect()->route('master.kategori.index')
             ->with('success', 'Kategori berhasil diperbarui!');
@@ -65,7 +81,22 @@ class MasterKategoriController extends Controller
 
         $kategori->delete();
 
+        // Clear cache
+        $this->masterDataService->clearMasterDataCache();
+
         return redirect()->route('master.kategori.index')
             ->with('success', 'Kategori berhasil dihapus!');
+    }
+
+    public function export($format)
+    {
+        $timestamp = now()->format('Y-m-d_His');
+        $filename = "master-kategori_{$timestamp}.{$format}";
+
+        if ($format === 'csv') {
+            return Excel::download(new MasterKategoriExport, $filename, \Maatwebsite\Excel\Excel::CSV);
+        }
+
+        return Excel::download(new MasterKategoriExport, $filename, \Maatwebsite\Excel\Excel::XLSX);
     }
 }

@@ -17,19 +17,73 @@
         </div>
     @endif
 
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h3 class="text-lg font-semibold text-gray-800">Daftar Kondisi Aset</h3>
-            <p class="text-sm text-gray-600 mt-1">Kelola status kondisi aset</p>
+    <div class="mb-4">
+        <h3 class="text-lg font-semibold text-gray-800">Daftar Kondisi Aset</h3>
+        <p class="text-sm text-gray-600 mt-1">Kelola status kondisi aset</p>
+    </div>
+
+    <div class="mb-6">
+        <div class="w-full flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0">
+            <form method="GET" class="flex-1">
+                <div class="search-input-wrapper">
+                    <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari kondisi berdasarkan nama atau keterangan..."
+                           class="search-input-control flex-1 w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off">
+                    <button type="submit" class="search-submit-btn" aria-label="Cari">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </button>
+                </div>
+            </form>
+
+            <div class="flex space-x-3 mt-2 sm:mt-0">
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" @click.away="open = false"
+                            class="btn-export">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Export Data
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="open"
+                         x-transition:enter="transition ease-out duration-100"
+                         x-transition:enter-start="transform opacity-0 scale-95"
+                         x-transition:enter-end="transform opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-75"
+                         x-transition:leave-start="transform opacity-100 scale-100"
+                         x-transition:leave-end="transform opacity-0 scale-95"
+                         class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                        <div class="py-1">
+                            <a href="{{ route('master.kondisi.export', 'xlsx') }}"
+                               class="dropdown-export-item block">
+                                <svg class="w-4 h-4 mr-2 export-icon-xlsx" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z"/>
+                                </svg>
+                                Export ke Excel (.xlsx)
+                            </a>
+                            <a href="{{ route('master.kondisi.export', 'csv') }}"
+                               class="dropdown-export-item block">
+                                <svg class="w-4 h-4 mr-2 export-icon-csv" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z"/>
+                                </svg>
+                                Export ke CSV (.csv)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="{{ route('master.kondisi.create') }}" data-navigate
+                   class="btn-a">
+                    <svg class="w-5 h-5 mr-2 !text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    Tambah Kondisi
+                </a>
+            </div>
         </div>
-        <a href="{{ route('master.kondisi.create') }}" data-navigate
-           class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-150">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            Tambah Kondisi
-        </a>
     </div>
 
     <!-- Table -->
@@ -58,30 +112,22 @@
                                 <div class="text-sm text-gray-500">{{ $kondisi->keterangan ?? '-' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $kondisi->kode_warna }}-100 text-{{ $kondisi->kode_warna }}-800">
-                                    {{ $kondisi->nama_kondisi }}
-                                </span>
+                                <div class="text-sm text-gray-900">{{ $kondisi->nama_kondisi }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                    {{ $kondisi->data_aset_count }} aset
-                                </span>
+                                <div class="text-sm text-gray-900">{{ $kondisi->data_aset_count }} aset</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @if($kondisi->is_active)
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        Aktif
-                                    </span>
+                                    <div class="text-sm text-gray-900">Aktif</div>
                                 @else
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                        Nonaktif
-                                    </span>
+                                    <div class="text-sm text-gray-500">Nonaktif</div>
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
                                     <a href="{{ route('master.kondisi.edit', $kondisi->id) }}" data-navigate
-                                       class="text-blue-600 hover:text-blue-900">
+                                       class="action-view">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
@@ -90,7 +136,7 @@
                                           onsubmit="return confirm('Yakin ingin menghapus kondisi ini?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900">
+                                        <button type="submit" class="action-delete">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                             </svg>
@@ -112,3 +158,4 @@
     </div>
 </div>
 @endsection
+

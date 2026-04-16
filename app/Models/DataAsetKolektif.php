@@ -16,6 +16,7 @@ class DataAsetKolektif extends Model
         'nama_aset',
         'kategori_id',
         'deskripsi_aset',
+        'gambar_aset_base64',
         'ukuran',
         'deskripsi_ukuran_bentuk',
         'lokasi_id',
@@ -95,17 +96,5 @@ class DataAsetKolektif extends Model
     public function getNilaiPerUnitFormattedAttribute()
     {
         return 'Rp ' . number_format($this->nilai_pengadaan_per_unit, 0, ',', '.');
-    }
-
-    // Boot method untuk generate kode aset otomatis
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            if (empty($model->kode_aset)) {
-                $model->kode_aset = 'AST-' . date('Y') . '-' . str_pad(static::withTrashed()->count() + 1, 5, '0', STR_PAD_LEFT);
-            }
-        });
     }
 }

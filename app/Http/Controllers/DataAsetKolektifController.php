@@ -2,68 +2,66 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DataAsetKolektif;
-use App\Models\MasterKategori;
-use App\Models\MasterLokasi;
-use App\Models\MasterKondisi;
-use App\Models\MasterPengelola;
+use App\Services\DataAsetService;
+use App\Services\MasterDataService;
+use App\Http\Requests\StoreDataAsetRequest;
+use App\Http\Requests\UpdateDataAsetRequest;
 use App\Exports\DataAsetExport;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Maatwebsite\Excel\Facades\Excel;
 
 class DataAsetKolektifController extends Controller
 {
-    public function index()
-    {
-        $asets = DataAsetKolektif::with(['kategori', 'lokasi', 'kondisi', 'pengelola'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+    protected $dataAsetService;
+    protected $masterDataService;
 
-        return view('data-aset.index', compact('asets'));
+    public function __construct(DataAsetService $dataAsetService, MasterDataService $masterDataService)
+    {
+        $this->dataAsetService = $dataAsetService;
+        $this->masterDataService = $masterDataService;
+    }
+
+    public function index(Request $request)
+    {
+        $filters = [
+            'search' => $request->input('search'),
+            'per_page' => $request->input('per_page', 10)
+        ];
+
+        $asets = $this->dataAsetService->getPaginatedAsets($filters);
+        $search = $filters['search'];
+        $perPage = $filters['per_page'];
+
+        return view('data-aset.index', compact('asets', 'search', 'perPage'));
     }
 
     public function show(string $id)
     {
-        $aset = DataAsetKolektif::with(['kategori', 'lokasi', 'kondisi', 'pengelola'])
-            ->findOrFail($id);
-
+        $aset = $this->dataAsetService->getAsetById($id);
         return view('data-aset.show', compact('aset'));
     }
 
     public function create()
     {
-        $kategoris = MasterKategori::active()->orderBy('nama_kategori')->get();
-        $lokasis = MasterLokasi::active()->orderBy('gedung')->orderBy('lantai')->get();
-        $kondisis = MasterKondisi::active()->ordered()->get();
-        $pengelolas = MasterPengelola::active()->orderBy('nama_pengelola')->get();
+        $kategoris = $this->masterDataService->getActiveKategoris();
+        $lokasis = $this->masterDataService->getActiveLokasis();
+        $kondisis = $this->masterDataService->getActiveKondisis();
+        $pengelolas = $this->masterDataService->getActivePengelolas();
 
         return view('data-aset.create', compact('kategoris', 'lokasis', 'kondisis', 'pengelolas'));
     }
 
-    public function store(Request $request)
+    public function store(StoreDataAsetRequest $request)
     {
-        $validated = $request->validate([
-            'nama_aset' => 'required|string|max:200',
-            'kategori_id' => 'required|exists:master_kategori,id',
-            'deskripsi_aset' => 'nullable|string',
-            'ukuran' => 'nullable|string|max:100',
-            'deskripsi_ukuran_bentuk' => 'nullable|string',
-            'lokasi_id' => 'required|exists:master_lokasi,id',
-            'kegunaan' => 'required|string',
-            'keterangan_kegunaan' => 'nullable|string',
-            'jumlah_barang' => 'required|integer|min:1',
-            'tipe_grup' => 'required|in:individual,set,grup',
-            'keterangan_tipe_grup' => 'nullable|string',
-            'budget' => 'nullable|numeric|min:0',
-            'keterangan_budget' => 'nullable|string',
-            'pengelola_id' => 'required|exists:master_pengelola,id',
-            'tahun_pengadaan' => 'required|integer|min:1900|max:' . (date('Y') + 1),
-            'nilai_pengadaan_total' => 'nullable|numeric|min:0',
-            'nilai_pengadaan_per_unit' => 'nullable|numeric|min:0',
-            'kondisi_id' => 'required|exists:master_kondisi,id',
-        ]);
+        $data = $request->validated();
+        unset($data['gambar_aset']);
 
-        DataAsetKolektif::create($validated);
+        if ($request->hasFile('gambar_aset')) {
+            $data['gambar_aset_base64'] = $this->convertImageToBase64($request->file('gambar_aset'));
+        }
+
+        $this->dataAsetService->createAset($data);
 
         return redirect()->route('data-aset.index')
             ->with('success', 'Data aset berhasil ditambahkan!');
@@ -71,41 +69,40 @@ class DataAsetKolektifController extends Controller
 
     public function edit(string $id)
     {
-        $aset = DataAsetKolektif::findOrFail($id);
-        $kategoris = MasterKategori::active()->orderBy('nama_kategori')->get();
-        $lokasis = MasterLokasi::active()->orderBy('gedung')->orderBy('lantai')->get();
-        $kondisis = MasterKondisi::active()->ordered()->get();
-        $pengelolas = MasterPengelola::active()->orderBy('nama_pengelola')->get();
+        $aset = $this->dataAsetService->getAsetById($id);
+        $kategoris = $this->masterDataService->getActiveKategoris();
+        $lokasis = $this->masterDataService->getActiveLokasis();
+        $kondisis = $this->masterDataService->getActiveKondisis();
+        $pengelolas = $this->masterDataService->getActivePengelolas();
 
         return view('data-aset.edit', compact('aset', 'kategoris', 'lokasis', 'kondisis', 'pengelolas'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(UpdateDataAsetRequest $request, string $id)
     {
-        $aset = DataAsetKolektif::findOrFail($id);
+        $aset = $this->dataAsetService->getAsetById($id);
+        $data = $request->validated();
+        unset($data['gambar_aset']);
+        $hapusGambarAset = (bool) ($request->input('hapus_gambar_aset', false));
+        unset($data['hapus_gambar_aset']);
 
-        $validated = $request->validate([
-            'nama_aset' => 'required|string|max:200',
-            'kategori_id' => 'required|exists:master_kategori,id',
-            'deskripsi_aset' => 'nullable|string',
-            'ukuran' => 'nullable|string|max:100',
-            'deskripsi_ukuran_bentuk' => 'nullable|string',
-            'lokasi_id' => 'required|exists:master_lokasi,id',
-            'kegunaan' => 'required|string',
-            'keterangan_kegunaan' => 'nullable|string',
-            'jumlah_barang' => 'required|integer|min:1',
-            'tipe_grup' => 'required|in:individual,set,grup',
-            'keterangan_tipe_grup' => 'nullable|string',
-            'budget' => 'nullable|numeric|min:0',
-            'keterangan_budget' => 'nullable|string',
-            'pengelola_id' => 'required|exists:master_pengelola,id',
-            'tahun_pengadaan' => 'required|integer|min:1900|max:' . (date('Y') + 1),
-            'nilai_pengadaan_total' => 'nullable|numeric|min:0',
-            'nilai_pengadaan_per_unit' => 'nullable|numeric|min:0',
-            'kondisi_id' => 'required|exists:master_kondisi,id',
-        ]);
+        if ($aset->gambar_aset_base64 && !$hapusGambarAset && $request->hasFile('gambar_aset')) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors([
+                    'gambar_aset' => 'Gambar lama masih ada. Hapus gambar aset terlebih dahulu sebelum menambahkan gambar baru.'
+                ]);
+        }
 
-        $aset->update($validated);
+        if ($hapusGambarAset) {
+            $data['gambar_aset_base64'] = null;
+        }
+
+        if ($request->hasFile('gambar_aset')) {
+            $data['gambar_aset_base64'] = $this->convertImageToBase64($request->file('gambar_aset'));
+        }
+
+        $this->dataAsetService->updateAset($id, $data);
 
         return redirect()->route('data-aset.index')
             ->with('success', 'Data aset berhasil diperbarui!');
@@ -113,8 +110,7 @@ class DataAsetKolektifController extends Controller
 
     public function destroy(string $id)
     {
-        $aset = DataAsetKolektif::findOrFail($id);
-        $aset->delete();
+        $this->dataAsetService->deleteAset($id);
 
         return redirect()->route('data-aset.index')
             ->with('success', 'Data aset berhasil dihapus!');
@@ -130,5 +126,13 @@ class DataAsetKolektifController extends Controller
         }
 
         return Excel::download(new DataAsetExport, $filename, \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    private function convertImageToBase64(UploadedFile $file): string
+    {
+        $mimeType = $file->getMimeType() ?: 'image/jpeg';
+        $encoded = base64_encode(file_get_contents($file->getRealPath()));
+
+        return "data:{$mimeType};base64,{$encoded}";
     }
 }
