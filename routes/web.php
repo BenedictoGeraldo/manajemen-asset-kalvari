@@ -28,6 +28,12 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Grup rute untuk QR Code (Publik)
+use App\Http\Controllers\QrAsetController;
+Route::get('qr/{id}/download', [QrAsetController::class, 'download'])->name('qr.download');
+Route::get('qr/{id}/scan', [QrAsetController::class, 'scanResult'])->name('qr.scan');
+
+
 // Grup rute untuk tamu (pengguna yang belum login)
 Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'showLoginForm'])->name('login');
