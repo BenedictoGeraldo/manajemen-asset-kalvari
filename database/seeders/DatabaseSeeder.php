@@ -15,7 +15,10 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             RoleAndDepartmentSeeder::class,
             KalvariOrganizationSeeder::class,
-            MasterDataSeeder::class,
+            OrganizationSettingsSeeder::class,
+            KalvariMasterSeeder::class,
+            ChurchLocationSeeder::class,
+            ChurchManagerSeeder::class,
             UserSeeder::class,
         ]);
     }

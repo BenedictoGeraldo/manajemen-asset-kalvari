@@ -7,15 +7,15 @@ services:
                 uid: 1000
             context: ./
             dockerfile: Dockerfile
-        image: manajemen-asset-kalvari
-        container_name: manajemen-asset-kalvari-app
+        image: pelita
+        container_name: pelita-app
         restart: unless-stopped
         working_dir: /var/www/
         volumes:
             - ./:/var/www
             - ./docker-compose/php/php.ini:/usr/local/etc/php/conf.d/custom.ini
         networks:
-            - kalvari
+            - pelita
         ports:
             - "8000:8000"
             - "5173:5173"
@@ -38,15 +38,15 @@ services:
                 uid: 1000
             context: ./
             dockerfile: Dockerfile
-        image: manajemen-asset-kalvari
-        container_name: manajemen-asset-kalvari-queue
+        image: pelita
+        container_name: pelita-queue
         restart: unless-stopped
         working_dir: /var/www/
         volumes:
             - ./:/var/www
             - ./docker-compose/php/php.ini:/usr/local/etc/php/conf.d/custom.ini
         networks:
-            - kalvari
+            - pelita
         environment:
             QUEUE_CONNECTION: database
             # DB_CONNECTION: mysql
@@ -61,7 +61,8 @@ services:
 
     db:
         image: mysql:8.0
-        container_name: manajemen-asset-kalvari-db
+        container_name: pelita-db
+        hostname: db
         restart: unless-stopped
         environment:
             MYSQL_DATABASE: ${DB_DATABASE:-manajemen_asset}
@@ -73,10 +74,10 @@ services:
         volumes:
             - ./docker-compose/mysql:/docker-entrypoint-initdb.d
         networks:
-            - kalvari
+            - pelita
         ports:
             - "3307:3306"
 
 networks:
-    kalvari:
+    pelita:
         driver: bridge
