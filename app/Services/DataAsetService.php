@@ -19,8 +19,10 @@ class DataAsetService
     {
         $search = $filters['search'] ?? null;
         $perPage = $filters['per_page'] ?? 10;
+        $departmentId = $filters['department_id'] ?? null;
+        $subDepartmentId = $filters['sub_department_id'] ?? null;
 
-        $query = DataAsetKolektif::with(['kategori', 'lokasi', 'kondisi', 'pengelola'])
+        $query = DataAsetKolektif::with(['kategori', 'lokasi', 'kondisi', 'pengelola', 'department'])
             ->orderBy('created_at', 'desc');
 
         if ($search) {
@@ -36,6 +38,17 @@ class DataAsetService
                   ->orWhereHas('pengelola', function($p) use ($search) {
                       $p->where('nama_pengelola', 'like', "%$search%");
                   });
+            });
+        }
+
+        if ($subDepartmentId) {
+            $query->where('department_id', $subDepartmentId);
+        } elseif ($departmentId) {
+            // Get all sub-department IDs under this parent
+            $subDeptIds = \App\Models\Department::where('parent_id', $departmentId)->pluck('id')->toArray();
+            $query->where(function($q) use ($departmentId, $subDeptIds) {
+                $q->where('department_id', $departmentId)
+                  ->orWhereIn('department_id', $subDeptIds);
             });
         }
 
@@ -63,10 +76,50 @@ class DataAsetService
     public function createAset(array $data): DataAsetKolektif
     {
         return DB::transaction(function () use ($data) {
+            // Generate Kode Aset if not provided
+            if (empty($data['kode_aset'])) {
+                $data['kode_aset'] = $this->generateKodeAset($data);
+            }
+
             $aset = DataAsetKolektif::create($data);
             $this->clearRelatedCache();
             return $aset;
         });
+    }
+
+    /**
+     * Generate Kode Aset based on church standard
+     * Format: [Lokasi:2][Usage:1][GroupType:1][Pengelola:6][Sequence:5]
+     *
+     * @param array $data
+     * @return string
+     */
+    public function generateKodeAset(array $data): string
+    {
+        $lokasi = \App\Models\MasterLokasi::find($data['lokasi_id']);
+        $pengelola = \App\Models\MasterPengelola::find($data['pengelola_id']);
+
+        $partLokasi = str_pad(str_replace([' ', '-'], '', $lokasi->kode_lokasi ?? '00'), 2, '0', STR_PAD_RIGHT);
+        $partUsage = 'A'; // Fixed A for Asset
+        $partGroupType = ($data['tipe_grup'] ?? 'individual') === 'individual' ? 'S' : 'C';
+        
+        $rawPengelolaCode = str_replace([' ', '-'], '', $pengelola->kode_pengelola ?? '00');
+        $partPengelola = str_pad($rawPengelolaCode, 6, '0', STR_PAD_RIGHT);
+
+        $prefix = $partLokasi . $partUsage . $partGroupType . $partPengelola;
+
+        $lastNumber = DataAsetKolektif::where('kode_aset', 'like', $prefix . '%')
+            ->orderBy('kode_aset', 'desc')
+            ->first();
+
+        if ($lastNumber) {
+            $currentSeq = (int) substr($lastNumber->kode_aset, -5);
+            $nextSeq = $currentSeq + 1;
+        } else {
+            $nextSeq = 1;
+        }
+
+        return $prefix . str_pad($nextSeq, 5, '0', STR_PAD_LEFT);
     }
 
     /**

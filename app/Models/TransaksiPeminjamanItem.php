@@ -5,10 +5,11 @@ namespace App\Models;
 use App\Models\TransaksiPeminjaman;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasAuditColumns;
 
 class TransaksiPeminjamanItem extends Model
 {
-    use HasFactory;
+    use HasFactory, HasAuditColumns;
 
     protected $table = 'transaksi_peminjaman_items';
 
@@ -24,6 +25,9 @@ class TransaksiPeminjamanItem extends Model
         'catatan_serah_terima',
         'catatan_pengembalian',
         'returned_at',
+        'created_by',
+        'updated_by',
+        'deleted_by',
     ];
 
     protected $casts = [

@@ -1,0 +1,83 @@
+version: "3.7"
+services:
+    app:
+        build:
+            args:
+                user: laravel
+                uid: 1000
+            context: ./
+            dockerfile: Dockerfile
+        image: pelita
+        container_name: pelita-app
+        restart: unless-stopped
+        working_dir: /var/www/
+        volumes:
+            - ./:/var/www
+            - ./docker-compose/php/php.ini:/usr/local/etc/php/conf.d/custom.ini
+        networks:
+            - pelita
+        ports:
+            - "8000:8000"
+            - "5173:5173"
+        environment:
+            QUEUE_CONNECTION: database
+            # DB_CONNECTION: mysql
+            # DB_HOST: db
+            # DB_PORT: 3306
+            # DB_DATABASE: manajemen_asset
+            # DB_USERNAME: laravel
+            # DB_PASSWORD: root
+        command: sh -c "php artisan serve --host=0.0.0.0 --port=8000"
+        depends_on:
+            - db
+
+    queue:
+        build:
+            args:
+                user: laravel
+                uid: 1000
+            context: ./
+            dockerfile: Dockerfile
+        image: pelita
+        container_name: pelita-queue
+        restart: unless-stopped
+        working_dir: /var/www/
+        volumes:
+            - ./:/var/www
+            - ./docker-compose/php/php.ini:/usr/local/etc/php/conf.d/custom.ini
+        networks:
+            - pelita
+        environment:
+            QUEUE_CONNECTION: database
+            # DB_CONNECTION: mysql
+            # DB_HOST: db
+            # DB_PORT: 3306
+            # DB_DATABASE: manajemen_asset
+            # DB_USERNAME: laravel
+            # DB_PASSWORD: root
+        command: "php artisan queue:work"
+        depends_on:
+            - db
+
+    db:
+        image: mysql:8.0
+        container_name: pelita-db
+        hostname: db
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE:-manajemen_asset}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+            MYSQL_PASSWORD: ${DB_PASSWORD:-root}
+            MYSQL_USER: ${DB_USERNAME:-laravel}
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        volumes:
+            - ./docker-compose/mysql:/docker-entrypoint-initdb.d
+        networks:
+            - pelita
+        ports:
+            - "3307:3306"
+
+networks:
+    pelita:
+        driver: bridge

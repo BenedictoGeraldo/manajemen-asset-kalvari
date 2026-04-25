@@ -19,208 +19,196 @@
 
     <!-- Header -->
     <div class="mb-6">
-        <div class="w-full flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0">
-            <!-- Search Input (real-time AJAX) -->
-            <form method="GET" action="{{ route('data-aset.index') }}" class="flex-1">
-                <div class="search-input-wrapper">
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari aset berdasarkan nama, kode, kategori, lokasi..." class="search-input-control flex-1 w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off" id="searchInput" />
-                    <button type="submit" class="search-submit-btn" aria-label="Cari">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </button>
-                </div>
-            </form>
-            <div class="flex space-x-3 mt-2 sm:mt-0">
-                @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('data-aset.export'))
-                <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" @click.away="open = false"
-                            class="btn-export">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        Export Data
-                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <div x-show="open"
-                         x-transition:enter="transition ease-out duration-100"
-                         x-transition:enter-start="transform opacity-0 scale-95"
-                         x-transition:enter-end="transform opacity-100 scale-100"
-                         x-transition:leave="transition ease-in duration-75"
-                         x-transition:leave-start="transform opacity-100 scale-100"
-                         x-transition:leave-end="transform opacity-0 scale-95"
-                         class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                        <div class="py-1">
-                            <a href="{{ route('data-aset.export', 'xlsx') }}"
-                               class="dropdown-export-item">
-                                <svg class="w-4 h-4 mr-2 export-icon-xlsx" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z"/>
-                                </svg>
-                                Export ke Excel (.xlsx)
-                            </a>
-                            <a href="{{ route('data-aset.export', 'csv') }}"
-                               class="dropdown-export-item">
-                                <svg class="w-4 h-4 mr-2 export-icon-csv" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z"/>
-                                </svg>
-                                Export ke CSV (.csv)
-                            </a>
+        <div class="space-y-4">
+            <div class="w-full flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0">
+                <!-- Search Input -->
+                <div class="flex-1">
+                    <div class="search-input-wrapper">
+                        <input type="text" id="searchInput" value="{{ $search }}" placeholder="Cari aset berdasarkan nama, kode, kategori..." class="search-input-control flex-1 w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off" />
+                        <div class="search-submit-btn">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
                         </div>
                     </div>
                 </div>
-                @endif
-                @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('data-aset.create'))
-                <a href="{{ route('data-aset.create') }}" data-navigate
-                   class="btn-a">
-                    <svg class="w-5 h-5 mr-2 !text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                    Tambah Aset
-                </a>
-                @endif
+                <div class="flex space-x-3">
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('data-aset.export'))
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" @click.away="open = false" class="btn-export">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Export
+                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div x-show="open" x-cloak class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
+                            <div class="py-1">
+                                <a href="{{ route('data-aset.export', 'xlsx') }}" class="dropdown-export-item">Excel (.xlsx)</a>
+                                <a href="{{ route('data-aset.export', 'csv') }}" class="dropdown-export-item">CSV (.csv)</a>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('data-aset.create'))
+                    <a href="{{ route('data-aset.create') }}" data-navigate class="btn-a">
+                        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        Tambah
+                    </a>
+                    @endif
+                </div>
             </div>
-        </div>
+
+            <!-- Department Filters -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Departemen</label>
+                    <select id="departmentFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                        <option value="">Semua Departemen</option>
+                        @foreach($departments as $dept)
+                            <option value="{{ $dept->id }}" {{ $departmentId == $dept->id ? 'selected' : '' }}>{{ $dept->code }} - {{ $dept->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Sub Departemen</label>
+                    <select id="subDepartmentFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                        <option value="">Semua Sub Departemen</option>
+                        @foreach($subDepartments as $sub)
+                            <option value="{{ $sub->id }}" {{ $subDepartmentId == $sub->id ? 'selected' : '' }}>{{ $sub->code }} - {{ $sub->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Table -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kode Aset</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Aset</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lokasi</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kondisi</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pengelola</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse($asets as $aset)
-                        <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='{{ route('data-aset.show', $aset->id) }}'">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">{{ $aset->kode_aset }}</div>
-                                <div class="text-xs text-gray-500">{{ $aset->tahun_pengadaan }}</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm font-medium text-gray-900">{{ $aset->nama_aset }}</div>
-                                <div class="text-xs text-gray-500">{{ Str::limit($aset->deskripsi_aset, 50) }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 font-medium">{{ $aset->kategori->nama_kategori }}</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-700">{{ $aset->lokasi->nama_lokasi }}</div>
-                                <div class="text-xs text-gray-500">{{ $aset->lokasi->gedung }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                {{ $aset->jumlah_barang }}
-                                <span class="text-xs text-gray-500">({{ $aset->tipe_grup }})</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 font-medium">{{ $aset->kondisi->nama_kondisi }}</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-700">{{ $aset->pengelola->nama_pengelola }}</div>
-                                <div class="text-xs text-gray-500">{{ $aset->pengelola->jabatan }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium" onclick="event.stopPropagation()">
-                                <div class="flex space-x-2">
-                                    <a href="{{ route('qr.download', $aset->id) }}"
-                                       class="action-view text-blue-600 hover:text-blue-900" title="Download QR" target="_blank">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                                        </svg>
-                                    </a>
-                                    <a href="{{ route('data-aset.show', $aset->id) }}" data-navigate
-                                       class="action-view" title="Lihat Detail">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                        </svg>
-                                    </a>
-                                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('data-aset.edit'))
-                                    <a href="{{ route('data-aset.edit', $aset->id) }}" data-navigate
-                                       class="action-edit" title="Edit">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                        </svg>
-                                    </a>
-                                    @endif
-                                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('data-aset.delete'))
-                                    <button type="button" @click="$dispatch('delete-modal', { id: {{ $aset->id }}, name: '{{ $aset->nama_aset }}' })" class="action-delete" title="Hapus">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                        </svg>
-                                    </button>
-                                    @endif
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
-                                Belum ada data aset
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        <!-- Pagination Controls -->
-        <div class="px-6 py-4 bg-gray-50 border-t flex justify-between items-center">
-            <!-- Per Page Dropdown Bottom Left -->
-            <form method="GET" action="" class="flex items-center">
-                <select name="perPage" onchange="this.form.submit()" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    @foreach([10, 25, 50, 100] as $size)
-                        <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }} / halaman</option>
-                    @endforeach
-                </select>
-            </form>
-            <!-- Pagination -->
-            <div>
-                {{ $asets->appends(request()->except('page'))->links() }}
+    <!-- Table Container -->
+    <div id="tableContainer" class="bg-white rounded-lg shadow overflow-hidden relative">
+        <div id="loadingOverlay" class="hidden absolute inset-0 bg-white bg-opacity-60 z-10">
+            <div class="flex items-center justify-center h-full">
+                <svg class="animate-spin h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
             </div>
         </div>
-        @push('scripts')
-        <script>
-            // Real-time AJAX search
-            document.addEventListener('DOMContentLoaded', function() {
-                const searchInput = document.getElementById('searchInput');
-                let debounce;
-                if (searchInput) {
-                    searchInput.addEventListener('input', function() {
-                        clearTimeout(debounce);
-                        debounce = setTimeout(function() {
-                            const query = searchInput.value;
-                            const perPage = document.querySelector('select[name="perPage"]')?.value || 10;
-                            fetch(`?search=${encodeURIComponent(query)}&perPage=${perPage}`, {
-                                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                            })
-                            .then(response => response.text())
-                            .then(html => {
-                                // Replace table and pagination only
-                                const parser = new DOMParser();
-                                const doc = parser.parseFromString(html, 'text/html');
-                                const newTable = doc.querySelector('table');
-                                const newPaginate = doc.querySelector('.bg-gray-50.border-t');
-                                if (newTable && newPaginate) {
-                                    document.querySelector('table').outerHTML = newTable.outerHTML;
-                                    document.querySelector('.bg-gray-50.border-t').outerHTML = newPaginate.outerHTML;
-                                }
-                            });
-                        }, 300); // 300ms debounce for instant feel
-                    });
+        @include('data-aset.partials.table')
+    </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const departmentFilter = document.getElementById('departmentFilter');
+            const subDepartmentFilter = document.getElementById('subDepartmentFilter');
+            const tableContainer = document.getElementById('tableContainer');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            
+            let debounceTimer;
+
+            function updateAsets(page = 1) {
+                loadingOverlay.classList.remove('hidden');
+                
+                const search = searchInput.value;
+                const departmentId = departmentFilter.value;
+                const subDepartmentId = subDepartmentFilter.value;
+                const perPage = document.getElementById('perPageSelect')?.value || 10;
+
+                const url = new URL(window.location.href);
+                url.searchParams.set('search', search);
+                url.searchParams.set('department_id', departmentId);
+                url.searchParams.set('sub_department_id', subDepartmentId);
+                url.searchParams.set('per_page', perPage);
+                url.searchParams.set('page', page);
+
+                fetch(url, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    const partials = document.createElement('div');
+                    partials.innerHTML = html;
+                    
+                    const newContent = partials.querySelector('.overflow-x-auto');
+                    const newPaginate = partials.querySelector('.bg-gray-50.border-t');
+                    
+                    const oldTable = tableContainer.querySelector('.overflow-x-auto');
+                    const oldPaginate = tableContainer.querySelector('.bg-gray-50.border-t');
+                    
+                    if (newContent && oldTable) oldTable.outerHTML = newContent.outerHTML;
+                    if (newPaginate && oldPaginate) oldPaginate.outerHTML = newPaginate.outerHTML;
+                    
+                    // Re-bind perPage select
+                    bindPerPage();
+                    
+                    window.history.pushState({}, '', url);
+                    loadingOverlay.classList.add('hidden');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    loadingOverlay.classList.add('hidden');
+                });
+            }
+
+            function bindPerPage() {
+                const perPageSelect = document.getElementById('perPageSelect');
+                if (perPageSelect) {
+                    perPageSelect.addEventListener('change', () => updateAsets(1));
                 }
+                
+                // Re-bind pagination links
+                document.querySelectorAll('#paginationLinks a').forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const url = new URL(this.href);
+                        const page = url.searchParams.get('page');
+                        updateAsets(page);
+                    });
+                });
+            }
+
+            // Search with debounce
+            searchInput.addEventListener('input', () => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => updateAsets(1), 500);
             });
-        </script>
-        @endpush
+
+            // Department change
+            departmentFilter.addEventListener('change', () => {
+                const departmentId = departmentFilter.value;
+                
+                // Clear sub-department
+                subDepartmentFilter.innerHTML = '<option value="">Semua Sub Departemen</option>';
+                
+                if (departmentId) {
+                    fetch(`{{ route('get-sub-departments') }}?parent_id=${departmentId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.forEach(sub => {
+                                const option = document.createElement('option');
+                                option.value = sub.id;
+                                option.textContent = `${sub.code} - ${sub.name}`;
+                                subDepartmentFilter.appendChild(option);
+                            });
+                        });
+                }
+                
+                updateAsets(1);
+            });
+
+            // Sub Department change
+            subDepartmentFilter.addEventListener('change', () => updateAsets(1));
+
+            // Initial bind
+            bindPerPage();
+        });
+    </script>
+    @endpush
         </div>
     </div>
 </div>

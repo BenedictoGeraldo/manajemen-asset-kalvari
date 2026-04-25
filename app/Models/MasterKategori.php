@@ -4,17 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasAuditColumns;
 
 class MasterKategori extends Model
 {
-    use HasFactory;
+    use HasFactory, HasAuditColumns;
 
     protected $table = 'master_kategori';
 
     protected $fillable = [
         'nama_kategori',
         'deskripsi',
-        'is_active'
+        'is_active',
+        'created_by',
+        'updated_by'
     ];
 
     protected $casts = [

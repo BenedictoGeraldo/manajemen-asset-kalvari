@@ -126,6 +126,10 @@
                        class="dropdown-export-item">
                         Export ke CSV (.csv)
                     </a>
+                    <a href="{{ route('laporan.mutasi-aset.export', array_merge(['format' => 'pdf'], request()->except('page'))) }}"
+                       class="dropdown-export-item">
+                        Export ke PDF (.pdf)
+                    </a>
                 </div>
             </div>
         </div>

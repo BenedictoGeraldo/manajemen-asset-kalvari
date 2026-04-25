@@ -7,10 +7,11 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\HasAuditColumns;
 
 class TransaksiPembelian extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasAuditColumns;
 
     protected $table = 'transaksi_pembelian';
 
@@ -26,6 +27,7 @@ class TransaksiPembelian extends Model
         'is_posted_to_aset',
         'approved_at',
         'approved_by',
+        'aset_kolektif_id',
         'created_by',
         'updated_by',
         'deleted_by',

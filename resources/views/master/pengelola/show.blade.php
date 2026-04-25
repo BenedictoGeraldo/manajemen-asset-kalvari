@@ -9,7 +9,7 @@
     <div class="flex justify-between items-center mb-6">
         <div>
             <h3 class="text-2xl font-bold text-gray-800">{{ $pengelola->nama_pengelola }}</h3>
-            <p class="text-sm text-gray-600 mt-1">{{ $pengelola->jabatan }} - {{ $pengelola->departemen }}</p>
+            <p class="text-sm text-gray-600 mt-1">{{ $pengelola->jabatan }} - {{ $pengelola->department->name ?? '-' }}</p>
         </div>
         <div class="flex space-x-2">
             <a href="{{ route('master.pengelola.edit', $pengelola->id) }}" data-navigate
@@ -47,7 +47,7 @@
                     </div>
                     <div>
                         <label class="text-sm font-medium text-gray-500">Departemen</label>
-                        <p class="mt-1 text-gray-900">{{ $pengelola->departemen }}</p>
+                        <p class="mt-1 text-gray-900">{{ $pengelola->department->name ?? '-' }}</p>
                     </div>
                     <div>
                         <label class="text-sm font-medium text-gray-500">Email</label>

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Permission;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class PermissionSeeder extends Seeder
 {
@@ -182,6 +183,66 @@ class PermissionSeeder extends Seeder
                 'display_name' => 'Hapus User',
                 'group' => 'Pengaturan',
                 'description' => 'Dapat menghapus user'
+            ],
+
+            // Department Management
+            [
+                'name' => 'departments.view',
+                'display_name' => 'Lihat Departemen',
+                'group' => 'Pengaturan',
+                'description' => 'Dapat melihat daftar departemen'
+            ],
+            [
+                'name' => 'departments.create',
+                'display_name' => 'Tambah Departemen',
+                'group' => 'Pengaturan',
+                'description' => 'Dapat menambah departemen baru'
+            ],
+            [
+                'name' => 'departments.edit',
+                'display_name' => 'Edit Departemen',
+                'group' => 'Pengaturan',
+                'description' => 'Dapat mengedit data departemen'
+            ],
+            [
+                'name' => 'departments.delete',
+                'display_name' => 'Hapus Departemen',
+                'group' => 'Pengaturan',
+                'description' => 'Dapat menghapus departemen'
+            ],
+
+            // Role Management
+            [
+                'name' => 'roles.view',
+                'display_name' => 'Lihat Role',
+                'group' => 'Pengaturan',
+                'description' => 'Dapat melihat daftar role'
+            ],
+            [
+                'name' => 'roles.create',
+                'display_name' => 'Tambah Role',
+                'group' => 'Pengaturan',
+                'description' => 'Dapat menambah role baru'
+            ],
+            [
+                'name' => 'roles.edit',
+                'display_name' => 'Edit Role',
+                'group' => 'Pengaturan',
+                'description' => 'Dapat mengedit role dan hak aksesnya'
+            ],
+            [
+                'name' => 'roles.delete',
+                'display_name' => 'Hapus Role',
+                'group' => 'Pengaturan',
+                'description' => 'Dapat menghapus role'
+            ],
+
+            // Permission Management
+            [
+                'name' => 'permissions.view',
+                'display_name' => 'Lihat Daftar Hak Akses',
+                'group' => 'Pengaturan',
+                'description' => 'Dapat melihat semua daftar hak akses yang ada'
             ],
 
             // Transaksi Pembelian
@@ -394,15 +455,47 @@ class PermissionSeeder extends Seeder
                 'group' => 'Data Transaksional',
                 'description' => 'Dapat menyelesaikan mutasi aset dan memperbarui data aset'
             ],
+
+            // Transaksi Pemusnahan Aset
+            [
+                'name' => 'transaksi.pemusnahan.view',
+                'display_name' => 'Lihat Pemusnahan Aset',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat melihat daftar transaksi pemusnahan aset'
+            ],
+            [
+                'name' => 'transaksi.pemusnahan.create',
+                'display_name' => 'Tambah Pemusnahan Aset',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat menambah transaksi pemusnahan aset baru'
+            ],
+            [
+                'name' => 'transaksi.pemusnahan.edit',
+                'display_name' => 'Edit Pemusnahan Aset',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat mengedit transaksi pemusnahan aset'
+            ],
+            [
+                'name' => 'transaksi.pemusnahan.delete',
+                'display_name' => 'Hapus Pemusnahan Aset',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat menghapus transaksi pemusnahan aset'
+            ],
         ];
 
+        $count = 0;
         foreach ($permissions as $permission) {
-            $permission = Arr::add($permission, 'slug', $permission['name']);
-
-            Permission::updateOrCreate(
-                ['name' => $permission['name']],
-                $permission
+            $name = $permission['name'];
+            $slug = $permission['slug'] ?? Str::slug($name);
+            
+            Permission::withTrashed()->updateOrCreate(
+                ['name' => $name],
+                array_merge($permission, ['slug' => $slug, 'deleted_at' => null])
             );
+            $count++;
         }
+        $jumlah = Permission::count();
+        
+        $this->command->info("Seeded terbaru $jumlah permissions.");
     }
 }

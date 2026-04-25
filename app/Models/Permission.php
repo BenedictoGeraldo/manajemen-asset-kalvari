@@ -5,17 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\HasAuditColumns;
 
 class Permission extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasAuditColumns;
 
     protected $fillable = [
         'name',
         'slug',
         'display_name',
         'group',
-        'description'
+        'description',
+        'created_by',
+        'updated_by',
+        'deleted_by'
     ];
 
     /**

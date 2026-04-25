@@ -4,20 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasAuditColumns;
 
 class MasterLokasi extends Model
 {
-    use HasFactory;
+    use HasFactory, HasAuditColumns;
 
     protected $table = 'master_lokasi';
 
     protected $fillable = [
+        'kode_lokasi',
         'nama_lokasi',
         'keterangan_lokasi',
         'gedung',
         'lantai',
         'ruangan',
-        'is_active'
+        'is_active',
+        'created_by',
+        'updated_by'
     ];
 
     protected $casts = [
@@ -44,6 +48,9 @@ class MasterLokasi extends Model
             $this->lantai ? 'Lantai ' . $this->lantai : null,
             $this->ruangan
         ]);
-        return $this->nama_lokasi . (count($parts) > 0 ? ' (' . implode(', ', $parts) . ')' : '');
+        
+        $fullName = $this->nama_lokasi . (count($parts) > 0 ? ' (' . implode(', ', $parts) . ')' : '');
+        
+        return $this->kode_lokasi ? $this->kode_lokasi . ' - ' . $fullName : $fullName;
     }
 }

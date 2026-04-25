@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'PELITA - Manajemen Aset')</title>
-    <link rel="icon" type="image/png" href="{{ asset('logo-pelita-cross.png') }}">
+    <title>@yield('title', setting('app_name', 'PELITA - Manajemen Aset'))</title>
+    <link rel="icon" type="image/png" href="{{ setting('org_logo') ?: asset('logo-pelita-cross.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @stack('styles')
@@ -56,9 +56,21 @@
             @include('layouts.partials.topbar')
 
             <!-- Page Content -->
-            <div id="main-content" class="p-6">
+            <div id="main-content" class="p-6 min-h-[calc(100vh-140px)]">
                 @yield('content')
             </div>
+
+            <!-- Footer -->
+            <footer class="bg-white border-t border-gray-200 px-6 py-4">
+                <div class="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+                    <div class="text-xs text-gray-500">
+                        &copy; {{ date('Y') }} {{ setting('org_full_name') }}. All rights reserved.
+                    </div>
+                    <div class="text-xs text-gray-400">
+                        {{ setting('app_name') }} v2.0
+                    </div>
+                </div>
+            </footer>
         </main>
     </div>
 

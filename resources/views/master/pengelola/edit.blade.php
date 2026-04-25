@@ -27,11 +27,18 @@
                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         </div>
                         <div>
-                            <label for="departemen" class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="department_id" class="block text-sm font-medium text-gray-700 mb-2">
                                 Departemen <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" name="departemen" id="departemen" required value="{{ old('departemen', $pengelola->departemen) }}"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <select name="department_id" id="department_id" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="">-- Pilih Departemen --</option>
+                                @foreach($departments as $dept)
+                                    <option value="{{ $dept->id }}" {{ old('department_id', $pengelola->department_id) == $dept->id ? 'selected' : '' }}>
+                                        {{ $dept->name }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-4">

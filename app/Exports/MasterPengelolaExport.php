@@ -14,7 +14,8 @@ class MasterPengelolaExport implements FromCollection, WithHeadings, WithMapping
 {
     public function collection()
     {
-        return MasterPengelola::where('is_active', true)
+        return MasterPengelola::with(['department'])
+            ->where('is_active', true)
             ->orderBy('nama_pengelola')
             ->get();
     }
@@ -23,11 +24,12 @@ class MasterPengelolaExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             'ID',
+            'Kode Pengelola',
             'Nama Pengelola',
             'Jabatan',
-            'No. Telepon',
+            'Departemen',
+            'Kontak/Telepon',
             'Email',
-            'Deskripsi',
             'Status',
             'Tanggal Dibuat',
             'Terakhir Diupdate',
@@ -38,11 +40,12 @@ class MasterPengelolaExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             $pengelola->id,
+            $pengelola->kode_pengelola,
             $pengelola->nama_pengelola,
             $pengelola->jabatan ?? '-',
-            $pengelola->no_telepon ?? '-',
+            $pengelola->department->name ?? '-',
+            $pengelola->kontak ?? '-',
             $pengelola->email ?? '-',
-            $pengelola->deskripsi ?? '-',
             $pengelola->is_active ? 'Aktif' : 'Tidak Aktif',
             $pengelola->created_at->format('d/m/Y H:i'),
             $pengelola->updated_at->format('d/m/Y H:i'),
@@ -53,14 +56,15 @@ class MasterPengelolaExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             'A' => 8,   // ID
-            'B' => 30,  // Nama Pengelola
-            'C' => 25,  // Jabatan
-            'D' => 18,  // No. Telepon
-            'E' => 30,  // Email
-            'F' => 40,  // Deskripsi
-            'G' => 12,  // Status
-            'H' => 20,  // Tanggal Dibuat
-            'I' => 20,  // Terakhir Diupdate
+            'B' => 15,  // Kode Pengelola
+            'C' => 30,  // Nama Pengelola
+            'D' => 25,  // Jabatan
+            'E' => 25,  // Departemen
+            'F' => 18,  // Kontak
+            'G' => 30,  // Email
+            'H' => 12,  // Status
+            'I' => 20,  // Tanggal Dibuat
+            'J' => 20,  // Terakhir Diupdate
         ];
     }
 
