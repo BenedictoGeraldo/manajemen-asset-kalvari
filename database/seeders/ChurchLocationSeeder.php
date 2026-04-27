@@ -149,9 +149,18 @@ class ChurchLocationSeeder extends Seeder
         ];
 
         foreach ($locations as $location) {
+            // Map legacy shape (nama_lokasi + gedung) into current schema.
+            $payload = [
+                'kode_lokasi' => $location['kode_lokasi'],
+                'nama_lokasi' => $location['gedung'],
+                'sub_lokasi' => $location['nama_lokasi'],
+                'keterangan_lokasi' => null,
+                'is_active' => true,
+            ];
+
             MasterLokasi::updateOrCreate(
                 ['kode_lokasi' => $location['kode_lokasi']],
-                $location
+                $payload
             );
         }
     }
