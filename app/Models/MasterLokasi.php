@@ -15,42 +15,56 @@ class MasterLokasi extends Model
     protected $fillable = [
         'kode_lokasi',
         'nama_lokasi',
+        'sub_lokasi',
         'keterangan_lokasi',
-        'gedung',
-        'lantai',
-        'ruangan',
         'is_active',
         'created_by',
-        'updated_by'
+        'updated_by',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
     ];
 
-    // Relationship
+    // ─── Relationships ───────────────────────────────────────────
+
+    /** Aset yang berada di lokasi ini */
     public function dataAset()
     {
         return $this->hasMany(DataAsetKolektif::class, 'lokasi_id');
     }
 
-    // Scopes
+    // ─── Scopes ──────────────────────────────────────────────────
+
+    /** Hanya lokasi aktif */
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
 
-    // Accessor
-    public function getLokasiLengkapAttribute()
+    // ─── Accessors ───────────────────────────────────────────────
+
+    /** Tampilan lengkap: "0A - Area Utama Gereja" atau "Gereja" */
+    public function getLokasiLengkapAttribute(): string
     {
-        $parts = array_filter([
-            $this->gedung,
-            $this->lantai ? 'Lantai ' . $this->lantai : null,
-            $this->ruangan
-        ]);
+        $fullName = $this->nama_lokasi . ($this->sub_lokasi ? ' - ' . $this->sub_lokasi : '');
+        if ($this->kode_lokasi) {
+            return $this->kode_lokasi . ' - ' . $fullName;
+        }
+        return $fullName;
+    }
+
+    /** Label untuk dropdown: "[Gereja] Area Utama Gereja (0A)" */
+    public function getDropdownLabelAttribute(): string
+    {
+        $label = $this->nama_lokasi;
+        if ($this->sub_lokasi) {
+            $label = '[' . $this->nama_lokasi . '] ' . $this->sub_lokasi;
+        }
         
-        $fullName = $this->nama_lokasi . (count($parts) > 0 ? ' (' . implode(', ', $parts) . ')' : '');
-        
-        return $this->kode_lokasi ? $this->kode_lokasi . ' - ' . $fullName : $fullName;
+        if ($this->kode_lokasi) {
+            $label .= ' (' . $this->kode_lokasi . ')';
+        }
+        return $label;
     }
 }

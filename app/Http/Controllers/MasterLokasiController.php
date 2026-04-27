@@ -17,14 +17,13 @@ class MasterLokasiController extends Controller
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('nama_lokasi', 'like', "%{$search}%")
-                        ->orWhere('keterangan_lokasi', 'like', "%{$search}%")
-                        ->orWhere('gedung', 'like', "%{$search}%")
-                        ->orWhere('lantai', 'like', "%{$search}%")
-                        ->orWhere('ruangan', 'like', "%{$search}%");
+                      ->orWhere('sub_lokasi', 'like', "%{$search}%")
+                      ->orWhere('kode_lokasi', 'like', "%{$search}%")
+                      ->orWhere('keterangan_lokasi', 'like', "%{$search}%");
                 });
             })
-            ->orderBy('gedung')
-            ->orderBy('lantai')
+            ->orderBy('nama_lokasi')
+            ->orderBy('sub_lokasi')
             ->get();
 
         return view('master.lokasi.index', compact('lokasis', 'search'));
@@ -38,18 +37,20 @@ class MasterLokasiController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama_lokasi' => 'required|string|max:100',
-            'keterangan_lokasi' => 'nullable|string',
-            'gedung' => 'required|string|max:50',
-            'lantai' => 'nullable|string|max:20',
-            'ruangan' => 'nullable|string|max:50',
-            'is_active' => 'boolean'
+            'kode_lokasi'      => 'required|string|max:10|unique:master_lokasi,kode_lokasi',
+            'nama_lokasi'      => 'required|string|max:150',
+            'sub_lokasi'       => 'nullable|string|max:150',
+            'keterangan_lokasi'=> 'nullable|string|max:500',
+            'is_active'        => 'boolean',
         ]);
+
+        $validated['is_active'] = $request->boolean('is_active', true);
+        $validated['kode_lokasi'] = strtoupper($validated['kode_lokasi']);
 
         MasterLokasi::create($validated);
 
         return redirect()->route('master.lokasi.index')
-            ->with('success', 'Lokasi berhasil ditambahkan!');
+            ->with('success', "Lokasi berhasil ditambahkan!");
     }
 
     public function edit(string $id)
@@ -63,25 +64,27 @@ class MasterLokasiController extends Controller
         $lokasi = MasterLokasi::findOrFail($id);
 
         $validated = $request->validate([
-            'nama_lokasi' => 'required|string|max:100',
-            'keterangan_lokasi' => 'nullable|string',
-            'gedung' => 'required|string|max:50',
-            'lantai' => 'nullable|string|max:20',
-            'ruangan' => 'nullable|string|max:50',
-            'is_active' => 'boolean'
+            'kode_lokasi'      => "required|string|max:10|unique:master_lokasi,kode_lokasi,{$id}",
+            'nama_lokasi'      => 'required|string|max:150',
+            'sub_lokasi'       => 'nullable|string|max:150',
+            'keterangan_lokasi'=> 'nullable|string|max:500',
+            'is_active'        => 'boolean',
         ]);
+
+        $validated['is_active'] = $request->boolean('is_active', true);
+        $validated['kode_lokasi'] = strtoupper($validated['kode_lokasi']);
 
         $lokasi->update($validated);
 
         return redirect()->route('master.lokasi.index')
-            ->with('success', 'Lokasi berhasil diperbarui!');
+            ->with('success', "Lokasi berhasil diperbarui!");
     }
 
     public function destroy(string $id)
     {
-        $lokasi = MasterLokasi::findOrFail($id);
+        $lokasi = MasterLokasi::withCount('dataAset')->findOrFail($id);
 
-        if ($lokasi->dataAset()->count() > 0) {
+        if ($lokasi->data_aset_count > 0) {
             return redirect()->route('master.lokasi.index')
                 ->with('error', 'Lokasi tidak dapat dihapus karena masih digunakan oleh aset!');
         }
@@ -95,7 +98,7 @@ class MasterLokasiController extends Controller
     public function export($format)
     {
         $timestamp = now()->format('Y-m-d_His');
-        $filename = "master-lokasi_{$timestamp}.{$format}";
+        $filename  = "master-lokasi_{$timestamp}.{$format}";
 
         if ($format === 'csv') {
             return Excel::download(new MasterLokasiExport, $filename, \Maatwebsite\Excel\Excel::CSV);

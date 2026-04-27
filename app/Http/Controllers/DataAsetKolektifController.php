@@ -40,7 +40,7 @@ class DataAsetKolektifController extends Controller
         $departments = $this->masterDataService->getTopLevelDepartments();
         $subDepartments = $departmentId ? $this->masterDataService->getSubDepartments((int)$departmentId) : collect();
 
-        if ($request->ajax()) {
+        if ($request->header('X-Partial-Request') === 'table') {
             return view('data-aset.partials.table', compact('asets'))->render();
         }
 
