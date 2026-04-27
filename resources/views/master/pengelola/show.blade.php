@@ -131,9 +131,13 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $aset->kondisi->kode_warna }}-100 text-{{ $aset->kondisi->kode_warna }}-800">
-                                        {{ $aset->kondisi->nama_kondisi }}
-                                    </span>
+                                    @if($aset->kondisi)
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $aset->kondisi->kode_warna }}-100 text-{{ $aset->kondisi->kode_warna }}-800">
+                                            {{ $aset->kondisi->nama_kondisi }}
+                                        </span>
+                                    @else
+                                        <span class="text-sm text-gray-500">-</span>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-900">Rp {{ number_format($aset->nilai_perolehan, 0, ',', '.') }}</div>

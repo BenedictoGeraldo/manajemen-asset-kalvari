@@ -110,12 +110,16 @@
                     </div>
                     <div>
                         <label class="text-sm font-medium text-gray-500">Kondisi</label>
-                        <p class="mt-1">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $aset->kondisi->kode_warna }}-100 text-{{ $aset->kondisi->kode_warna }}-800">
-                                {{ $aset->kondisi->nama_kondisi }}
-                            </span>
-                        </p>
-                        <p class="text-sm text-gray-500 mt-1">{{ $aset->kondisi->keterangan }}</p>
+                        @if($aset->kondisi)
+                            <p class="mt-1">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $aset->kondisi->kode_warna }}-100 text-{{ $aset->kondisi->kode_warna }}-800">
+                                    {{ $aset->kondisi->nama_kondisi }}
+                                </span>
+                            </p>
+                            <p class="text-sm text-gray-500 mt-1">{{ $aset->kondisi->keterangan }}</p>
+                        @else
+                            <p class="mt-1 text-gray-900">-</p>
+                        @endif
                     </div>
                     <div>
                         <label class="text-sm font-medium text-gray-500">Kategori Penggunaan</label>

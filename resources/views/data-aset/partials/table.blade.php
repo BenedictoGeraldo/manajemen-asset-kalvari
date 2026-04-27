@@ -29,14 +29,14 @@
                     </td>
                     <td class="px-6 py-4">
                         <div class="text-sm text-gray-700">{{ $aset->lokasi->nama_lokasi ?? '-' }}</div>
-                        <div class="text-xs text-gray-500">{{ $aset->lokasi->gedung ?? '' }}</div>
+                        <div class="text-xs text-gray-500">{{ $aset->lokasi->sub_lokasi ?? '' }}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                         {{ $aset->jumlah_barang }}
                         <span class="text-xs text-gray-500">({{ $aset->tipe_grup_v2 ?? $aset->tipe_grup }})</span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900 font-medium">{{ $aset->kondisi->nama_kondisi }}</div>
+                        <div class="text-sm text-gray-900 font-medium">{{ $aset->kondisi?->nama_kondisi ?? '-' }}</div>
                     </td>
                     <td class="px-6 py-4">
                         <div class="text-sm text-gray-700">{{ $aset->pengelola->nama_pengelola ?? '-' }}</div>

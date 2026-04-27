@@ -13,7 +13,7 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div>
         <label for="data_aset_kolektif_id" class="block text-sm font-medium text-gray-700 mb-1">Aset <span class="text-red-500">*</span></label>
-        <select id="data_aset_kolektif_id" name="data_aset_kolektif_id" required class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+        <select id="data_aset_kolektif_id" name="data_aset_kolektif_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="">Pilih Aset</option>
             @foreach($asets as $aset)
                 <option value="{{ $aset->id }}" {{ (string) $selectedAsetId === (string) $aset->id ? 'selected' : '' }}>
@@ -28,7 +28,7 @@
         <label for="tanggal_pengajuan" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Pengajuan <span class="text-red-500">*</span></label>
         <input type="date" id="tanggal_pengajuan" name="tanggal_pengajuan" required
                value="{{ old('tanggal_pengajuan', isset($pemeliharaan) ? optional($pemeliharaan->tanggal_pengajuan)->format('Y-m-d') : date('Y-m-d')) }}"
-             class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         @error('tanggal_pengajuan')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
     </div>
 
@@ -36,14 +36,14 @@
         <label for="tanggal_rencana" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Rencana</label>
         <input type="date" id="tanggal_rencana" name="tanggal_rencana"
                value="{{ old('tanggal_rencana', isset($pemeliharaan) ? optional($pemeliharaan->tanggal_rencana)->format('Y-m-d') : '') }}"
-             class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         @error('tanggal_rencana')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
     </div>
 
     <div>
         <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status <span class="text-red-500">*</span></label>
         @php $selectedStatus = old('status', $pemeliharaan->status ?? 'draft'); @endphp
-        <select id="status" name="status" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+        <select id="status" name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="draft" {{ $selectedStatus === 'draft' ? 'selected' : '' }}>Draft</option>
             <option value="diajukan" {{ $selectedStatus === 'diajukan' ? 'selected' : '' }}>Diajukan</option>
             <option value="dibatalkan" {{ $selectedStatus === 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
@@ -54,7 +54,7 @@
     <div>
         <label for="jenis_pemeliharaan" class="block text-sm font-medium text-gray-700 mb-1">Jenis Pemeliharaan <span class="text-red-500">*</span></label>
         @php $selectedJenis = old('jenis_pemeliharaan', $pemeliharaan->jenis_pemeliharaan ?? 'rutin'); @endphp
-        <select id="jenis_pemeliharaan" name="jenis_pemeliharaan" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+        <select id="jenis_pemeliharaan" name="jenis_pemeliharaan" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="rutin" {{ $selectedJenis === 'rutin' ? 'selected' : '' }}>Rutin</option>
             <option value="perbaikan" {{ $selectedJenis === 'perbaikan' ? 'selected' : '' }}>Perbaikan</option>
             <option value="darurat" {{ $selectedJenis === 'darurat' ? 'selected' : '' }}>Darurat</option>
@@ -65,7 +65,7 @@
     <div>
         <label for="prioritas" class="block text-sm font-medium text-gray-700 mb-1">Prioritas <span class="text-red-500">*</span></label>
         @php $selectedPrioritas = old('prioritas', $pemeliharaan->prioritas ?? 'sedang'); @endphp
-        <select id="prioritas" name="prioritas" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+        <select id="prioritas" name="prioritas" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             <option value="rendah" {{ $selectedPrioritas === 'rendah' ? 'selected' : '' }}>Rendah</option>
             <option value="sedang" {{ $selectedPrioritas === 'sedang' ? 'selected' : '' }}>Sedang</option>
             <option value="tinggi" {{ $selectedPrioritas === 'tinggi' ? 'selected' : '' }}>Tinggi</option>
@@ -75,37 +75,37 @@
 
     <div>
         <label for="vendor_nama" class="block text-sm font-medium text-gray-700 mb-1">Vendor / Teknisi</label>
-        <input type="text" id="vendor_nama" name="vendor_nama" value="{{ old('vendor_nama', $pemeliharaan->vendor_nama ?? '') }}" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+        <input type="text" id="vendor_nama" name="vendor_nama" value="{{ old('vendor_nama', $pemeliharaan->vendor_nama ?? '') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
     </div>
 
     <div>
         <label for="vendor_kontak" class="block text-sm font-medium text-gray-700 mb-1">Kontak Vendor</label>
-        <input type="text" id="vendor_kontak" name="vendor_kontak" value="{{ old('vendor_kontak', $pemeliharaan->vendor_kontak ?? '') }}" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+        <input type="text" id="vendor_kontak" name="vendor_kontak" value="{{ old('vendor_kontak', $pemeliharaan->vendor_kontak ?? '') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
     </div>
 
     <div>
         <label for="estimasi_biaya" class="block text-sm font-medium text-gray-700 mb-1">Estimasi Biaya</label>
-        <input type="number" id="estimasi_biaya" name="estimasi_biaya" min="0" step="1000" value="{{ old('estimasi_biaya', $pemeliharaan->estimasi_biaya ?? 0) }}" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+        <input type="number" id="estimasi_biaya" name="estimasi_biaya" min="0" step="1000" value="{{ old('estimasi_biaya', $pemeliharaan->estimasi_biaya ?? 0) }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
     </div>
 
     <div>
         <label for="realisasi_biaya" class="block text-sm font-medium text-gray-700 mb-1">Realisasi Biaya</label>
-        <input type="number" id="realisasi_biaya" name="realisasi_biaya" min="0" step="1000" value="{{ old('realisasi_biaya', $pemeliharaan->realisasi_biaya ?? 0) }}" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+        <input type="number" id="realisasi_biaya" name="realisasi_biaya" min="0" step="1000" value="{{ old('realisasi_biaya', $pemeliharaan->realisasi_biaya ?? 0) }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
     </div>
 
     <div class="md:col-span-2">
         <label for="keluhan" class="block text-sm font-medium text-gray-700 mb-1">Keluhan / Tujuan Pemeliharaan</label>
-        <textarea id="keluhan" name="keluhan" rows="3" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">{{ old('keluhan', $pemeliharaan->keluhan ?? '') }}</textarea>
+        <textarea id="keluhan" name="keluhan" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ old('keluhan', $pemeliharaan->keluhan ?? '') }}</textarea>
     </div>
 
     <div class="md:col-span-2">
         <label for="tindakan" class="block text-sm font-medium text-gray-700 mb-1">Tindakan</label>
-        <textarea id="tindakan" name="tindakan" rows="3" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">{{ old('tindakan', $pemeliharaan->tindakan ?? '') }}</textarea>
+        <textarea id="tindakan" name="tindakan" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ old('tindakan', $pemeliharaan->tindakan ?? '') }}</textarea>
     </div>
 
     <div class="md:col-span-2">
         <label for="catatan" class="block text-sm font-medium text-gray-700 mb-1">Catatan</label>
-        <textarea id="catatan" name="catatan" rows="2" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">{{ old('catatan', $pemeliharaan->catatan ?? '') }}</textarea>
+        <textarea id="catatan" name="catatan" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ old('catatan', $pemeliharaan->catatan ?? '') }}</textarea>
     </div>
 </div>
 

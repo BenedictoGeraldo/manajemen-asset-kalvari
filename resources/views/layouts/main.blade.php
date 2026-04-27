@@ -58,6 +58,7 @@
             <!-- Page Content -->
             <div id="main-content" class="p-6 min-h-[calc(100vh-140px)]">
                 @yield('content')
+                @stack('scripts')
             </div>
 
             <!-- Footer -->

@@ -71,19 +71,19 @@
     <div>
         <label for="vendor_kontak" class="block text-sm font-medium text-gray-700 mb-1">Kontak Vendor</label>
         <input type="text" id="vendor_kontak" name="vendor_kontak" value="{{ old('vendor_kontak', $pembelian->vendor_kontak ?? '') }}"
-               class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
     </div>
 
     <div>
         <label for="sumber_dana" class="block text-sm font-medium text-gray-700 mb-1">Sumber Dana</label>
         <input type="text" id="sumber_dana" name="sumber_dana" value="{{ old('sumber_dana', $pembelian->sumber_dana ?? '') }}"
-               class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
     </div>
 
     <div class="md:col-span-2">
         <label for="catatan" class="block text-sm font-medium text-gray-700 mb-1">Catatan</label>
         <textarea id="catatan" name="catatan" rows="2"
-                  class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">{{ old('catatan', $pembelian->catatan ?? '') }}</textarea>
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ old('catatan', $pembelian->catatan ?? '') }}</textarea>
     </div>
 </div>
 
@@ -120,6 +120,7 @@
 </div>
 
 <script>
+(function() {
     const itemsContainer = document.getElementById('items-container');
     const addItemButton = document.getElementById('btn-add-item');
     const grandTotalElement = document.getElementById('grand-total');
@@ -152,70 +153,70 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 <div class="lg:col-span-2">
                     <label class="text-sm text-gray-700">Nama Item *</label>
-                    <input type="text" name="items[${index}][nama_item]" value="${item.nama_item ?? ''}" required class="mt-1 w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                    <input type="text" name="items[${index}][nama_item]" value="${item.nama_item ?? ''}" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-300">
                 </div>
 
                 <div>
                     <label class="text-sm text-gray-700">Kategori *</label>
-                    <select name="items[${index}][kategori_id]" required class="mt-1 w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                    <select name="items[${index}][kategori_id]" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-300">
                         ${buildOptions(kategoriOptions, item.kategori_id)}
                     </select>
                 </div>
 
                 <div>
                     <label class="text-sm text-gray-700">Tahun Pengadaan *</label>
-                    <input type="number" name="items[${index}][tahun_pengadaan]" value="${item.tahun_pengadaan ?? new Date().getFullYear()}" min="1900" max="${new Date().getFullYear() + 1}" required class="mt-1 w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                    <input type="number" name="items[${index}][tahun_pengadaan]" value="${item.tahun_pengadaan ?? new Date().getFullYear()}" min="1900" max="${new Date().getFullYear() + 1}" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-300">
                 </div>
 
                 <div class="lg:col-span-2">
                     <label class="text-sm text-gray-700">Kegunaan *</label>
-                    <input type="text" name="items[${index}][kegunaan]" value="${item.kegunaan ?? ''}" required class="mt-1 w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                    <input type="text" name="items[${index}][kegunaan]" value="${item.kegunaan ?? ''}" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-300">
                 </div>
 
                 <div>
                     <label class="text-sm text-gray-700">Jumlah *</label>
-                    <input type="number" min="1" name="items[${index}][jumlah]" value="${qty}" required class="mt-1 w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 input-qty">
+                    <input type="number" min="1" name="items[${index}][jumlah]" value="${qty}" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-300 input-qty">
                 </div>
 
                 <div>
                     <label class="text-sm text-gray-700">Harga Satuan *</label>
-                    <input type="number" min="0" step="1000" name="items[${index}][harga_satuan]" value="${price}" required class="mt-1 w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 input-price">
+                    <input type="number" min="0" step="1000" name="items[${index}][harga_satuan]" value="${price}" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-300 input-price">
                 </div>
 
                 <div>
                     <label class="text-sm text-gray-700">Lokasi *</label>
-                    <select name="items[${index}][lokasi_id]" required class="mt-1 w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                    <select name="items[${index}][lokasi_id]" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-300">
                         ${buildOptions(lokasiOptions, item.lokasi_id)}
                     </select>
                 </div>
 
                 <div>
                     <label class="text-sm text-gray-700">Kondisi *</label>
-                    <select name="items[${index}][kondisi_id]" required class="mt-1 w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                    <select name="items[${index}][kondisi_id]" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-300">
                         ${buildOptions(kondisiOptions, item.kondisi_id)}
                     </select>
                 </div>
 
                 <div>
                     <label class="text-sm text-gray-700">Pengelola *</label>
-                    <select name="items[${index}][pengelola_id]" required class="mt-1 w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                    <select name="items[${index}][pengelola_id]" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-300">
                         ${buildOptions(pengelolaOptions, item.pengelola_id)}
                     </select>
                 </div>
 
                 <div>
                     <label class="text-sm text-gray-700">Subtotal</label>
-                    <input type="text" value="Rp ${Number(subtotal).toLocaleString('id-ID')}" readonly class="mt-1 w-full rounded-lg border-gray-300 bg-gray-50 input-subtotal">
+                    <input type="text" value="Rp ${Number(subtotal).toLocaleString('id-ID')}" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 input-subtotal">
                 </div>
 
                 <div class="lg:col-span-4">
                     <label class="text-sm text-gray-700">Deskripsi</label>
-                    <textarea name="items[${index}][deskripsi]" rows="2" class="mt-1 w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">${item.deskripsi ?? ''}</textarea>
+                    <textarea name="items[${index}][deskripsi]" rows="2" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-300">${item.deskripsi ?? ''}</textarea>
                 </div>
 
                 <div class="lg:col-span-4">
                     <label class="text-sm text-gray-700">Catatan Item</label>
-                    <textarea name="items[${index}][catatan]" rows="2" class="mt-1 w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">${item.catatan ?? ''}</textarea>
+                    <textarea name="items[${index}][catatan]" rows="2" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-300">${item.catatan ?? ''}</textarea>
                 </div>
             </div>
         </div>`;
@@ -257,7 +258,9 @@
             grandTotal += subtotal;
         });
 
-        grandTotalElement.textContent = 'Rp ' + grandTotal.toLocaleString('id-ID');
+        if (grandTotalElement) {
+            grandTotalElement.textContent = 'Rp ' + grandTotal.toLocaleString('id-ID');
+        }
     }
 
     function bindRowEvents() {
@@ -277,29 +280,32 @@
         });
     }
 
-    addItemButton.addEventListener('click', () => {
-        const rows = itemsContainer.querySelectorAll('.item-row');
-        const index = rows.length;
-        itemsContainer.insertAdjacentHTML('beforeend', renderItem({
-            nama_item: '',
-            kategori_id: '',
-            deskripsi: '',
-            kegunaan: '',
-            jumlah: 1,
-            harga_satuan: 0,
-            lokasi_id: '',
-            kondisi_id: '',
-            pengelola_id: '',
-            tahun_pengadaan: new Date().getFullYear(),
-            catatan: '',
-        }, index));
+    if (addItemButton) {
+        addItemButton.addEventListener('click', () => {
+            const rows = itemsContainer.querySelectorAll('.item-row');
+            const index = rows.length;
+            itemsContainer.insertAdjacentHTML('beforeend', renderItem({
+                nama_item: '',
+                kategori_id: '',
+                deskripsi: '',
+                kegunaan: '',
+                jumlah: 1,
+                harga_satuan: 0,
+                lokasi_id: '',
+                kondisi_id: '',
+                pengelola_id: '',
+                tahun_pengadaan: new Date().getFullYear(),
+                catatan: '',
+            }, index));
 
-        bindRowEvents();
-        calculateGrandTotal();
-    });
+            bindRowEvents();
+            calculateGrandTotal();
+        });
+    }
 
     itemsContainer.innerHTML = initialItems.map((item, index) => renderItem(item, index)).join('');
     bindRowEvents();
     calculateGrandTotal();
+})();
 </script>
 

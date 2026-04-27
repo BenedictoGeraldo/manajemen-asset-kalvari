@@ -33,7 +33,7 @@
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
                             <option value="">-- Semua Lokasi --</option>
                             @foreach($lokasis as $lokasi)
-                                <option value="{{ $lokasi->id }}">{{ $lokasi->nama_lokasi }} ({{ $lokasi->gedung }})</option>
+                                <option value="{{ $lokasi->id }}">{{ $lokasi->nama_lokasi }} {{ $lokasi->sub_lokasi ? '(' . $lokasi->sub_lokasi . ')' : '' }}</option>
                             @endforeach
                         </select>
                     </div>

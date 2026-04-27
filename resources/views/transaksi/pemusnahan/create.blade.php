@@ -16,7 +16,7 @@
         </div>
     @endif
 
-    <form action="{{ route('pemusnahan.store') }}" method="POST">
+    <form action="{{ route('transaksi.pemusnahan.store') }}" method="POST">
         @csrf
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="col-span-1 md:col-span-2">
@@ -80,7 +80,7 @@
         </div>
 
         <div class="mt-8 flex justify-end space-x-3">
-            <a href="{{ route('pemusnahan.index') }}" class="btn-secondary">Batal</a>
+            <a href="{{ route('transaksi.pemusnahan.index') }}" class="btn-secondary">Batal</a>
             <button type="submit" class="btn-primary">Simpan Transaksi</button>
         </div>
     </form>

@@ -102,18 +102,20 @@
 
     @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        (function() {
             const searchInput = document.getElementById('searchInput');
             const departmentFilter = document.getElementById('departmentFilter');
             const subDepartmentFilter = document.getElementById('subDepartmentFilter');
             const tableContainer = document.getElementById('tableContainer');
             const loadingOverlay = document.getElementById('loadingOverlay');
-            
+
+            if (!searchInput || !departmentFilter || !subDepartmentFilter || !tableContainer) return;
+
             let debounceTimer;
 
             function updateAsets(page = 1) {
                 loadingOverlay.classList.remove('hidden');
-                
+
                 const search = searchInput.value;
                 const departmentId = departmentFilter.value;
                 const subDepartmentId = subDepartmentFilter.value;
@@ -127,25 +129,28 @@
                 url.searchParams.set('page', page);
 
                 fetch(url, {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-Partial-Request': 'table'
+                    }
                 })
                 .then(response => response.text())
                 .then(html => {
                     const partials = document.createElement('div');
                     partials.innerHTML = html;
-                    
+
                     const newContent = partials.querySelector('.overflow-x-auto');
                     const newPaginate = partials.querySelector('.bg-gray-50.border-t');
-                    
+
                     const oldTable = tableContainer.querySelector('.overflow-x-auto');
                     const oldPaginate = tableContainer.querySelector('.bg-gray-50.border-t');
-                    
+
                     if (newContent && oldTable) oldTable.outerHTML = newContent.outerHTML;
                     if (newPaginate && oldPaginate) oldPaginate.outerHTML = newPaginate.outerHTML;
-                    
+
                     // Re-bind perPage select
                     bindPerPage();
-                    
+
                     window.history.pushState({}, '', url);
                     loadingOverlay.classList.add('hidden');
                 })
@@ -160,7 +165,7 @@
                 if (perPageSelect) {
                     perPageSelect.addEventListener('change', () => updateAsets(1));
                 }
-                
+
                 // Re-bind pagination links
                 document.querySelectorAll('#paginationLinks a').forEach(link => {
                     link.addEventListener('click', function(e) {
@@ -181,10 +186,10 @@
             // Department change
             departmentFilter.addEventListener('change', () => {
                 const departmentId = departmentFilter.value;
-                
+
                 // Clear sub-department
                 subDepartmentFilter.innerHTML = '<option value="">Semua Sub Departemen</option>';
-                
+
                 if (departmentId) {
                     fetch(`{{ route('get-sub-departments') }}?parent_id=${departmentId}`)
                         .then(response => response.json())
@@ -197,7 +202,7 @@
                             });
                         });
                 }
-                
+
                 updateAsets(1);
             });
 
@@ -206,11 +211,9 @@
 
             // Initial bind
             bindPerPage();
-        });
+        })();
     </script>
     @endpush
-        </div>
-    </div>
 </div>
 
 <!-- Delete Confirmation Modal -->

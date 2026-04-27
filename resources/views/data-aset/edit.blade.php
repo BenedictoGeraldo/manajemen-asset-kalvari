@@ -121,7 +121,7 @@
                     </label>
                     <input type="text" name="nama_aset" id="nama_aset" required
                            value="{{ old('nama_aset', $aset->nama_aset) }}"
-                           class="mt-1 block w-full rounded-lg {{ $errors->has('nama_aset') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('nama_aset') ? 'border-red-500' : 'border-gray-300' }}">
                     @error('nama_aset')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -132,7 +132,7 @@
                         Kategori <span class="text-red-500">*</span>
                     </label>
                     <select name="kategori_id" id="kategori_id" required
-                            class="mt-1 block w-full rounded-lg {{ $errors->has('kategori_id') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('kategori_id') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Pilih Kategori</option>
                         @foreach($kategoris as $kat)
                             <option value="{{ $kat->id }}" {{ old('kategori_id', $aset->kategori_id) == $kat->id ? 'selected' : '' }}>
@@ -151,7 +151,7 @@
                     </label>
                     <input type="number" name="tahun_pengadaan" id="tahun_pengadaan" required min="1900" max="{{ date('Y') + 1 }}"
                            value="{{ old('tahun_pengadaan', $aset->tahun_pengadaan) }}"
-                           class="mt-1 block w-full rounded-lg {{ $errors->has('tahun_pengadaan') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('tahun_pengadaan') ? 'border-red-500' : 'border-gray-300' }}">
                     @error('tahun_pengadaan')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -162,7 +162,7 @@
                         Deskripsi Aset
                     </label>
                     <textarea name="deskripsi_aset" id="deskripsi_aset" rows="3"
-                              class="mt-1 block w-full rounded-lg {{ $errors->has('deskripsi_aset') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('deskripsi_aset', $aset->deskripsi_aset) }}</textarea>
+                              class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('deskripsi_aset') ? 'border-red-500' : 'border-gray-300' }}">{{ old('deskripsi_aset', $aset->deskripsi_aset) }}</textarea>
                     @error('deskripsi_aset')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -203,7 +203,7 @@
                     <input type="file" name="gambar_aset" id="gambar_aset" accept="image/png,image/jpeg,image/jpg,image/webp"
                            @change="onImageSelected($event)"
                            :disabled="hasExistingImage && !removeImage"
-                           class="mt-1 block w-full rounded-lg {{ $errors->has('gambar_aset') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('gambar_aset') ? 'border-red-500' : 'border-gray-300' }}">
                     <p class="mt-1 text-xs text-gray-500">Opsional. Maksimal 2MB. Jika gambar lama belum ditandai hapus, upload dinonaktifkan.</p>
                     @if($aset->gambar_aset_base64)
                         <p class="mt-1 text-xs text-amber-600" x-show="!removeImage">Upload dinonaktifkan karena aset sudah memiliki gambar.</p>
@@ -226,7 +226,7 @@
                 <div>
                     <label for="ukuran_label" class="block text-sm font-medium text-gray-700">Skala Ukuran</label>
                     <select name="ukuran_label" id="ukuran_label"
-                            class="mt-1 block w-full rounded-lg {{ $errors->has('ukuran_label') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('ukuran_label') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Pilih Skala</option>
                         <option value="S" {{ old('ukuran_label', $aset->ukuran_label) == 'S' ? 'selected' : '' }}>S (< 30x30x30 cm)</option>
                         <option value="M" {{ old('ukuran_label', $aset->ukuran_label) == 'M' ? 'selected' : '' }}>M (< 100x100x100 cm)</option>
@@ -241,7 +241,7 @@
                     <input type="text" name="ukuran" id="ukuran"
                            value="{{ old('ukuran', $aset->ukuran) }}"
                            placeholder="Contoh: 120cm x 60cm x 80cm"
-                           class="mt-1 block w-full rounded-lg {{ $errors->has('ukuran') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('ukuran') ? 'border-red-500' : 'border-gray-300' }}">
                     @error('ukuran')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -254,7 +254,7 @@
                     <input type="text" name="deskripsi_ukuran_bentuk" id="deskripsi_ukuran_bentuk"
                            value="{{ old('deskripsi_ukuran_bentuk', $aset->deskripsi_ukuran_bentuk) }}"
                            placeholder="Contoh: Persegi panjang, kayu jati"
-                           class="mt-1 block w-full rounded-lg {{ $errors->has('deskripsi_ukuran_bentuk') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('deskripsi_ukuran_bentuk') ? 'border-red-500' : 'border-gray-300' }}">
                     @error('deskripsi_ukuran_bentuk')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -271,7 +271,7 @@
                         Lokasi <span class="text-red-500">*</span>
                     </label>
                     <select name="lokasi_id" id="lokasi_id" required
-                            class="mt-1 block w-full rounded-lg {{ $errors->has('lokasi_id') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('lokasi_id') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Pilih Lokasi</option>
                         @foreach($lokasis as $lok)
                             <option value="{{ $lok->id }}" {{ old('lokasi_id', $aset->lokasi_id) == $lok->id ? 'selected' : '' }}>
@@ -289,7 +289,7 @@
                         Kondisi <span class="text-red-500">*</span>
                     </label>
                     <select name="kondisi_id" id="kondisi_id" required
-                            class="mt-1 block w-full rounded-lg {{ $errors->has('kondisi_id') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('kondisi_id') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Pilih Kondisi</option>
                         @foreach($kondisis as $kon)
                             <option value="{{ $kon->id }}" {{ old('kondisi_id', $aset->kondisi_id) == $kon->id ? 'selected' : '' }}>
@@ -307,7 +307,7 @@
                         Kategori Penggunaan <span class="text-red-500">*</span>
                     </label>
                     <select name="label_penggunaan" id="label_penggunaan" required
-                            class="mt-1 block w-full rounded-lg {{ $errors->has('label_penggunaan') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('label_penggunaan') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Pilih Kategori Penggunaan</option>
                         <option value="A" {{ old('label_penggunaan', $aset->label_penggunaan) == 'A' ? 'selected' : '' }}>A - Lokasi tetap tidak berubah</option>
                         <option value="B" {{ old('label_penggunaan', $aset->label_penggunaan) == 'B' ? 'selected' : '' }}>B - Lokasi berubah saat digunakan, penyimpanan tetap</option>
@@ -323,7 +323,7 @@
                     <input type="text" name="kegunaan" id="kegunaan" required
                            value="{{ old('kegunaan', $aset->kegunaan) }}"
                            placeholder="Contoh: Untuk ibadah minggu"
-                           class="mt-1 block w-full rounded-lg {{ $errors->has('kegunaan') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('kegunaan') ? 'border-red-500' : 'border-gray-300' }}">
                     @error('kegunaan')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -334,7 +334,7 @@
                         Keterangan Kegunaan
                     </label>
                     <textarea name="keterangan_kegunaan" id="keterangan_kegunaan" rows="2"
-                              class="mt-1 block w-full rounded-lg {{ $errors->has('keterangan_kegunaan') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('keterangan_kegunaan', $aset->keterangan_kegunaan) }}</textarea>
+                              class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('keterangan_kegunaan') ? 'border-red-500' : 'border-gray-300' }}">{{ old('keterangan_kegunaan', $aset->keterangan_kegunaan) }}</textarea>
                     @error('keterangan_kegunaan')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -352,7 +352,7 @@
                     </label>
                     <input type="number" name="jumlah_barang" id="jumlah_barang" required min="1"
                            value="{{ old('jumlah_barang', $aset->jumlah_barang) }}"
-                           class="mt-1 block w-full rounded-lg {{ $errors->has('jumlah_barang') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('jumlah_barang') ? 'border-red-500' : 'border-gray-300' }}">
                     @error('jumlah_barang')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -363,7 +363,7 @@
                         Tipe Grup <span class="text-red-500">*</span>
                     </label>
                     <select name="tipe_grup_v2" id="tipe_grup_v2" required
-                            class="mt-1 block w-full rounded-lg {{ $errors->has('tipe_grup_v2') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('tipe_grup_v2') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Pilih Tipe</option>
                         <option value="Singular" {{ old('tipe_grup_v2', $aset->tipe_grup_v2) == 'Singular' ? 'selected' : '' }}>Singular</option>
                         <option value="Collective" {{ old('tipe_grup_v2', $aset->tipe_grup_v2) == 'Collective' ? 'selected' : '' }}>Collective</option>
@@ -381,7 +381,7 @@
                     <input type="text" name="keterangan_tipe_grup" id="keterangan_tipe_grup"
                            value="{{ old('keterangan_tipe_grup', $aset->keterangan_tipe_grup) }}"
                            placeholder="Contoh: 1 set terdiri dari 6 kursi"
-                           class="mt-1 block w-full rounded-lg {{ $errors->has('keterangan_tipe_grup') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('keterangan_tipe_grup') ? 'border-red-500' : 'border-gray-300' }}">
                     @error('keterangan_tipe_grup')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -398,7 +398,7 @@
                         Sumber Dana <span class="text-red-500">*</span>
                     </label>
                     <select name="sumber_dana" id="sumber_dana" required
-                            class="mt-1 block w-full rounded-lg {{ $errors->has('sumber_dana') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('sumber_dana') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Pilih Sumber Dana</option>
                         <option value="Gereja" {{ old('sumber_dana', $aset->sumber_dana) == 'Gereja' ? 'selected' : '' }}>Gereja</option>
                         <option value="Keuskupan / Titipan" {{ old('sumber_dana', $aset->sumber_dana) == 'Keuskupan / Titipan' ? 'selected' : '' }}>Keuskupan / Titipan</option>
@@ -412,7 +412,7 @@
                     <input type="number" name="nilai_budget" id="nilai_budget" min="0" step="1000"
                            value="{{ old('nilai_budget', $aset->nilai_budget) }}"
                            placeholder="Contoh: 5000000"
-                           class="mt-1 block w-full rounded-lg {{ $errors->has('nilai_budget') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('nilai_budget') ? 'border-red-500' : 'border-gray-300' }}">
                     @error('nilai_budget')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -425,7 +425,7 @@
                     <input type="text" name="keterangan_budget" id="keterangan_budget"
                            value="{{ old('keterangan_budget', $aset->keterangan_budget) }}"
                            placeholder="Contoh: Dana APBG 2024"
-                           class="mt-1 block w-full rounded-lg {{ $errors->has('keterangan_budget') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('keterangan_budget') ? 'border-red-500' : 'border-gray-300' }}">
                     @error('keterangan_budget')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -438,7 +438,7 @@
                     <input type="number" name="nilai_pengadaan_total" id="nilai_pengadaan_total" required min="0" step="1000"
                            value="{{ old('nilai_pengadaan_total', $aset->nilai_pengadaan_total) }}"
                            placeholder="Contoh: 4500000"
-                           class="mt-1 block w-full rounded-lg {{ $errors->has('nilai_pengadaan_total') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('nilai_pengadaan_total') ? 'border-red-500' : 'border-gray-300' }}">
                     @error('nilai_pengadaan_total')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -451,7 +451,7 @@
                     <input type="number" name="nilai_pengadaan_per_unit" id="nilai_pengadaan_per_unit" min="0" step="1000"
                            value="{{ old('nilai_pengadaan_per_unit', $aset->nilai_pengadaan_per_unit) }}"
                            placeholder="Contoh: 750000"
-                           class="mt-1 block w-full rounded-lg {{ $errors->has('nilai_pengadaan_per_unit') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('nilai_pengadaan_per_unit') ? 'border-red-500' : 'border-gray-300' }}">
                     @error('nilai_pengadaan_per_unit')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -468,7 +468,7 @@
                         Departemen <span class="text-red-500">*</span>
                     </label>
                     <select id="parent_department_id"
-                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">Pilih Departemen</option>
                         @foreach($departments as $dept)
                             <option value="{{ $dept->id }}" {{ (old('parent_department_id', $currentDepartmentId) == $dept->id) ? 'selected' : '' }}>
@@ -483,7 +483,7 @@
                         Sub Departemen <span class="text-red-500">*</span>
                     </label>
                     <select name="department_id" id="department_id" required
-                            class="mt-1 block w-full rounded-lg {{ $errors->has('department_id') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('department_id') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Pilih Sub Departemen</option>
                         @foreach($subDepartments as $sub)
                             <option value="{{ $sub->id }}" {{ (old('department_id', $aset->department_id) == $sub->id) ? 'selected' : '' }}>
@@ -506,7 +506,7 @@
                     Pengelola Aset <span class="text-red-500">*</span>
                 </label>
                 <select name="pengelola_id" id="pengelola_id" required
-                        class="mt-1 block w-full rounded-lg {{ $errors->has('pengelola_id') ? 'border-red-500' : 'border-gray-300' }} shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('pengelola_id') ? 'border-red-500' : 'border-gray-300' }}">
                     <option value="">Pilih Pengelola</option>
                     @foreach($pengelolas as $pg)
                         <option value="{{ $pg->id }}" {{ old('pengelola_id', $aset->pengelola_id) == $pg->id ? 'selected' : '' }}>

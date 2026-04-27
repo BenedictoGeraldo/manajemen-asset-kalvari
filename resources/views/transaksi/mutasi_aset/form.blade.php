@@ -24,7 +24,7 @@
             <label for="data_aset_kolektif_id" class="block text-sm font-medium text-gray-700 mb-1">
                 Aset <span class="text-red-500">*</span>
             </label>
-            <select id="data_aset_kolektif_id" name="data_aset_kolektif_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 appearance-none bg-white cursor-pointer" required>
+            <select id="data_aset_kolektif_id" name="data_aset_kolektif_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 appearance-none bg-white cursor-pointer" required>
                 <option value="">-- Pilih Aset --</option>
                 @foreach($asets as $aset)
                     <option value="{{ $aset->id }}" @selected(old('data_aset_kolektif_id', isset($mutasi) ? $mutasi->data_aset_kolektif_id : null) == $aset->id)>
@@ -42,7 +42,7 @@
             <label for="tanggal_mutasi" class="block text-sm font-medium text-gray-700 mb-1">
                 Tanggal Mutasi <span class="text-red-500">*</span>
             </label>
-            <input type="date" id="tanggal_mutasi" name="tanggal_mutasi" value="{{ old('tanggal_mutasi', isset($mutasi) ? $mutasi->tanggal_mutasi?->format('Y-m-d') : now()->format('Y-m-d')) }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500" required>
+            <input type="date" id="tanggal_mutasi" name="tanggal_mutasi" value="{{ old('tanggal_mutasi', isset($mutasi) ? $mutasi->tanggal_mutasi?->format('Y-m-d') : now()->format('Y-m-d')) }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500" required>
             @error('tanggal_mutasi')
                 <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
             @enderror
@@ -53,7 +53,7 @@
             <label for="jenis_mutasi" class="block text-sm font-medium text-gray-700 mb-1">
                 Jenis Mutasi <span class="text-red-500">*</span>
             </label>
-            <select id="jenis_mutasi" name="jenis_mutasi" x-model="jenisSelected" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 appearance-none bg-white cursor-pointer" required>
+            <select id="jenis_mutasi" name="jenis_mutasi" x-model="jenisSelected" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 appearance-none bg-white cursor-pointer" required>
                 <option value="">-- Pilih Jenis Mutasi --</option>
                 @foreach($jenisOptions as $value => $label)
                     <option value="{{ $value }}" @selected(old('jenis_mutasi', isset($mutasi) ? $mutasi->jenis_mutasi : null) == $value)>
@@ -71,7 +71,7 @@
             <label for="status" class="block text-sm font-medium text-gray-700 mb-1">
                 Status <span class="text-red-500">*</span>
             </label>
-            <select id="status" name="status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 appearance-none bg-white cursor-pointer" required>
+            <select id="status" name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 appearance-none bg-white cursor-pointer" required>
                 <option value="">-- Pilih Status --</option>
                 @foreach($statusOptions as $value => $label)
                     <option value="{{ $value }}" @selected(old('status', isset($mutasi) ? $mutasi->status : 'draft') == $value)>
@@ -89,7 +89,7 @@
             <label for="lokasi_baru_id" class="block text-sm font-medium text-gray-700 mb-1">
                 Lokasi Baru
             </label>
-            <select id="lokasi_baru_id" name="lokasi_baru_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 appearance-none bg-white cursor-pointer">
+            <select id="lokasi_baru_id" name="lokasi_baru_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 appearance-none bg-white cursor-pointer">
                 <option value="">-- Pilih Lokasi --</option>
                 @foreach($lokasis as $lokasi)
                     <option value="{{ $lokasi->id }}" @selected(old('lokasi_baru_id', isset($mutasi) ? $mutasi->lokasi_baru_id : null) == $lokasi->id)>
@@ -107,7 +107,7 @@
             <label for="kondisi_id" class="block text-sm font-medium text-gray-700 mb-1">
                 Kondisi
             </label>
-            <select id="kondisi_id" name="kondisi_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 appearance-none bg-white cursor-pointer">
+            <select id="kondisi_id" name="kondisi_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 appearance-none bg-white cursor-pointer">
                 <option value="">-- Pilih Kondisi --</option>
                 @foreach($kondisis as $kondisi)
                     <option value="{{ $kondisi->id }}" @selected(old('kondisi_id', isset($mutasi) ? $mutasi->kondisi_id : null) == $kondisi->id)>
@@ -125,7 +125,7 @@
             <label for="alasan" class="block text-sm font-medium text-gray-700 mb-1">
                 Alasan Mutasi
             </label>
-            <textarea id="alasan" name="alasan" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500" placeholder="Jelaskan alasan mutasi aset ini">{{ old('alasan', isset($mutasi) ? $mutasi->alasan : '') }}</textarea>
+            <textarea id="alasan" name="alasan" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500" placeholder="Jelaskan alasan mutasi aset ini">{{ old('alasan', isset($mutasi) ? $mutasi->alasan : '') }}</textarea>
             @error('alasan')
                 <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
             @enderror
@@ -136,7 +136,7 @@
             <label for="catatan" class="block text-sm font-medium text-gray-700 mb-1">
                 Catatan
             </label>
-            <textarea id="catatan" name="catatan" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500" placeholder="Catatan tambahan jika ada">{{ old('catatan', isset($mutasi) ? $mutasi->catatan : '') }}</textarea>
+            <textarea id="catatan" name="catatan" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500" placeholder="Catatan tambahan jika ada">{{ old('catatan', isset($mutasi) ? $mutasi->catatan : '') }}</textarea>
             @error('catatan')
                 <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
             @enderror

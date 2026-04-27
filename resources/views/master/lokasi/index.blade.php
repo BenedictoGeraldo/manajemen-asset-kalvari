@@ -26,7 +26,7 @@
         <div class="w-full flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0">
             <form method="GET" class="flex-1">
                 <div class="search-input-wrapper">
-                    <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari lokasi berdasarkan nama, gedung, lantai, atau ruangan..."
+                    <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari lokasi berdasarkan nama, kode, atau keterangan..."
                            class="search-input-control flex-1 w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off">
                     <button type="submit" class="search-submit-btn" aria-label="Cari">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,26 +57,13 @@
                          x-transition:leave-end="transform opacity-0 scale-95"
                          class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
                         <div class="py-1">
-                            <a href="{{ route('master.lokasi.export', 'xlsx') }}"
-                               class="dropdown-export-item block">
-                                <svg class="w-4 h-4 mr-2 export-icon-xlsx" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z"/>
-                                </svg>
-                                Export ke Excel (.xlsx)
-                            </a>
-                            <a href="{{ route('master.lokasi.export', 'csv') }}"
-                               class="dropdown-export-item block">
-                                <svg class="w-4 h-4 mr-2 export-icon-csv" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z"/>
-                                </svg>
-                                Export ke CSV (.csv)
-                            </a>
+                            <a href="{{ route('master.lokasi.export', 'xlsx') }}" class="dropdown-export-item block">Export ke Excel (.xlsx)</a>
+                            <a href="{{ route('master.lokasi.export', 'csv') }}" class="dropdown-export-item block">Export ke CSV (.csv)</a>
                         </div>
                     </div>
                 </div>
 
-                <a href="{{ route('master.lokasi.create') }}" data-navigate
-                   class="btn-a">
+                <a href="{{ route('master.lokasi.create') }}" data-navigate class="btn-a">
                     <svg class="w-5 h-5 mr-2 !text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
@@ -93,9 +80,9 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Lokasi</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lokasi Lengkap</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kode Lokasi</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lokasi</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sub Lokasi</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah Aset</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
@@ -106,13 +93,17 @@
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $index + 1 }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">{{ $lokasi->nama_lokasi }}</div>
+                                <div class="text-sm font-mono text-gray-700">{{ $lokasi->kode_lokasi ?? '-' }}</div>
                             </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-700">{{ $lokasi->lokasi_lengkap }}</div>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">
+                                    {{ $lokasi->nama_lokasi }}
+                                </div>
                             </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-500">{{ $lokasi->keterangan_lokasi ?? '-' }}</div>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-700">
+                                    {{ $lokasi->sub_lokasi ?? '-' }}
+                                </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900">{{ $lokasi->data_aset_count }} aset</div>
@@ -158,4 +149,3 @@
     </div>
 </div>
 @endsection
-

@@ -37,8 +37,8 @@
                 <td>{{ $aset->kode_aset }}</td>
                 <td>{{ $aset->nama_aset }}</td>
                 <td>{{ $aset->kategori->nama_kategori }}</td>
-                <td>{{ $aset->lokasi->nama_lokasi }} ({{ $aset->lokasi->gedung }})</td>
-                <td>{{ $aset->kondisi->nama_kondisi }}</td>
+                <td>{{ $aset->lokasi->nama_lokasi }} {{ $aset->lokasi->sub_lokasi ? '(' . $aset->lokasi->sub_lokasi . ')' : '' }}</td>
+                <td>{{ $aset->kondisi?->nama_kondisi ?? '-' }}</td>
                 <td>{{ $aset->jumlah_barang }}</td>
                 <td>Rp {{ number_format($aset->nilai_pengadaan_per_unit, 0, ',', '.') }}</td>
             </tr>
