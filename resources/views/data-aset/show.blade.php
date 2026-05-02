@@ -62,6 +62,10 @@
                         </p>
                     </div>
                     <div>
+                        <label class="text-sm font-medium text-gray-500">Departemen</label>
+                        <p class="mt-1 text-gray-900">{{ $aset->department ? $aset->department->name : '-' }}</p>
+                    </div>
+                    <div>
                         <label class="text-sm font-medium text-gray-500">Tahun Pengadaan</label>
                         <p class="mt-1 text-gray-900">{{ $aset->tahun_pengadaan }}</p>
                     </div>

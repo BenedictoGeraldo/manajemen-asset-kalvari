@@ -76,8 +76,8 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Sub Departemen</label>
-                    <select id="subDepartmentFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
-                        <option value="">Semua Sub Departemen</option>
+                    <select id="subDepartmentFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed" {{ !$departmentId ? 'disabled' : '' }}>
+                        <option value="">Sub Departemen</option>
                         @foreach($subDepartments as $sub)
                             <option value="{{ $sub->id }}" {{ $subDepartmentId == $sub->id ? 'selected' : '' }}>{{ $sub->code }} - {{ $sub->name }}</option>
                         @endforeach
@@ -191,6 +191,7 @@
                 subDepartmentFilter.innerHTML = '<option value="">Semua Sub Departemen</option>';
 
                 if (departmentId) {
+                    subDepartmentFilter.disabled = false;
                     fetch(`{{ route('get-sub-departments') }}?parent_id=${departmentId}`)
                         .then(response => response.json())
                         .then(data => {
@@ -201,6 +202,8 @@
                                 subDepartmentFilter.appendChild(option);
                             });
                         });
+                } else {
+                    subDepartmentFilter.disabled = true;
                 }
 
                 updateAsets(1);

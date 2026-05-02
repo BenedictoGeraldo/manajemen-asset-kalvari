@@ -463,34 +463,23 @@
         <div class="bg-white rounded-lg shadow p-6">
             <h4 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Departemen</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="parent_department_id" class="block text-sm font-medium text-gray-700">
-                        Departemen <span class="text-red-500">*</span>
-                    </label>
-                    <select id="parent_department_id"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        <option value="">Pilih Departemen</option>
-                        @foreach($departments as $dept)
-                            <option value="{{ $dept->id }}" {{ (old('parent_department_id', $currentDepartmentId) == $dept->id) ? 'selected' : '' }}>
-                                {{ $dept->code }} - {{ $dept->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div>
+                <div class="md:col-span-2">
                     <label for="department_id" class="block text-sm font-medium text-gray-700">
-                        Sub Departemen <span class="text-red-500">*</span>
+                        Departemen / Sub Departemen <span class="text-red-500">*</span>
                     </label>
                     <select name="department_id" id="department_id" required
+                            @if(auth()->user() && auth()->user()->isAdminDivisi()) disabled @endif
                             class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('department_id') ? 'border-red-500' : 'border-gray-300' }}">
-                        <option value="">Pilih Sub Departemen</option>
-                        @foreach($subDepartments as $sub)
-                            <option value="{{ $sub->id }}" {{ (old('department_id', $aset->department_id) == $sub->id) ? 'selected' : '' }}>
-                                {{ $sub->code }} - {{ $sub->name }}
+                        <option value="">Pilih Departemen / Sub Departemen</option>
+                        @foreach($departments as $dept)
+                            <option value="{{ $dept->id }}" {{ old('department_id', $aset->department_id) == $dept->id ? 'selected' : '' }}>
+                                {!! str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $dept->level ?? 0) !!} {{ $dept->code }} - {{ $dept->name }}
                             </option>
                         @endforeach
                     </select>
+                    @if(auth()->user() && auth()->user()->isAdminDivisi())
+                        <input type="hidden" name="department_id" value="{{ auth()->user()->department_id }}">
+                    @endif
                     @error('department_id')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -520,47 +509,7 @@
             </div>
         </div>
 
-        @push('scripts')
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const parentDeptSelect = document.getElementById('parent_department_id');
-                const deptSelect = document.getElementById('department_id');
 
-                parentDeptSelect.addEventListener('change', function() {
-                    const parentId = this.value;
-                    deptSelect.innerHTML = '<option value="">Loading...</option>';
-
-                    if (!parentId) {
-                        deptSelect.innerHTML = '<option value="">Pilih Sub Departemen</option>';
-                        return;
-                    }
-
-                    fetch(`{{ route('get-sub-departments') }}?parent_id=${parentId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            deptSelect.innerHTML = '<option value="">Pilih Sub Departemen</option>';
-                            if (data.length === 0) {
-                                const option = document.createElement('option');
-                                option.value = parentId;
-                                option.textContent = parentDeptSelect.options[parentDeptSelect.selectedIndex].text + ' (Utama)';
-                                deptSelect.appendChild(option);
-                            } else {
-                                data.forEach(sub => {
-                                    const option = document.createElement('option');
-                                    option.value = sub.id;
-                                    option.textContent = `${sub.code} - ${sub.name}`;
-                                    deptSelect.appendChild(option);
-                                });
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            deptSelect.innerHTML = '<option value="">Error loading sub departments</option>';
-                        });
-                });
-            });
-        </script>
-        @endpush
 
         <!-- Actions -->
         <div class="flex justify-end space-x-4">
