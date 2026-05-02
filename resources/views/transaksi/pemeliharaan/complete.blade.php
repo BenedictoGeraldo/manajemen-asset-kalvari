@@ -21,13 +21,13 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label for="tanggal_selesai" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Selesai <span class="text-red-500">*</span></label>
-                    <input type="datetime-local" id="tanggal_selesai" name="tanggal_selesai" required value="{{ old('tanggal_selesai', now()->format('Y-m-d\\TH:i')) }}" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                    <input type="datetime-local" id="tanggal_selesai" name="tanggal_selesai" required value="{{ old('tanggal_selesai', now()->format('Y-m-d\\TH:i')) }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     @error('tanggal_selesai')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label for="kondisi_sesudah_id" class="block text-sm font-medium text-gray-700 mb-1">Kondisi Aset Sesudah <span class="text-red-500">*</span></label>
-                    <select id="kondisi_sesudah_id" name="kondisi_sesudah_id" required class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                    <select id="kondisi_sesudah_id" name="kondisi_sesudah_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">Pilih Kondisi</option>
                         @foreach($kondisis as $kondisi)
                             <option value="{{ $kondisi->id }}" {{ old('kondisi_sesudah_id') == $kondisi->id ? 'selected' : '' }}>{{ $kondisi->nama_kondisi }}</option>
@@ -38,18 +38,18 @@
 
                 <div>
                     <label for="realisasi_biaya" class="block text-sm font-medium text-gray-700 mb-1">Realisasi Biaya <span class="text-red-500">*</span></label>
-                    <input type="number" id="realisasi_biaya" name="realisasi_biaya" min="0" step="1000" required value="{{ old('realisasi_biaya', $pemeliharaan->realisasi_biaya ?? 0) }}" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                    <input type="number" id="realisasi_biaya" name="realisasi_biaya" min="0" step="1000" required value="{{ old('realisasi_biaya', $pemeliharaan->realisasi_biaya ?? 0) }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     @error('realisasi_biaya')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label for="catatan" class="block text-sm font-medium text-gray-700 mb-1">Catatan Penyelesaian</label>
-                    <textarea id="catatan" name="catatan" rows="2" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">{{ old('catatan', $pemeliharaan->catatan) }}</textarea>
+                    <textarea id="catatan" name="catatan" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ old('catatan', $pemeliharaan->catatan) }}</textarea>
                 </div>
 
                 <div class="md:col-span-2">
                     <label for="tindakan" class="block text-sm font-medium text-gray-700 mb-1">Tindakan yang Dilakukan <span class="text-red-500">*</span></label>
-                    <textarea id="tindakan" name="tindakan" rows="4" required class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">{{ old('tindakan', $pemeliharaan->tindakan) }}</textarea>
+                    <textarea id="tindakan" name="tindakan" rows="4" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ old('tindakan', $pemeliharaan->tindakan) }}</textarea>
                     @error('tindakan')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
             </div>

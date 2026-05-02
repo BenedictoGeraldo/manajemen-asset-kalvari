@@ -12,10 +12,25 @@
 
                 <div class="space-y-4">
                     <div>
-                        <label for="nama_lokasi" class="block text-sm font-medium text-gray-700 mb-2">
-                            Nama Lokasi <span class="text-red-500">*</span>
+                        <label for="kode_lokasi" class="block text-sm font-medium text-gray-700 mb-2">
+                            Kode Lokasi <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" name="nama_lokasi" id="nama_lokasi" required value="{{ old('nama_lokasi') }}"
+                        <input type="text" name="kode_lokasi" id="kode_lokasi" required
+                               value="{{ old('kode_lokasi') }}"
+                               maxlength="10"
+                               placeholder="Contoh: 0A"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono uppercase @error('kode_lokasi') border-red-500 @enderror"
+                               oninput="this.value = this.value.toUpperCase()">
+                        @error('kode_lokasi')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="nama_lokasi" class="block text-sm font-medium text-gray-700 mb-2">
+                            Lokasi <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="nama_lokasi" id="nama_lokasi" required value="{{ old('nama_lokasi') }}" placeholder="Contoh: Gereja"
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('nama_lokasi') border-red-500 @enderror">
                         @error('nama_lokasi')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -23,27 +38,14 @@
                     </div>
 
                     <div>
-                        <label for="gedung" class="block text-sm font-medium text-gray-700 mb-2">
-                            Gedung <span class="text-red-500">*</span>
+                        <label for="sub_lokasi" class="block text-sm font-medium text-gray-700 mb-2">
+                            Sub Lokasi
                         </label>
-                        <input type="text" name="gedung" id="gedung" required value="{{ old('gedung') }}"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('gedung') border-red-500 @enderror">
-                        @error('gedung')
+                        <input type="text" name="sub_lokasi" id="sub_lokasi" value="{{ old('sub_lokasi') }}" placeholder="Contoh: Area Umat Gereja"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('sub_lokasi') border-red-500 @enderror">
+                        @error('sub_lokasi')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label for="lantai" class="block text-sm font-medium text-gray-700 mb-2">Lantai</label>
-                            <input type="text" name="lantai" id="lantai" value="{{ old('lantai') }}"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        </div>
-                        <div>
-                            <label for="ruangan" class="block text-sm font-medium text-gray-700 mb-2">Ruangan</label>
-                            <input type="text" name="ruangan" id="ruangan" value="{{ old('ruangan') }}"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        </div>
                     </div>
 
                     <div>
@@ -60,18 +62,11 @@
                 </div>
 
                 <div class="mt-6 flex items-center space-x-3">
-                    <button type="submit"
-                            class="btn-a-sm">
-                        Simpan
-                    </button>
-                    <a href="{{ route('master.lokasi.index') }}" data-navigate
-                       class="btn-c-sm">
-                        Batal
-                    </a>
+                    <button type="submit" class="btn-a-sm">Simpan</button>
+                    <a href="{{ route('master.lokasi.index') }}" data-navigate class="btn-c-sm">Batal</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
 @endsection
-

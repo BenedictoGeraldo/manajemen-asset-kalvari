@@ -119,7 +119,12 @@ class User extends Authenticatable
 
         // Check via role permissions (new system)
         if ($this->role) {
-            return $this->role->permissions()->where('slug', $permissionName)->exists();
+            return $this->role->permissions()
+                ->where(function ($q) use ($permissionName) {
+                    $q->where('name', $permissionName)
+                        ->orWhere('slug', $permissionName);
+                })
+                ->exists();
         }
 
         // Check direct permissions (legacy system)
@@ -136,12 +141,24 @@ class User extends Authenticatable
         }
 
         if ($this->role) {
-            if ($this->role->permissions()->whereIn('slug', $permissions)->exists()) {
+            if (
+                $this->role->permissions()
+                    ->where(function ($q) use ($permissions) {
+                        $q->whereIn('name', $permissions)
+                            ->orWhereIn('slug', $permissions);
+                    })
+                    ->exists()
+            ) {
                 return true;
             }
         }
 
         return $this->permissions()->whereIn('name', $permissions)->exists();
+    }
+
+    public function isAdminDivisi(): bool
+    {
+        return !$this->is_super_admin && optional($this->role)->slug === 'admin-divisi';
     }
 
     /**

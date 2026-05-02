@@ -23,7 +23,7 @@
                 x-transition:leave="transition ease-in duration-150"
                 x-transition:leave-start="opacity-100 transform scale-100"
                 x-transition:leave-end="opacity-0 transform scale-90"
-                class="text-xl font-bold text-gray-800 whitespace-nowrap">{{ setting('org_name') }}</h1>
+                class="text-xl font-bold text-gray-800 whitespace-nowrap">PELITA</h1>
         </div>
         <button @click="sidebarMinimized = !sidebarMinimized"
                 class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors duration-150 flex-shrink-0">
@@ -50,7 +50,7 @@
             </a>
             @endif
 
-            @if(auth()->user()->is_super_admin || auth()->user()->hasAnyPermission(['master.kategori.view', 'master.lokasi.view', 'master.kondisi.view', 'master.pengelola.view']))
+            @if(auth()->user()->is_super_admin || (!auth()->user()->isAdminDivisi() && auth()->user()->hasAnyPermission(['master.kategori.view', 'master.lokasi.view', 'master.kondisi.view', 'master.pengelola.view'])))
             <div class="relative" x-data="{ open: {{ $isMasterActive ? 'true' : 'false' }} }">
                 <button @click="open = !open"
                         data-sidebar-parent="master"
@@ -165,7 +165,7 @@
             </div>
             @endif
 
-            @if(auth()->user()->is_super_admin || optional(auth()->user()->role)->slug === 'admin-divisi')
+            @if(auth()->user()->is_super_admin)
             <div class="relative" x-data="{ open: {{ $isLaporanActive ? 'true' : 'false' }} }">
                 <button @click="open = !open"
                         data-sidebar-parent="laporan"
@@ -209,7 +209,7 @@
             </div>
             @endif
 
-            @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('user-management.view'))
+            @if(auth()->user()->is_super_admin || (!auth()->user()->isAdminDivisi() && auth()->user()->hasPermission('user-management.view')))
             <div class="relative" x-data="{ open: {{ $isPengaturanActive ? 'true' : 'false' }} }">
                 <button @click="open = !open"
                         data-sidebar-parent="pengaturan"

@@ -69,7 +69,7 @@ class DataAsetExport implements FromCollection, WithHeadings, WithMapping, WithC
             $aset->tahun_pengadaan ?? '-',
             $aset->nilai_pengadaan_total ? 'Rp ' . number_format($aset->nilai_pengadaan_total, 0, ',', '.') : '-',
             $aset->nilai_pengadaan_per_unit ? 'Rp ' . number_format($aset->nilai_pengadaan_per_unit, 0, ',', '.') : '-',
-            $aset->kondisi->nama_kondisi ?? '-',
+            $aset->kondisi?->nama_kondisi ?? '-',
             $aset->catatan ?? '-',
             $aset->is_active ? 'Aktif' : 'Tidak Aktif',
             $aset->created_at ? $aset->created_at->format('d/m/Y H:i') : '-',

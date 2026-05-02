@@ -25,13 +25,13 @@
                     <label for="tanggal_dikembalikan" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Dikembalikan <span class="text-red-500">*</span></label>
                     <input type="datetime-local" id="tanggal_dikembalikan" name="tanggal_dikembalikan" required
                            value="{{ old('tanggal_dikembalikan', now()->format('Y-m-d\\TH:i')) }}"
-                              class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     @error('tanggal_dikembalikan')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label for="catatan_pengembalian" class="block text-sm font-medium text-gray-700 mb-1">Catatan Pengembalian</label>
-                    <textarea id="catatan_pengembalian" name="catatan_pengembalian" rows="2" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">{{ old('catatan_pengembalian') }}</textarea>
+                    <textarea id="catatan_pengembalian" name="catatan_pengembalian" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ old('catatan_pengembalian') }}</textarea>
                 </div>
             </div>
 

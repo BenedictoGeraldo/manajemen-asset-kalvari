@@ -21,9 +21,19 @@ class DataAsetService
         $perPage = $filters['per_page'] ?? 10;
         $departmentId = $filters['department_id'] ?? null;
         $subDepartmentId = $filters['sub_department_id'] ?? null;
+        $allowedDepartmentIds = $filters['allowed_department_ids'] ?? null;
 
         $query = DataAsetKolektif::with(['kategori', 'lokasi', 'kondisi', 'pengelola', 'department'])
             ->orderBy('created_at', 'desc');
+
+        if (is_array($allowedDepartmentIds)) {
+            if (empty($allowedDepartmentIds)) {
+                // Tidak ada departemen yang boleh diakses -> hasil kosong
+                $query->whereRaw('1 = 0');
+            } else {
+                $query->whereIn('department_id', $allowedDepartmentIds);
+            }
+        }
 
         if ($search) {
             $query->where(function($q) use ($search) {
@@ -63,7 +73,7 @@ class DataAsetService
      */
     public function getAsetById(int $id): DataAsetKolektif
     {
-        return DataAsetKolektif::with(['kategori', 'lokasi', 'kondisi', 'pengelola'])
+        return DataAsetKolektif::with(['kategori', 'lokasi', 'kondisi', 'pengelola', 'department'])
             ->findOrFail($id);
     }
 

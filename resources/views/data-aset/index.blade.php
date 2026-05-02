@@ -76,8 +76,8 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Sub Departemen</label>
-                    <select id="subDepartmentFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
-                        <option value="">Semua Sub Departemen</option>
+                    <select id="subDepartmentFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed" {{ !$departmentId ? 'disabled' : '' }}>
+                        <option value="">Sub Departemen</option>
                         @foreach($subDepartments as $sub)
                             <option value="{{ $sub->id }}" {{ $subDepartmentId == $sub->id ? 'selected' : '' }}>{{ $sub->code }} - {{ $sub->name }}</option>
                         @endforeach
@@ -102,18 +102,20 @@
 
     @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        (function() {
             const searchInput = document.getElementById('searchInput');
             const departmentFilter = document.getElementById('departmentFilter');
             const subDepartmentFilter = document.getElementById('subDepartmentFilter');
             const tableContainer = document.getElementById('tableContainer');
             const loadingOverlay = document.getElementById('loadingOverlay');
-            
+
+            if (!searchInput || !departmentFilter || !subDepartmentFilter || !tableContainer) return;
+
             let debounceTimer;
 
             function updateAsets(page = 1) {
                 loadingOverlay.classList.remove('hidden');
-                
+
                 const search = searchInput.value;
                 const departmentId = departmentFilter.value;
                 const subDepartmentId = subDepartmentFilter.value;
@@ -127,25 +129,28 @@
                 url.searchParams.set('page', page);
 
                 fetch(url, {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-Partial-Request': 'table'
+                    }
                 })
                 .then(response => response.text())
                 .then(html => {
                     const partials = document.createElement('div');
                     partials.innerHTML = html;
-                    
+
                     const newContent = partials.querySelector('.overflow-x-auto');
                     const newPaginate = partials.querySelector('.bg-gray-50.border-t');
-                    
+
                     const oldTable = tableContainer.querySelector('.overflow-x-auto');
                     const oldPaginate = tableContainer.querySelector('.bg-gray-50.border-t');
-                    
+
                     if (newContent && oldTable) oldTable.outerHTML = newContent.outerHTML;
                     if (newPaginate && oldPaginate) oldPaginate.outerHTML = newPaginate.outerHTML;
-                    
+
                     // Re-bind perPage select
                     bindPerPage();
-                    
+
                     window.history.pushState({}, '', url);
                     loadingOverlay.classList.add('hidden');
                 })
@@ -160,7 +165,7 @@
                 if (perPageSelect) {
                     perPageSelect.addEventListener('change', () => updateAsets(1));
                 }
-                
+
                 // Re-bind pagination links
                 document.querySelectorAll('#paginationLinks a').forEach(link => {
                     link.addEventListener('click', function(e) {
@@ -181,11 +186,12 @@
             // Department change
             departmentFilter.addEventListener('change', () => {
                 const departmentId = departmentFilter.value;
-                
+
                 // Clear sub-department
                 subDepartmentFilter.innerHTML = '<option value="">Semua Sub Departemen</option>';
-                
+
                 if (departmentId) {
+                    subDepartmentFilter.disabled = false;
                     fetch(`{{ route('get-sub-departments') }}?parent_id=${departmentId}`)
                         .then(response => response.json())
                         .then(data => {
@@ -196,8 +202,10 @@
                                 subDepartmentFilter.appendChild(option);
                             });
                         });
+                } else {
+                    subDepartmentFilter.disabled = true;
                 }
-                
+
                 updateAsets(1);
             });
 
@@ -206,11 +214,9 @@
 
             // Initial bind
             bindPerPage();
-        });
+        })();
     </script>
     @endpush
-        </div>
-    </div>
 </div>
 
 <!-- Delete Confirmation Modal -->

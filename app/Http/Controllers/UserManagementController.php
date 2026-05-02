@@ -9,8 +9,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 
+use App\Services\MasterDataService;
+
 class UserManagementController extends Controller
 {
+    public function __construct(private MasterDataService $masterDataService) {}
+
     public function index()
     {
         $users = User::with(['role', 'department'])->orderBy('name')->get();
@@ -20,7 +24,7 @@ class UserManagementController extends Controller
     public function create()
     {
         $roles = Role::orderBy('name')->get();
-        $departments = Department::orderBy('name')->get();
+        $departments = collect($this->masterDataService->getDepartmentOptions());
         return view('user-management.create', compact('roles', 'departments'));
     }
 
@@ -55,7 +59,7 @@ class UserManagementController extends Controller
     public function edit(User $user)
     {
         $roles = Role::orderBy('name')->get();
-        $departments = Department::orderBy('name')->get();
+        $departments = collect($this->masterDataService->getDepartmentOptions());
 
         return view('user-management.edit', compact('user', 'roles', 'departments'));
     }

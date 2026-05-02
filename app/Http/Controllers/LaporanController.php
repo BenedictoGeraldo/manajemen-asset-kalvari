@@ -211,7 +211,7 @@ class LaporanController extends Controller
         return DataAsetKolektif::query()
             ->with([
                 'kategori:id,nama_kategori', 
-                'lokasi:id,nama_lokasi,gedung', 
+                'lokasi:id,nama_lokasi,sub_lokasi', 
                 'kondisi:id,nama_kondisi', 
                 'pengelola:id,nama_pengelola'
             ])
@@ -224,7 +224,7 @@ class LaporanController extends Controller
                         })
                         ->orWhereHas('lokasi', function (Builder $lokasiQuery) use ($search) {
                             $lokasiQuery->where('nama_lokasi', 'like', "%{$search}%")
-                                ->orWhere('gedung', 'like', "%{$search}%");
+                                ->orWhere('sub_lokasi', 'like', "%{$search}%");
                         })
                         ->orWhereHas('pengelola', function (Builder $pengelolaQuery) use ($search) {
                             $pengelolaQuery->where('nama_pengelola', 'like', "%{$search}%");
@@ -251,8 +251,8 @@ class LaporanController extends Controller
         return TransaksiMutasiAset::query()
             ->with([
                 'aset:id,kode_aset,nama_aset', 
-                'lokasiLama:id,nama_lokasi,gedung', 
-                'lokasiBaru:id,nama_lokasi,gedung'
+                'lokasiLama:id,nama_lokasi,sub_lokasi', 
+                'lokasiBaru:id,nama_lokasi,sub_lokasi'
             ])
             ->search($filters['search'] ?? null)
             ->when($filters['status'] ?? null, function (Builder $query, $status) {

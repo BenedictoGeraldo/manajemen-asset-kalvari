@@ -11,6 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Tabel data_aset tidak digunakan — data aset disimpan di data_aset_kolektif.
+        // Migration ini di-skip jika tabel tidak ada.
+        if (!Schema::hasTable('data_aset')) {
+            return;
+        }
+
         Schema::table('data_aset', function (Blueprint $table) {
             if (!Schema::hasColumn('data_aset', 'created_by')) {
                 $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
@@ -29,6 +35,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (!Schema::hasTable('data_aset')) {
+            return;
+        }
+
         Schema::table('data_aset', function (Blueprint $table) {
             $table->dropForeign(['created_by']);
             $table->dropForeign(['updated_by']);

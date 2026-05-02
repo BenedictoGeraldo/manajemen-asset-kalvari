@@ -68,7 +68,11 @@ class MasterDataService
     public function getTopLevelDepartments(): Collection
     {
         return Cache::remember('top_level_departments', 3600, function () {
-            return Department::whereNull('parent_id')->orderBy('code')->get();
+            $root = Department::whereNull('parent_id')->first();
+            if ($root) {
+                return Department::where('parent_id', $root->id)->orderBy('code')->get();
+            }
+            return collect();
         });
     }
 
@@ -86,6 +90,34 @@ class MasterDataService
     }
 
     /**
+     * Get department options as a flat list with levels for hierarchy
+     *
+     * @return array
+     */
+    public function getDepartmentOptions(): array
+    {
+        return Cache::remember('department_options_tree', 3600, function () {
+            $allDepartments = Department::orderBy('code')->get();
+            $tree = [];
+            $this->buildDepartmentTree($allDepartments, null, 0, $tree);
+            return $tree;
+        });
+    }
+
+    /**
+     * Helper to build tree recursively
+     */
+    private function buildDepartmentTree($departments, $parentId, $level, &$tree)
+    {
+        $children = $departments->where('parent_id', $parentId);
+        foreach ($children as $child) {
+            $child->level = $level;
+            $tree[] = $child;
+            $this->buildDepartmentTree($departments, $child->id, $level + 1, $tree);
+        }
+    }
+
+    /**
      * Clear all master data cache
      *
      * @return void
@@ -97,5 +129,6 @@ class MasterDataService
         Cache::forget('active_kondisis');
         Cache::forget('active_pengelolas');
         Cache::forget('top_level_departments');
+        Cache::forget('department_options_tree');
     }
 }

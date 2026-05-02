@@ -189,7 +189,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    (function() {
         const chartEl = document.getElementById('asetTrendChart');
         if (!chartEl) {
             return;
@@ -241,7 +241,7 @@
                 },
             },
         });
-    });
+    })();
 </script>
 @endsection
 

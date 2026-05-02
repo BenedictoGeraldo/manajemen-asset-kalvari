@@ -22,9 +22,9 @@
             padding: 5px;
         }
         .label-card {
-            border: 1px dashed #ddd; /* Subtle border to guide cutting */
+            border: 1px dashed #ddd;
             padding: 8px;
-            height: 3.5cm; /* Roughly 1/8 of A4 height */
+            height: 3.5cm;
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -83,7 +83,7 @@
             color: #6b7280;
             margin-top: 4px;
         }
-        
+
         /* Print Specifics */
         @media print {
             body {
@@ -93,7 +93,7 @@
                 display: none;
             }
             .label-card {
-                border: 1px solid #eee; /* Light gray border for print */
+                border: 1px solid #eee;
                 -webkit-print-color-adjust: exact;
             }
         }

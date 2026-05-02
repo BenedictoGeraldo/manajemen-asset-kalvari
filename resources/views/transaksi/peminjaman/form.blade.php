@@ -52,13 +52,13 @@
         <div>
             <label for="kontak_peminjam" class="block text-sm font-medium text-gray-700 mb-1">Kontak Peminjam</label>
             <input type="text" id="kontak_peminjam" name="kontak_peminjam" value="{{ old('kontak_peminjam', $peminjaman->kontak_peminjam ?? '') }}"
-                   class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         </div>
 
         <div>
             <label for="unit_peminjam" class="block text-sm font-medium text-gray-700 mb-1">Unit / Departemen</label>
             <input type="text" id="unit_peminjam" name="unit_peminjam" value="{{ old('unit_peminjam', $peminjaman->unit_peminjam ?? '') }}"
-                   class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         </div>
 
         <div>
@@ -74,12 +74,12 @@
 
         <div class="md:col-span-2">
             <label for="keperluan" class="block text-sm font-medium text-gray-700 mb-1">Keperluan</label>
-            <textarea id="keperluan" name="keperluan" rows="2" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">{{ old('keperluan', $peminjaman->keperluan ?? '') }}</textarea>
+            <textarea id="keperluan" name="keperluan" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ old('keperluan', $peminjaman->keperluan ?? '') }}</textarea>
         </div>
 
         <div class="md:col-span-2">
             <label for="catatan" class="block text-sm font-medium text-gray-700 mb-1">Catatan</label>
-            <textarea id="catatan" name="catatan" rows="2" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">{{ old('catatan', $peminjaman->catatan ?? '') }}</textarea>
+            <textarea id="catatan" name="catatan" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ old('catatan', $peminjaman->catatan ?? '') }}</textarea>
         </div>
     </div>
 </div>
@@ -106,6 +106,7 @@
 </div>
 
 <script>
+(function() {
     const itemsContainer = document.getElementById('items-container');
     const addItemButton = document.getElementById('btn-add-item');
     const initialItems = @json($itemsState);
@@ -130,19 +131,19 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="md:col-span-2">
                     <label class="text-sm text-gray-700">Aset <span class="text-red-500">*</span></label>
-                    <select name="items[${index}][data_aset_kolektif_id]" required class="mt-1 w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                    <select name="items[${index}][data_aset_kolektif_id]" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-300">
                         ${buildOptions(asetOptions, item.data_aset_kolektif_id)}
                     </select>
                 </div>
 
                 <div>
                     <label class="text-sm text-gray-700">Jumlah <span class="text-red-500">*</span></label>
-                    <input type="number" min="1" name="items[${index}][jumlah]" value="${item.jumlah ?? 1}" required class="mt-1 w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                    <input type="number" min="1" name="items[${index}][jumlah]" value="${item.jumlah ?? 1}" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-300">
                 </div>
 
                 <div class="md:col-span-3">
                     <label class="text-sm text-gray-700">Catatan Item</label>
-                    <textarea name="items[${index}][catatan_item]" rows="2" class="mt-1 w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">${item.catatan_item ?? ''}</textarea>
+                    <textarea name="items[${index}][catatan_item]" rows="2" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-300">${item.catatan_item ?? ''}</textarea>
                 </div>
             </div>
         </div>`;
@@ -177,17 +178,20 @@
         bindRowEvents();
     }
 
-    addItemButton.addEventListener('click', () => {
-        const index = itemsContainer.querySelectorAll('.item-row').length;
-        itemsContainer.insertAdjacentHTML('beforeend', renderItem({
-            data_aset_kolektif_id: '',
-            jumlah: 1,
-            catatan_item: '',
-        }, index));
-        bindRowEvents();
-    });
+    if (addItemButton) {
+        addItemButton.addEventListener('click', () => {
+            const index = itemsContainer.querySelectorAll('.item-row').length;
+            itemsContainer.insertAdjacentHTML('beforeend', renderItem({
+                data_aset_kolektif_id: '',
+                jumlah: 1,
+                catatan_item: '',
+            }, index));
+            bindRowEvents();
+        });
+    }
 
     itemsContainer.innerHTML = initialItems.map((item, index) => renderItem(item, index)).join('');
     bindRowEvents();
+})();
 </script>
 
