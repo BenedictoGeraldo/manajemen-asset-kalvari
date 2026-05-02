@@ -67,6 +67,5 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'permission' => \App\Http\Middleware\CheckPermission::class,
         'superadmin' => \App\Http\Middleware\CheckSuperAdmin::class,
-        'laporan.access' => \App\Http\Middleware\CheckLaporanAccess::class,
     ];
 }

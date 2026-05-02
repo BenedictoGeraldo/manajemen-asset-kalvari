@@ -16,7 +16,7 @@ class SettingController extends Controller
             ->get()
             ->groupBy('group');
 
-        return view('settings.index', compact('settings'));
+        return view('pengaturan.settings.index', compact('settings'));
     }
 
     public function update(Request $request)
