@@ -18,14 +18,14 @@ class UserManagementController extends Controller
     public function index()
     {
         $users = User::with(['role', 'department'])->orderBy('name')->get();
-        return view('user-management.index', compact('users'));
+        return view('pengaturan.user-management.index', compact('users'));
     }
 
     public function create()
     {
         $roles = Role::orderBy('name')->get();
         $departments = collect($this->masterDataService->getDepartmentOptions());
-        return view('user-management.create', compact('roles', 'departments'));
+        return view('pengaturan.user-management.create', compact('roles', 'departments'));
     }
 
     public function store(Request $request)
@@ -61,7 +61,7 @@ class UserManagementController extends Controller
         $roles = Role::orderBy('name')->get();
         $departments = collect($this->masterDataService->getDepartmentOptions());
 
-        return view('user-management.edit', compact('user', 'roles', 'departments'));
+        return view('pengaturan.user-management.edit', compact('user', 'roles', 'departments'));
     }
 
     public function update(Request $request, User $user)

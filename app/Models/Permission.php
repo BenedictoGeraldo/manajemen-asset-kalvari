@@ -39,4 +39,69 @@ class Permission extends Model
     {
         return $this->belongsToMany(User::class, 'user_permissions');
     }
+
+    /**
+     * Get and group permissions by group and sub-group, sorting .view permissions first.
+     */
+    public static function getGroupedPermissions()
+    {
+        $permissions = self::orderBy('group')->get();
+        $groupedPermissions = [];
+
+        $subGroupMap = [
+            'Kategori' => 'Master Kategori',
+            'Lokasi' => 'Master Lokasi',
+            'Kondisi' => 'Master Kondisi',
+            'Pengelola' => 'Master Pengelola',
+            'Data Aset' => 'Data Aset',
+            'Pembelian' => 'Pembelian',
+            'Peminjaman' => 'Peminjaman',
+            'Pemeliharaan' => 'Pemeliharaan',
+            'Mutasi Aset' => 'Mutasi Aset',
+            'Pemusnahan' => 'Pemusnahan Aset',
+            'User Management' => 'Manajemen User',
+            'Departments' => 'Manajemen Departemen',
+            'Roles' => 'Manajemen Role',
+            'Permissions' => 'Hak Akses',
+            'Print Qr' => 'Cetak QR Code',
+            'Dashboard' => 'Dashboard',
+            'Settings' => 'Profil Organisasi'
+        ];
+
+        foreach ($permissions as $permission) {
+            $group = $permission->group;
+            $parts = explode('.', $permission->name);
+            
+            $subGroup = 'Lainnya';
+            if (count($parts) >= 2 && in_array($parts[0], ['master', 'transaksi', 'laporan'])) {
+                $subGroup = \Illuminate\Support\Str::title(str_replace('_', ' ', $parts[1]));
+            } else {
+                $subGroup = \Illuminate\Support\Str::title(str_replace('-', ' ', $parts[0]));
+            }
+
+            if (isset($subGroupMap[$subGroup])) {
+                $subGroup = $subGroupMap[$subGroup];
+            }
+            
+            $groupedPermissions[$group][$subGroup][] = $permission;
+        }
+
+        // Sort permissions inside each subGroup so that '.view' is always the first element
+        foreach ($groupedPermissions as $groupName => &$subGroups) {
+            foreach ($subGroups as $subGroupName => &$perms) {
+                usort($perms, function ($a, $b) {
+                    $aIsView = str_ends_with($a->name, '.view');
+                    $bIsView = str_ends_with($b->name, '.view');
+                    
+                    if ($aIsView && !$bIsView) return -1;
+                    if (!$aIsView && $bIsView) return 1;
+                    
+                    // If both are view or neither are view, maintain alphabetical order by name
+                    return strcmp($a->name, $b->name);
+                });
+            }
+        }
+
+        return $groupedPermissions;
+    }
 }

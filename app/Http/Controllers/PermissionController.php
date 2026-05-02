@@ -9,7 +9,7 @@ class PermissionController extends Controller
 {
     public function index()
     {
-        $permissions = Permission::orderBy('group')->get()->groupBy('group');
-        return view('permissions.index', compact('permissions'));
+        $permissions = Permission::getGroupedPermissions();
+        return view('pengaturan.permissions.index', compact('permissions'));
     }
 }

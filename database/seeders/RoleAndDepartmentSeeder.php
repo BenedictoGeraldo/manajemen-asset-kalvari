@@ -49,11 +49,7 @@ class RoleAndDepartmentSeeder extends Seeder
             'transaksi.peminjaman.approve',
             'transaksi.pemeliharaan.view',
             'transaksi.pemeliharaan.create',
-            'transaksi.mutasi_aset.view',
-            'master.kategori.view',      // Butuh view untuk master saat input
-            'master.lokasi.view',
-            'master.kondisi.view',
-            'master.pengelola.view'
+            'transaksi.mutasi_aset.view'
         ])->get();
 
         $adminDivisiRole->permissions()->sync($adminDivisiPermissions->pluck('id')->toArray());
