@@ -12,13 +12,13 @@ class RoleController extends Controller
     public function index()
     {
         $roles = Role::withCount('users')->orderBy('name')->get();
-        return view('roles.index', compact('roles'));
+        return view('pengaturan.roles.index', compact('roles'));
     }
 
     public function create()
     {
-        $permissions = Permission::orderBy('group')->get()->groupBy('group');
-        return view('roles.create', compact('permissions'));
+        $permissions = Permission::getGroupedPermissions();
+        return view('pengaturan.roles.create', compact('permissions'));
     }
 
     public function store(Request $request)
@@ -47,10 +47,10 @@ class RoleController extends Controller
 
     public function edit(Role $role)
     {
-        $permissions = Permission::orderBy('group')->get()->groupBy('group');
+        $permissions = Permission::getGroupedPermissions();
         $rolePermissions = $role->permissions->pluck('id')->toArray();
         
-        return view('roles.edit', compact('role', 'permissions', 'rolePermissions'));
+        return view('pengaturan.roles.edit', compact('role', 'permissions', 'rolePermissions'));
     }
 
     public function update(Request $request, Role $role)

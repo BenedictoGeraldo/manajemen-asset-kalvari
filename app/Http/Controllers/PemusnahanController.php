@@ -9,6 +9,14 @@ use Illuminate\Support\Facades\DB;
 
 class PemusnahanController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:transaksi.pemusnahan.view')->only(['index', 'show']);
+        $this->middleware('permission:transaksi.pemusnahan.create')->only(['create', 'store']);
+        $this->middleware('permission:transaksi.pemusnahan.edit')->only(['edit', 'update']);
+        $this->middleware('permission:transaksi.pemusnahan.delete')->only('destroy');
+    }
+
     public function index()
     {
         $pemusnahans = TransaksiPemusnahan::with('aset')->latest()->paginate(10);

@@ -245,6 +245,43 @@ class PermissionSeeder extends Seeder
                 'description' => 'Dapat melihat semua daftar hak akses yang ada'
             ],
 
+            // Laporan
+            [
+                'name' => 'laporan.data-aset.view',
+                'slug' => 'laporan.data-aset.view',
+                'display_name' => 'Lihat Laporan Data Aset',
+                'group' => 'Laporan',
+                'description' => 'Dapat melihat laporan data aset'
+            ],
+            [
+                'name' => 'laporan.mutasi-aset.view',
+                'slug' => 'laporan.mutasi-aset.view',
+                'display_name' => 'Lihat Laporan Mutasi Aset',
+                'group' => 'Laporan',
+                'description' => 'Dapat melihat laporan mutasi aset'
+            ],
+            [
+                'name' => 'laporan.pembelian.view',
+                'slug' => 'laporan.pembelian.view',
+                'display_name' => 'Lihat Laporan Pembelian',
+                'group' => 'Laporan',
+                'description' => 'Dapat melihat laporan pembelian'
+            ],
+            [
+                'name' => 'laporan.pemusnahan.view',
+                'slug' => 'laporan.pemusnahan.view',
+                'display_name' => 'Lihat Laporan Pemusnahan',
+                'group' => 'Laporan',
+                'description' => 'Dapat melihat laporan pemusnahan'
+            ],
+            [
+                'name' => 'laporan.print-qr.view',
+                'slug' => 'laporan.print-qr.view',
+                'display_name' => 'Cetak QR Code',
+                'group' => 'Laporan',
+                'description' => 'Dapat mencetak QR Code aset'
+            ],
+
             // Transaksi Pembelian
             [
                 'name' => 'transaksi.pembelian.view',

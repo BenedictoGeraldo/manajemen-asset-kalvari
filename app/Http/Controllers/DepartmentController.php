@@ -10,13 +10,13 @@ class DepartmentController extends Controller
     public function index()
     {
         $departments = Department::with('parent')->orderBy('name')->get();
-        return view('departments.index', compact('departments'));
+        return view('pengaturan.departments.index', compact('departments'));
     }
 
     public function create()
     {
         $parents = Department::orderBy('name')->get();
-        return view('departments.create', compact('parents'));
+        return view('pengaturan.departments.create', compact('parents'));
     }
 
     public function store(Request $request)
@@ -43,7 +43,7 @@ class DepartmentController extends Controller
     public function edit(Department $department)
     {
         $parents = Department::where('id', '!=', $department->id)->orderBy('name')->get();
-        return view('departments.edit', compact('department', 'parents'));
+        return view('pengaturan.departments.edit', compact('department', 'parents'));
     }
 
     public function update(Request $request, Department $department)

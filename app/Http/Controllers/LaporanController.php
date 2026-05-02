@@ -38,7 +38,7 @@ class LaporanController extends Controller
         $lokasis = $this->masterDataService->getActiveLokasis();
         $kondisis = $this->masterDataService->getActiveKondisis();
 
-        return view('laporan.data_aset.index', compact('laporanAset', 'filters', 'kategoris', 'lokasis', 'kondisis'));
+        return view('laporan.data-aset.index', compact('laporanAset', 'filters', 'kategoris', 'lokasis', 'kondisis'));
     }
 
     public function exportDataAset(Request $request, string $format)
@@ -54,7 +54,7 @@ class LaporanController extends Controller
         $laporanAset = $this->buildDataAsetQuery($filters)->get();
 
         if ($format === 'pdf') {
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.data_aset.pdf', compact('laporanAset', 'filters'))
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.data-aset.pdf', compact('laporanAset', 'filters'))
                 ->setPaper('a4', 'landscape');
             return $pdf->download('laporan-data-aset-' . now()->format('Ymd-His') . '.pdf');
         }
@@ -81,7 +81,7 @@ class LaporanController extends Controller
             ->paginate($filters['per_page'])
             ->appends($request->query());
 
-        return view('laporan.mutasi_aset.index', compact('laporanMutasi', 'filters'));
+        return view('laporan.mutasi-aset.index', compact('laporanMutasi', 'filters'));
     }
 
     public function exportMutasiAset(Request $request, string $format)
@@ -95,7 +95,7 @@ class LaporanController extends Controller
         $laporanMutasi = $this->buildMutasiAsetQuery($filters)->get();
 
         if ($format === 'pdf') {
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.mutasi_aset.pdf', compact('laporanMutasi', 'filters'))
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.mutasi-aset.pdf', compact('laporanMutasi', 'filters'))
                 ->setPaper('a4', 'landscape');
             return $pdf->download('laporan-mutasi-aset-' . now()->format('Ymd-His') . '.pdf');
         }

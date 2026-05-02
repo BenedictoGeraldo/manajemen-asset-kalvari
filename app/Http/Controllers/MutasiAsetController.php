@@ -24,7 +24,7 @@ class MutasiAsetController extends Controller
         $filters = request()->only(['search', 'status', 'jenis', 'per_page']);
         $mutasis = $this->mutasiService->getPaginatedMutasi($filters);
 
-        return view('transaksi.mutasi_aset.index', compact('mutasis', 'filters'));
+        return view('transaksi.mutasi-aset.index', compact('mutasis', 'filters'));
     }
 
     public function export(string $format)
@@ -46,7 +46,7 @@ class MutasiAsetController extends Controller
     {
         $formOptions = $this->formOptions();
 
-        return view('transaksi.mutasi_aset.create', $formOptions);
+        return view('transaksi.mutasi-aset.create', $formOptions);
     }
 
     public function store(StoreMutasiAsetRequest $request)
@@ -69,7 +69,7 @@ class MutasiAsetController extends Controller
     {
         $mutasi = $this->mutasiService->getById($mutasiAset->id);
 
-        return view('transaksi.mutasi_aset.show', compact('mutasi'));
+        return view('transaksi.mutasi-aset.show', compact('mutasi'));
     }
 
     public function edit(TransaksiMutasiAset $mutasiAset)
@@ -80,7 +80,7 @@ class MutasiAsetController extends Controller
 
         $formOptions = $this->formOptions();
 
-        return view('transaksi.mutasi_aset.edit', array_merge(['mutasi' => $mutasiAset], $formOptions));
+        return view('transaksi.mutasi-aset.edit', array_merge(['mutasi' => $mutasiAset], $formOptions));
     }
 
     public function update(UpdateMutasiAsetRequest $request, TransaksiMutasiAset $mutasiAset)
@@ -157,7 +157,7 @@ class MutasiAsetController extends Controller
             return back()->with('error', 'Hanya mutasi dengan status proses yang bisa diselesaikan');
         }
 
-        return view('transaksi.mutasi_aset.complete', compact('mutasiAset'));
+        return view('transaksi.mutasi-aset.complete', compact('mutasiAset'));
     }
 
     public function complete(CompleteMutasiAsetRequest $request, TransaksiMutasiAset $mutasiAset)

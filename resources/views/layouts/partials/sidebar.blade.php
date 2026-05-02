@@ -50,7 +50,7 @@
             </a>
             @endif
 
-            @if(auth()->user()->is_super_admin || (!auth()->user()->isAdminDivisi() && auth()->user()->hasAnyPermission(['master.kategori.view', 'master.lokasi.view', 'master.kondisi.view', 'master.pengelola.view'])))
+            @if(auth()->user()->is_super_admin || auth()->user()->hasAnyPermission(['master.kategori.view', 'master.lokasi.view', 'master.kondisi.view', 'master.pengelola.view']))
             <div class="relative" x-data="{ open: {{ $isMasterActive ? 'true' : 'false' }} }">
                 <button @click="open = !open"
                         data-sidebar-parent="master"
@@ -114,7 +114,7 @@
             </a>
             @endif
 
-            @if(auth()->user()->is_super_admin || auth()->user()->hasAnyPermission(['transaksi.pembelian.view', 'transaksi.peminjaman.view', 'transaksi.pemeliharaan.view', 'transaksi.mutasi_aset.view']))
+            @if(auth()->user()->is_super_admin || auth()->user()->hasAnyPermission(['transaksi.pembelian.view', 'transaksi.peminjaman.view', 'transaksi.pemeliharaan.view', 'transaksi.mutasi_aset.view', 'transaksi.pemusnahan.view']))
             <div class="relative" x-data="{ open: {{ $isTransaksiActive ? 'true' : 'false' }} }">
                 <button @click="open = !open"
                         data-sidebar-parent="transaksi"
@@ -157,15 +157,17 @@
                     </a>
                     @endif
 
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.pemusnahan.view'))
                     <a href="{{ route('transaksi.pemusnahan.index') }}" data-navigate data-route="transaksi-pemusnahan" class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('transaksi.pemusnahan.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                         <span class="whitespace-nowrap">Pemusnahan Aset</span>
                     </a>
+                    @endif
                 </div>
             </div>
             @endif
 
-            @if(auth()->user()->is_super_admin)
+            @if(auth()->user()->is_super_admin || auth()->user()->hasAnyPermission(['laporan.data-aset.view', 'laporan.mutasi-aset.view', 'laporan.pembelian.view', 'laporan.pemusnahan.view', 'laporan.print-qr.view']))
             <div class="relative" x-data="{ open: {{ $isLaporanActive ? 'true' : 'false' }} }">
                 <button @click="open = !open"
                         data-sidebar-parent="laporan"
@@ -180,36 +182,46 @@
                 </button>
 
                 <div x-show="open && !sidebarMinimized" class="mt-1 ml-4 space-y-1">
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('laporan.data-aset.view'))
                     <a href="{{ route('laporan.data-aset.index') }}" data-navigate data-route="laporan-data-aset"
                        class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('laporan.data-aset.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6" /></svg>
                         <span class="whitespace-nowrap">Laporan Data Aset</span>
                     </a>
+                    @endif
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('laporan.mutasi-aset.view'))
                     <a href="{{ route('laporan.mutasi-aset.index') }}" data-navigate data-route="laporan-mutasi-aset"
                        class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('laporan.mutasi-aset.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
                         <span class="whitespace-nowrap">Laporan Mutasi Aset</span>
                     </a>
+                    @endif
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('laporan.pembelian.view'))
                     <a href="{{ route('laporan.pembelian.index') }}" data-navigate data-route="laporan-pembelian"
                        class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('laporan.pembelian.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4" /></svg>
                         <span class="whitespace-nowrap">Laporan Pembelian</span>
                     </a>
+                    @endif
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('laporan.pemusnahan.view'))
                     <a href="{{ route('laporan.pemusnahan.index') }}" data-navigate data-route="laporan-pemusnahan"
                        class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('laporan.pemusnahan.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                         <span class="whitespace-nowrap">Laporan Pemusnahan</span>
                     </a>
+                    @endif
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('laporan.print-qr.view'))
                     <a href="{{ route('laporan.print-qr.index') }}" data-navigate data-route="print-qr"
                        class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('laporan.print-qr.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" /></svg>
                         <span class="whitespace-nowrap">Cetak QR Code</span>
                     </a>
+                    @endif
                 </div>
             </div>
             @endif
 
-            @if(auth()->user()->is_super_admin || (!auth()->user()->isAdminDivisi() && auth()->user()->hasPermission('user-management.view')))
+            @if(auth()->user()->is_super_admin || auth()->user()->hasAnyPermission(['user-management.view', 'departments.view', 'roles.view', 'permissions.view', 'settings.view']))
             <div class="relative" x-data="{ open: {{ $isPengaturanActive ? 'true' : 'false' }} }">
                 <button @click="open = !open"
                         data-sidebar-parent="pengaturan"
@@ -224,26 +236,36 @@
                 </button>
 
                 <div x-show="open && !sidebarMinimized" class="mt-1 ml-4 space-y-1">
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('user-management.view'))
                     <a href="{{ route('user-management.index') }}" data-navigate data-route="user-management" class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('user-management.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                         <span class="whitespace-nowrap">Manajemen User</span>
                     </a>
+                    @endif
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('departments.view'))
                     <a href="{{ route('departments.index') }}" data-navigate data-route="departments" class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('departments.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                         <span class="whitespace-nowrap">Manajemen Departemen</span>
                     </a>
+                    @endif
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('roles.view'))
                     <a href="{{ route('roles.index') }}" data-navigate data-route="roles" class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('roles.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                         <span class="whitespace-nowrap">Manajemen Role</span>
                     </a>
+                    @endif
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('permissions.view'))
                     <a href="{{ route('permissions.index') }}" data-navigate data-route="permissions" class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('permissions.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" /></svg>
                         <span class="whitespace-nowrap">Daftar Hak Akses</span>
                     </a>
+                    @endif
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('settings.view'))
                     <a href="{{ route('settings.index') }}" data-navigate data-route="settings" class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('settings.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                         <span class="whitespace-nowrap">Profil Organisasi</span>
                     </a>
+                    @endif
                 </div>
             </div>
             @endif
