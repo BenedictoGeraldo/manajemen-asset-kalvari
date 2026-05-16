@@ -145,10 +145,10 @@
 
     <!-- Buttons -->
     <div class="flex gap-3 pt-4 border-t">
-        <button type="submit" class="btn-a">
+        <button type="submit" class="btn-a-sm">
             {{ $submitLabel }}
         </button>
-        <a href="{{ route('transaksi.mutasi_aset.index') }}" data-navigate class="btn-c-outline">
+        <a href="{{ route('transaksi.mutasi_aset.index') }}" data-navigate class="btn-c-sm">
             Batal
         </a>
     </div>

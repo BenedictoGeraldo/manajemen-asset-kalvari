@@ -242,25 +242,25 @@
                         <span class="whitespace-nowrap">Manajemen User</span>
                     </a>
                     @endif
-                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('departments.view'))
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasAnyPermission(['user-management.view', 'departments.view']))
                     <a href="{{ route('departments.index') }}" data-navigate data-route="departments" class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('departments.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                         <span class="whitespace-nowrap">Manajemen Departemen</span>
                     </a>
                     @endif
-                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('roles.view'))
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasAnyPermission(['user-management.view', 'roles.view']))
                     <a href="{{ route('roles.index') }}" data-navigate data-route="roles" class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('roles.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                         <span class="whitespace-nowrap">Manajemen Role</span>
                     </a>
                     @endif
-                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('permissions.view'))
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasAnyPermission(['user-management.view', 'permissions.view']))
                     <a href="{{ route('permissions.index') }}" data-navigate data-route="permissions" class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('permissions.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" /></svg>
                         <span class="whitespace-nowrap">Daftar Hak Akses</span>
                     </a>
                     @endif
-                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('settings.view'))
+                    @if(auth()->user()->is_super_admin || auth()->user()->hasAnyPermission(['user-management.view', 'settings.view']))
                     <a href="{{ route('settings.index') }}" data-navigate data-route="settings" class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('settings.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                         <span class="whitespace-nowrap">Profil Organisasi</span>
