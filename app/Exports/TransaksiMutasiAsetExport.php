@@ -47,13 +47,13 @@ class TransaksiMutasiAsetExport implements FromCollection, WithHeadings, WithMap
             ucfirst($mutasi->status),
             $mutasi->lokasiLama?->nama_lokasi ?? '-',
             $mutasi->lokasiBaru?->nama_lokasi ?? '-',
-            $mutasi->departmentLama?->nama_department ?? '-',
-            $mutasi->departmentBaru?->nama_department ?? '-',
+            $mutasi->departmentLama?->name ?? '-',
+            $mutasi->departmentBaru?->name ?? '-',
             $mutasi->tanggal_diajukan?->format('d/m/Y H:i') ?? '-',
             $mutasi->tanggal_disetujui?->format('d/m/Y H:i') ?? '-',
             $mutasi->tanggal_mulai?->format('d/m/Y H:i') ?? '-',
             $mutasi->tanggal_selesai?->format('d/m/Y H:i') ?? '-',
-            $mutasi->created_at->format('d/m/Y H:i'),
+            $mutasi->created_at?->format('d/m/Y H:i') ?? '-',
         ];
     }
 }

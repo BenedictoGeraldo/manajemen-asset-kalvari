@@ -7,6 +7,7 @@ use App\Services\MasterDataService;
 use App\Http\Requests\StoreDataAsetRequest;
 use App\Http\Requests\UpdateDataAsetRequest;
 use App\Exports\DataAsetExport;
+use App\Imports\DataAsetImport;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Maatwebsite\Excel\Facades\Excel;
@@ -109,7 +110,7 @@ class DataAsetKolektifController extends Controller
     {
         /** @var \App\Models\User $user */
         $user = auth()->user();
-        $aset = $this->dataAsetService->getAsetById($id);
+        $aset = $this->dataAsetService->getAsetById((int) $id);
 
         if ($user && $user->isAdminDivisi() && !$this->canAccessDepartmentId($user, (int) $aset->department_id)) {
             abort(403, 'Anda tidak memiliki akses ke aset ini.');
@@ -169,7 +170,7 @@ class DataAsetKolektifController extends Controller
         /** @var \App\Models\User $user */
         $user = auth()->user();
 
-        $aset = $this->dataAsetService->getAsetById($id);
+        $aset = $this->dataAsetService->getAsetById((int) $id);
 
         if ($user && $user->isAdminDivisi() && !$this->canAccessDepartmentId($user, (int) $aset->department_id)) {
             abort(403, 'Anda tidak memiliki akses untuk mengubah aset ini.');
@@ -202,7 +203,7 @@ class DataAsetKolektifController extends Controller
         /** @var \App\Models\User $user */
         $user = auth()->user();
 
-        $aset = $this->dataAsetService->getAsetById($id);
+        $aset = $this->dataAsetService->getAsetById((int) $id);
 
         if ($user && $user->isAdminDivisi() && !$this->canAccessDepartmentId($user, (int) $aset->department_id)) {
             abort(403, 'Anda tidak memiliki akses untuk mengubah aset ini.');
@@ -233,7 +234,7 @@ class DataAsetKolektifController extends Controller
             $data['gambar_aset_base64'] = $this->convertImageToBase64($request->file('gambar_aset'));
         }
 
-        $this->dataAsetService->updateAset($id, $data);
+        $this->dataAsetService->updateAset((int) $id, $data);
 
         return redirect()->route('data-aset.index')
             ->with('success', 'Data aset berhasil diperbarui!');
@@ -243,13 +244,13 @@ class DataAsetKolektifController extends Controller
     {
         /** @var \App\Models\User $user */
         $user = auth()->user();
-        $aset = $this->dataAsetService->getAsetById($id);
+        $aset = $this->dataAsetService->getAsetById((int) $id);
 
         if ($user && $user->isAdminDivisi() && !$this->canAccessDepartmentId($user, (int) $aset->department_id)) {
             abort(403, 'Anda tidak memiliki akses untuk menghapus aset ini.');
         }
 
-        $this->dataAsetService->deleteAset($id);
+        $this->dataAsetService->deleteAset((int) $id);
 
         return redirect()->route('data-aset.index')
             ->with('success', 'Data aset berhasil dihapus!');
@@ -304,9 +305,83 @@ class DataAsetKolektifController extends Controller
         return Excel::download(new DataAsetExport, $filename, \Maatwebsite\Excel\Excel::XLSX);
     }
 
+    public function importForm()
+    {
+        return view('data-aset.import');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,csv|max:5120',
+        ]);
+
+        try {
+            $import = new DataAsetImport();
+            Excel::import($import, $request->file('file'));
+
+            $message = "Berhasil mengimpor {$import->getImportedCount()} data aset.";
+            if ($import->getSkippedCount() > 0) {
+                $message .= " {$import->getSkippedCount()} baris dilewati.";
+            }
+
+            $errors = $import->getErrors();
+            if (!empty($errors)) {
+                return redirect()->route('data-aset.import.form')
+                    ->with('warning', $message)
+                    ->with('import_errors', $errors);
+            }
+
+            return redirect()->route('data-aset.index')
+                ->with('success', $message);
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            $errorMessages = [];
+            foreach ($failures as $failure) {
+                $errorMessages[] = "Baris {$failure->row()}: " . implode(', ', $failure->errors());
+            }
+            return redirect()->route('data-aset.import.form')
+                ->with('error', 'Validasi gagal.')
+                ->with('import_errors', $errorMessages);
+        } catch (\Throwable $e) {
+            return redirect()->route('data-aset.import.form')
+                ->with('error', 'Gagal mengimpor data: ' . $e->getMessage());
+        }
+    }
+
+    public function downloadTemplate()
+    {
+        $headers = [
+            'nama_aset', 'kategori', 'deskripsi_aset', 'ukuran', 'deskripsi_ukuran_bentuk',
+            'lokasi', 'kegunaan', 'keterangan_kegunaan', 'jumlah_barang', 'tipe_grup',
+            'keterangan_tipe_grup', 'nilai_budget', 'sumber_dana', 'keterangan_budget',
+            'pengelola', 'tahun_pengadaan', 'nilai_pengadaan_total', 'nilai_pengadaan_per_unit',
+            'kondisi', 'catatan', 'departemen',
+        ];
+
+        $rows = collect([$headers]);
+
+        return Excel::download(
+            new class($rows) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
+                public function __construct(private $rows) {}
+                public function collection() { return $this->rows; }
+                public function headings(): array {
+                    return [
+                        'nama_aset', 'kategori', 'deskripsi_aset', 'ukuran', 'deskripsi_ukuran_bentuk',
+                        'lokasi', 'kegunaan', 'keterangan_kegunaan', 'jumlah_barang', 'tipe_grup',
+                        'keterangan_tipe_grup', 'nilai_budget', 'sumber_dana', 'keterangan_budget',
+                        'pengelola', 'tahun_pengadaan', 'nilai_pengadaan_total', 'nilai_pengadaan_per_unit',
+                        'kondisi', 'catatan', 'departemen',
+                    ];
+                }
+            },
+            'template-import-aset.xlsx'
+        );
+    }
+
     public function printLabel(string $id)
     {
-        $aset = $this->dataAsetService->getAsetById($id);
+        $aset = $this->dataAsetService->getAsetById((int) $id);
         return view('data-aset.label', compact('aset'));
     }
 
