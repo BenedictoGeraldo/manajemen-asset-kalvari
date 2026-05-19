@@ -83,6 +83,13 @@
         @apply !bg-neutral-300 !text-neutral-800;
     }
 
+    .btn-c,
+    .btn-c-outline {
+        @apply inline-flex items-center px-5 py-2.5 bg-white hover:bg-neutral-100
+           text-neutral-700 hover:text-neutral-800 font-medium rounded-lg border border-neutral-300
+           transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500;
+    }
+
     /* ─────────────────────────────────────────────────────────────────────
      BUTTON STYLES - SUCCESS/EXPORT
      Warna: GREEN - Digunakan untuk aksi export, download, atau success action
@@ -102,6 +109,12 @@
         @apply inline-flex items-center px-4 py-2 bg-success-600 hover:bg-success-700
            text-white text-sm font-medium rounded-lg transition-colors duration-150
            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-success-500;
+    }
+
+    .btn-import {
+        @apply inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700
+           text-white text-sm font-medium rounded-lg shadow-sm hover:shadow-md
+           transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
     }
 
     /* ─────────────────────────────────────────────────────────────────────

@@ -38,7 +38,16 @@ class RoleController extends Controller
         ]);
 
         if ($request->has('permissions')) {
-            $role->permissions()->sync($request->permissions);
+            $pivotData = [];
+            foreach ($request->permissions as $permId) {
+                $pivotData[$permId] = [
+                    'can_read' => true,
+                    'can_create' => true,
+                    'can_update' => true,
+                    'can_delete' => true,
+                ];
+            }
+            $role->permissions()->sync($pivotData);
         }
 
         return redirect()->route('roles.index')
@@ -70,7 +79,16 @@ class RoleController extends Controller
         ]);
 
         if ($request->has('permissions')) {
-            $role->permissions()->sync($request->permissions);
+            $pivotData = [];
+            foreach ($request->permissions as $permId) {
+                $pivotData[$permId] = [
+                    'can_read' => true,
+                    'can_create' => true,
+                    'can_update' => true,
+                    'can_delete' => true,
+                ];
+            }
+            $role->permissions()->sync($pivotData);
         } else {
             $role->permissions()->detach();
         }

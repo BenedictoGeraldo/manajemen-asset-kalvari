@@ -54,6 +54,9 @@ class LaporanController extends Controller
         $laporanAset = $this->buildDataAsetQuery($filters)->get();
 
         if ($format === 'pdf') {
+            if (!class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
+                abort(500, 'Fitur export PDF belum tersedia. Silakan instal package barryvdh/laravel-dompdf.');
+            }
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.data-aset.pdf', compact('laporanAset', 'filters'))
                 ->setPaper('a4', 'landscape');
             return $pdf->download('laporan-data-aset-' . now()->format('Ymd-His') . '.pdf');
@@ -95,6 +98,9 @@ class LaporanController extends Controller
         $laporanMutasi = $this->buildMutasiAsetQuery($filters)->get();
 
         if ($format === 'pdf') {
+            if (!class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
+                abort(500, 'Fitur export PDF belum tersedia. Silakan instal package barryvdh/laravel-dompdf.');
+            }
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.mutasi-aset.pdf', compact('laporanMutasi', 'filters'))
                 ->setPaper('a4', 'landscape');
             return $pdf->download('laporan-mutasi-aset-' . now()->format('Ymd-His') . '.pdf');
@@ -134,6 +140,9 @@ class LaporanController extends Controller
         $laporanPembelian = $this->buildPembelianQuery($filters)->get();
 
         if ($format === 'pdf') {
+            if (!class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
+                abort(500, 'Fitur export PDF belum tersedia. Silakan instal package barryvdh/laravel-dompdf.');
+            }
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.pembelian.pdf', compact('laporanPembelian', 'filters'))
                 ->setPaper('a4', 'landscape');
             return $pdf->download('laporan-pembelian-' . now()->format('Ymd-His') . '.pdf');
@@ -171,6 +180,9 @@ class LaporanController extends Controller
         $laporanPemusnahan = $this->buildPemusnahanQuery($filters)->get();
 
         if ($format === 'pdf') {
+            if (!class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
+                abort(500, 'Fitur export PDF belum tersedia. Silakan instal package barryvdh/laravel-dompdf.');
+            }
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.pemusnahan.pdf', compact('laporanPemusnahan', 'filters'))
                 ->setPaper('a4', 'landscape');
             return $pdf->download('laporan-pemusnahan-' . now()->format('Ymd-His') . '.pdf');

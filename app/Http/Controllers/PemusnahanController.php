@@ -13,7 +13,6 @@ class PemusnahanController extends Controller
     {
         $this->middleware('permission:transaksi.pemusnahan.view')->only(['index', 'show']);
         $this->middleware('permission:transaksi.pemusnahan.create')->only(['create', 'store']);
-        $this->middleware('permission:transaksi.pemusnahan.edit')->only(['edit', 'update']);
         $this->middleware('permission:transaksi.pemusnahan.delete')->only('destroy');
     }
 
@@ -49,9 +48,11 @@ class PemusnahanController extends Controller
 
         DB::beginTransaction();
         try {
-            TransaksiPemusnahan::create($request->all());
+            TransaksiPemusnahan::create($request->only([
+                'aset_id', 'jumlah_dimusnahkan', 'tanggal_pemusnahan',
+                'alasan_pemusnahan', 'metode_pemusnahan', 'penanggung_jawab', 'catatan',
+            ]));
 
-            // Kurangi stok barang
             $aset->jumlah_barang -= $request->jumlah_dimusnahkan;
             if ($aset->jumlah_barang == 0) {
                 $aset->is_active = false;
@@ -59,7 +60,7 @@ class PemusnahanController extends Controller
             $aset->save();
 
             DB::commit();
-            return redirect()->route('pemusnahan.index')->with('success', 'Transaksi pemusnahan berhasil dicatat.');
+            return redirect()->route('transaksi.pemusnahan.index')->with('success', 'Transaksi pemusnahan berhasil dicatat.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();

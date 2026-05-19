@@ -80,8 +80,8 @@
         </div>
 
         <div class="mt-8 flex justify-end space-x-3">
-            <a href="{{ route('transaksi.pemusnahan.index') }}" class="btn-secondary">Batal</a>
-            <button type="submit" class="btn-primary">Simpan Transaksi</button>
+            <a href="{{ route('transaksi.pemusnahan.index') }}" class="btn-c-sm">Batal</a>
+            <button type="submit" class="btn-a-sm">Simpan Transaksi</button>
         </div>
     </form>
 </div>

@@ -151,7 +151,7 @@ class PembelianService
                     'jumlah_barang' => $item->jumlah,
                     'tipe_grup' => $item->jumlah > 1 ? 'set' : 'individual',
                     'keterangan_tipe_grup' => null,
-                    'budget' => $item->subtotal,
+                    'nilai_budget' => $item->subtotal,
                     'keterangan_budget' => $pembelian->sumber_dana,
                     'pengelola_id' => $item->pengelola_id,
                     'tahun_pengadaan' => $item->tahun_pengadaan,

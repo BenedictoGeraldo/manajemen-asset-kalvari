@@ -51,13 +51,16 @@ Route::middleware('auth')->group(function () {
     Route::get('data-aset', [DataAsetKolektifController::class, 'index'])->name('data-aset.index')->middleware('permission:data-aset.view');
     Route::get('data-aset/create', [DataAsetKolektifController::class, 'create'])->name('data-aset.create')->middleware('permission:data-aset.create');
     Route::post('data-aset', [DataAsetKolektifController::class, 'store'])->name('data-aset.store')->middleware('permission:data-aset.create');
+    Route::get('data-aset/import', [DataAsetKolektifController::class, 'importForm'])->name('data-aset.import.form')->middleware('permission:data-aset.create');
+    Route::post('data-aset/import', [DataAsetKolektifController::class, 'import'])->name('data-aset.import')->middleware('permission:data-aset.create');
+    Route::get('data-aset/template', [DataAsetKolektifController::class, 'downloadTemplate'])->name('data-aset.template')->middleware('permission:data-aset.view');
     Route::get('data-aset/{data_aset}', [DataAsetKolektifController::class, 'show'])->name('data-aset.show')->middleware('permission:data-aset.view');
     Route::get('data-aset/{data_aset}/edit', [DataAsetKolektifController::class, 'edit'])->name('data-aset.edit')->middleware('permission:data-aset.edit');
     Route::put('data-aset/{data_aset}', [DataAsetKolektifController::class, 'update'])->name('data-aset.update')->middleware('permission:data-aset.edit');
     Route::delete('data-aset/{data_aset}', [DataAsetKolektifController::class, 'destroy'])->name('data-aset.destroy')->middleware('permission:data-aset.delete');
     Route::get('data-aset-export/{format}', [DataAsetKolektifController::class, 'export'])->name('data-aset.export')->middleware('permission:data-aset.export');
     Route::get('data-aset/{data_aset}/label', [DataAsetKolektifController::class, 'printLabel'])->name('data-aset.label')->middleware('permission:data-aset.view');
-    Route::get('get-sub-departments', [DataAsetKolektifController::class, 'getSubDepartments'])->name('get-sub-departments');
+    Route::get('get-sub-departments', [DataAsetKolektifController::class, 'getSubDepartments'])->name('get-sub-departments')->middleware('permission:data-aset.view');
 
     // Rute untuk master data
     Route::prefix('master')->name('master.')->group(function () {
@@ -176,7 +179,11 @@ Route::middleware('auth')->group(function () {
         Route::post('mutasi-aset/{mutasi_aset}/complete', [MutasiAsetController::class, 'complete'])->name('mutasi_aset.complete')->middleware('permission:transaksi.mutasi_aset.complete');
         
         // Pemusnahan Aset
-        Route::resource('pemusnahan', PemusnahanController::class);
+        Route::get('pemusnahan', [PemusnahanController::class, 'index'])->name('pemusnahan.index')->middleware('permission:transaksi.pemusnahan.view');
+        Route::get('pemusnahan/create', [PemusnahanController::class, 'create'])->name('pemusnahan.create')->middleware('permission:transaksi.pemusnahan.create');
+        Route::post('pemusnahan', [PemusnahanController::class, 'store'])->name('pemusnahan.store')->middleware('permission:transaksi.pemusnahan.create');
+        Route::get('pemusnahan/{pemusnahan}', [PemusnahanController::class, 'show'])->name('pemusnahan.show')->middleware('permission:transaksi.pemusnahan.view');
+        Route::delete('pemusnahan/{pemusnahan}', [PemusnahanController::class, 'destroy'])->name('pemusnahan.destroy')->middleware('permission:transaksi.pemusnahan.delete');
     });
 
     // Rute untuk laporan
