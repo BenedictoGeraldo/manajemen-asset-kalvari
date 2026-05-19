@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - {{ setting('app_name', 'PELITA') }}</title>
-    <link rel="icon" type="image/png" href="{{ setting('org_logo') ?: asset('logo-pelita.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('logo-pelita-cross.png') }}">
     @vite('resources/css/app.css')
 </head>
 <body class="bg-gradient-to-br from-purple-50 via-white to-purple-100 flex items-center justify-center min-h-screen p-4">
@@ -31,7 +31,7 @@
             <div class="relative z-10 text-center space-y-8">
                 <!-- Logo PELITA -->
                 <div class="flex justify-center mb-6">
-                    <img src="{{ setting('org_logo') ?: asset('logo-pelita.png') }}" alt="Logo {{ setting('org_name') }}" class="w-40 h-40 drop-shadow-2xl">
+                    <img src="{{ asset('logo-pelita.png') }}" alt="Logo {{ setting('org_name') }}" class="w-40 h-40 drop-shadow-2xl">
                 </div>
 
                 <div>

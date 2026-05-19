@@ -46,25 +46,14 @@
         <label for="tanggal_pembelian" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Pembelian <span class="text-red-500">*</span></label>
         <input type="date" id="tanggal_pembelian" name="tanggal_pembelian" required
                value="{{ old('tanggal_pembelian', isset($pembelian) ? optional($pembelian->tanggal_pembelian)->format('Y-m-d') : date('Y-m-d')) }}"
-             class="w-full rounded-lg @error('tanggal_pembelian') border-red-500 @else border-gray-300 @enderror focus:border-blue-500 focus:ring-blue-500">
+               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('tanggal_pembelian') border-red-500 @else border-gray-300 @enderror">
         @error('tanggal_pembelian')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
-    </div>
-
-    <div>
-        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status <span class="text-red-500">*</span></label>
-        <select id="status" name="status" class="w-full rounded-lg @error('status') border-red-500 @else border-gray-300 @enderror focus:border-blue-500 focus:ring-blue-500">
-            @php $selectedStatus = old('status', $pembelian->status ?? 'draft'); @endphp
-            <option value="draft" {{ $selectedStatus === 'draft' ? 'selected' : '' }}>Draft</option>
-            <option value="diajukan" {{ $selectedStatus === 'diajukan' ? 'selected' : '' }}>Diajukan</option>
-            <option value="dibatalkan" {{ $selectedStatus === 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
-        </select>
-        @error('status')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
     </div>
 
     <div>
         <label for="vendor_nama" class="block text-sm font-medium text-gray-700 mb-1">Vendor <span class="text-red-500">*</span></label>
         <input type="text" id="vendor_nama" name="vendor_nama" required value="{{ old('vendor_nama', $pembelian->vendor_nama ?? '') }}"
-             class="w-full rounded-lg @error('vendor_nama') border-red-500 @else border-gray-300 @enderror focus:border-blue-500 focus:ring-blue-500">
+               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('vendor_nama') border-red-500 @else border-gray-300 @enderror">
         @error('vendor_nama')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
     </div>
 

@@ -14,7 +14,7 @@
     <div class="p-6 border-b border-gray-200 flex items-center justify-between">
         <div class="flex items-center space-x-3 overflow-hidden">
             <div class="w-10 h-10 flex items-center justify-center flex-shrink-0">
-                <img src="{{ setting('org_logo') ?: asset('logo-pelita-cross.png') }}" alt="{{ setting('org_name') }} Logo" class="w-15 h-15 object-contain">
+                <img src="{{ asset('logo-pelita-cross.png') }}" alt="{{ setting('org_name') }} Logo" class="w-15 h-15 object-contain">
             </div>
             <h1 x-show="!sidebarMinimized"
                 x-transition:enter="transition ease-out duration-200"
