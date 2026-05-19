@@ -31,6 +31,10 @@ class PemeliharaanController extends Controller
             'per_page' => $request->input('per_page', 10),
         ];
 
+        if (!$this->canManageAll()) {
+            $filters['creator_id'] = auth()->id();
+        }
+
         $pemeliharaans = $this->pemeliharaanService->getPaginatedPemeliharaan($filters);
 
         return view('transaksi.pemeliharaan.index', [
@@ -62,6 +66,7 @@ class PemeliharaanController extends Controller
     public function show(string $id): View
     {
         $pemeliharaan = $this->pemeliharaanService->getById((int) $id);
+        $this->authorizeAccess($pemeliharaan);
 
         return view('transaksi.pemeliharaan.show', compact('pemeliharaan'));
     }
@@ -69,6 +74,7 @@ class PemeliharaanController extends Controller
     public function edit(string $id): View|RedirectResponse
     {
         $pemeliharaan = $this->pemeliharaanService->getById((int) $id);
+        $this->authorizeAccess($pemeliharaan);
 
         if (!$pemeliharaan->canEdit()) {
             return redirect()->route('transaksi.pemeliharaan.show', $pemeliharaan->id)
@@ -83,6 +89,9 @@ class PemeliharaanController extends Controller
 
     public function update(UpdatePemeliharaanRequest $request, string $id): RedirectResponse
     {
+        $pemeliharaan = $this->pemeliharaanService->getById((int) $id);
+        $this->authorizeAccess($pemeliharaan);
+
         try {
             $this->pemeliharaanService->update((int) $id, $request->validated(), auth()->id());
         } catch (\Throwable $e) {
@@ -95,6 +104,9 @@ class PemeliharaanController extends Controller
 
     public function destroy(string $id): RedirectResponse
     {
+        $pemeliharaan = $this->pemeliharaanService->getById((int) $id);
+        $this->authorizeAccess($pemeliharaan);
+
         try {
             $this->pemeliharaanService->delete((int) $id, auth()->id());
         } catch (\Throwable $e) {
@@ -107,6 +119,8 @@ class PemeliharaanController extends Controller
 
     public function approve(Request $request, string $id): RedirectResponse
     {
+        $this->requireAdmin();
+
         try {
             $this->pemeliharaanService->approve((int) $id, (int) auth()->id(), $request->input('catatan_approval'));
         } catch (\Throwable $e) {
@@ -120,6 +134,8 @@ class PemeliharaanController extends Controller
 
     public function reject(Request $request, string $id): RedirectResponse
     {
+        $this->requireAdmin();
+
         try {
             $this->pemeliharaanService->reject((int) $id, (int) auth()->id(), $request->input('catatan_approval'));
         } catch (\Throwable $e) {
@@ -133,6 +149,8 @@ class PemeliharaanController extends Controller
 
     public function startProcess(string $id): RedirectResponse
     {
+        $this->requireAdmin();
+
         try {
             $this->pemeliharaanService->startProcess((int) $id, (int) auth()->id());
         } catch (\Throwable $e) {
@@ -147,6 +165,7 @@ class PemeliharaanController extends Controller
     public function completeForm(string $id): View|RedirectResponse
     {
         $pemeliharaan = $this->pemeliharaanService->getById((int) $id);
+        $this->requireAdmin();
 
         if ($pemeliharaan->status !== 'proses') {
             return redirect()->route('transaksi.pemeliharaan.show', $id)
@@ -161,6 +180,8 @@ class PemeliharaanController extends Controller
 
     public function complete(CompletePemeliharaanRequest $request, string $id): RedirectResponse
     {
+        $this->requireAdmin();
+
         try {
             $this->pemeliharaanService->complete((int) $id, $request->validated(), (int) auth()->id());
         } catch (\Throwable $e) {
@@ -181,6 +202,26 @@ class PemeliharaanController extends Controller
         }
 
         return Excel::download(new TransaksiPemeliharaanExport(), $filename, \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    private function canManageAll(): bool
+    {
+        return auth()->user()->is_super_admin
+            || auth()->user()->hasPermission('transaksi.pemeliharaan.approve');
+    }
+
+    private function requireAdmin(): void
+    {
+        if (!$this->canManageAll()) {
+            abort(403, 'Anda tidak memiliki akses untuk aksi ini.');
+        }
+    }
+
+    private function authorizeAccess($record): void
+    {
+        if (!$this->canManageAll() && $record->created_by !== auth()->id()) {
+            abort(403, 'Anda tidak memiliki akses ke transaksi ini.');
+        }
     }
 
     private function formOptions(): array

@@ -22,6 +22,11 @@ class MutasiAsetController extends Controller
     public function index()
     {
         $filters = request()->only(['search', 'status', 'jenis', 'per_page']);
+
+        if (!$this->canManageAll()) {
+            $filters['creator_id'] = auth()->id();
+        }
+
         $mutasis = $this->mutasiService->getPaginatedMutasi($filters);
 
         return view('transaksi.mutasi-aset.index', compact('mutasis', 'filters'));
@@ -68,12 +73,15 @@ class MutasiAsetController extends Controller
     public function show(TransaksiMutasiAset $mutasiAset)
     {
         $mutasi = $this->mutasiService->getById($mutasiAset->id);
+        $this->authorizeAccess($mutasi);
 
         return view('transaksi.mutasi-aset.show', compact('mutasi'));
     }
 
     public function edit(TransaksiMutasiAset $mutasiAset)
     {
+        $this->authorizeAccess($mutasiAset);
+
         if (!$mutasiAset->canEdit()) {
             return back()->with('error', 'Transaksi tidak bisa diubah pada status ini');
         }
@@ -85,6 +93,8 @@ class MutasiAsetController extends Controller
 
     public function update(UpdateMutasiAsetRequest $request, TransaksiMutasiAset $mutasiAset)
     {
+        $this->authorizeAccess($mutasiAset);
+
         try {
             $userId = auth()->id();
             $mutasi = $this->mutasiService->update($mutasiAset->id, $request->validated(), $userId);
@@ -101,6 +111,8 @@ class MutasiAsetController extends Controller
 
     public function destroy(TransaksiMutasiAset $mutasiAset)
     {
+        $this->authorizeAccess($mutasiAset);
+
         try {
             $userId = auth()->id();
             $this->mutasiService->delete($mutasiAset->id, $userId);
@@ -115,6 +127,8 @@ class MutasiAsetController extends Controller
 
     public function approve(TransaksiMutasiAset $mutasiAset)
     {
+        $this->requireAdmin();
+
         try {
             $userId = auth()->id();
             $catatan = request()->input('catatan_approval', '');
@@ -128,6 +142,8 @@ class MutasiAsetController extends Controller
 
     public function reject(TransaksiMutasiAset $mutasiAset)
     {
+        $this->requireAdmin();
+
         try {
             $userId = auth()->id();
             $catatan = request()->input('catatan_approval', '');
@@ -141,6 +157,8 @@ class MutasiAsetController extends Controller
 
     public function process(TransaksiMutasiAset $mutasiAset)
     {
+        $this->requireAdmin();
+
         try {
             $userId = auth()->id();
             $this->mutasiService->startProcess($mutasiAset->id, $userId);
@@ -153,6 +171,8 @@ class MutasiAsetController extends Controller
 
     public function completeForm(TransaksiMutasiAset $mutasiAset)
     {
+        $this->requireAdmin();
+
         if ($mutasiAset->status !== 'proses') {
             return back()->with('error', 'Hanya mutasi dengan status proses yang bisa diselesaikan');
         }
@@ -162,6 +182,8 @@ class MutasiAsetController extends Controller
 
     public function complete(CompleteMutasiAsetRequest $request, TransaksiMutasiAset $mutasiAset)
     {
+        $this->requireAdmin();
+
         try {
             $userId = auth()->id();
             $mutasi = $this->mutasiService->complete($mutasiAset->id, $request->validated(), $userId);
@@ -171,6 +193,26 @@ class MutasiAsetController extends Controller
                 ->with('success', 'Mutasi aset berhasil diselesaikan');
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal menyelesaikan mutasi aset: ' . $e->getMessage());
+        }
+    }
+
+    private function canManageAll(): bool
+    {
+        return auth()->user()->is_super_admin
+            || auth()->user()->hasPermission('transaksi.mutasi_aset.approve');
+    }
+
+    private function requireAdmin(): void
+    {
+        if (!$this->canManageAll()) {
+            abort(403, 'Anda tidak memiliki akses untuk aksi ini.');
+        }
+    }
+
+    private function authorizeAccess($record): void
+    {
+        if (!$this->canManageAll() && (int) $record->created_by !== (int) auth()->id()) {
+            abort(403, 'Anda tidak memiliki akses ke transaksi ini.');
         }
     }
 

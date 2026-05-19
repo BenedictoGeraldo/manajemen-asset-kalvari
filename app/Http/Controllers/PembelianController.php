@@ -29,6 +29,10 @@ class PembelianController extends Controller
             'per_page' => $request->input('per_page', 10),
         ];
 
+        if (!$this->canManageAll()) {
+            $filters['creator_id'] = auth()->id();
+        }
+
         $pembelians = $this->pembelianService->getPaginatedPembelian($filters);
 
         return view('transaksi.pembelian.index', [
@@ -56,12 +60,20 @@ class PembelianController extends Controller
     {
         $pembelian = $this->pembelianService->getById((int) $id);
 
+        if (!$this->canManageAll() && $pembelian->created_by !== auth()->id()) {
+            abort(403, 'Anda tidak memiliki akses ke transaksi ini.');
+        }
+
         return view('transaksi.pembelian.show', compact('pembelian'));
     }
 
     public function edit(string $id)
     {
         $pembelian = $this->pembelianService->getById((int) $id);
+
+        if (!$this->canManageAll() && $pembelian->created_by !== auth()->id()) {
+            abort(403, 'Anda tidak memiliki akses untuk mengubah transaksi ini.');
+        }
 
         if ($pembelian->status === 'disetujui') {
             return redirect()->route('transaksi.pembelian.show', $pembelian->id)
@@ -76,6 +88,12 @@ class PembelianController extends Controller
 
     public function update(UpdatePembelianRequest $request, string $id)
     {
+        $pembelian = $this->pembelianService->getById((int) $id);
+
+        if (!$this->canManageAll() && $pembelian->created_by !== auth()->id()) {
+            abort(403, 'Anda tidak memiliki akses untuk mengubah transaksi ini.');
+        }
+
         try {
             $this->pembelianService->update((int) $id, $request->validated(), auth()->id());
         } catch (\RuntimeException $e) {
@@ -88,6 +106,12 @@ class PembelianController extends Controller
 
     public function destroy(string $id)
     {
+        $pembelian = $this->pembelianService->getById((int) $id);
+
+        if (!$this->canManageAll() && $pembelian->created_by !== auth()->id()) {
+            abort(403, 'Anda tidak memiliki akses untuk menghapus transaksi ini.');
+        }
+
         try {
             $this->pembelianService->delete((int) $id, auth()->id());
         } catch (\RuntimeException $e) {
@@ -100,6 +124,10 @@ class PembelianController extends Controller
 
     public function approve(string $id)
     {
+        if (!$this->canManageAll()) {
+            abort(403, 'Anda tidak memiliki akses untuk menyetujui.');
+        }
+
         try {
             $this->pembelianService->approveAndPostToAset((int) $id, (int) auth()->id());
         } catch (\Throwable $e) {
@@ -121,6 +149,12 @@ class PembelianController extends Controller
         }
 
         return Excel::download(new TransaksiPembelianExport, $filename, \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    private function canManageAll(): bool
+    {
+        return auth()->user()->is_super_admin
+            || auth()->user()->hasPermission('transaksi.pembelian.approve');
     }
 
     private function masterDataOptions(): array
