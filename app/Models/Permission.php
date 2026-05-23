@@ -86,17 +86,20 @@ class Permission extends Model
             $groupedPermissions[$group][$subGroup][] = $permission;
         }
 
-        // Sort permissions inside each subGroup so that '.view' is always the first element
+        // Sort permissions inside each subGroup: .view first, .approve second, others alphabetically
         foreach ($groupedPermissions as $groupName => &$subGroups) {
             foreach ($subGroups as $subGroupName => &$perms) {
                 usort($perms, function ($a, $b) {
                     $aIsView = str_ends_with($a->name, '.view');
                     $bIsView = str_ends_with($b->name, '.view');
-                    
+                    $aIsApprove = str_ends_with($a->name, '.approve');
+                    $bIsApprove = str_ends_with($b->name, '.approve');
+
                     if ($aIsView && !$bIsView) return -1;
                     if (!$aIsView && $bIsView) return 1;
-                    
-                    // If both are view or neither are view, maintain alphabetical order by name
+                    if ($aIsApprove && !$bIsApprove) return -1;
+                    if (!$aIsApprove && $bIsApprove) return 1;
+
                     return strcmp($a->name, $b->name);
                 });
             }

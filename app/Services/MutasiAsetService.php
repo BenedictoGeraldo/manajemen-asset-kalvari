@@ -15,6 +15,7 @@ class MutasiAsetService
         $search = $filters['search'] ?? null;
         $status = $filters['status'] ?? null;
         $jenis = $filters['jenis'] ?? null;
+        $creatorId = $filters['creator_id'] ?? null;
         $perPage = $filters['per_page'] ?? 10;
 
         $query = TransaksiMutasiAset::with(['aset'])
@@ -28,6 +29,10 @@ class MutasiAsetService
 
         if ($jenis) {
             $query->where('jenis_mutasi', $jenis);
+        }
+
+        if ($creatorId) {
+            $query->where('created_by', $creatorId);
         }
 
         return $query->paginate($perPage);

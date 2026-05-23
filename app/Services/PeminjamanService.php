@@ -13,10 +13,10 @@ class PeminjamanService
 {
     public function getPaginatedPeminjaman(array $filters = []): LengthAwarePaginator
     {
-        // Sync status terlambat — di-cache 1 hari agar tidak UPDATE tiap request
         $this->syncOverdueStatuses();
         $search = $filters['search'] ?? null;
         $status = $filters['status'] ?? null;
+        $creatorId = $filters['creator_id'] ?? null;
         $perPage = $filters['per_page'] ?? 10;
 
         $query = TransaksiPeminjaman::withCount('items')
@@ -26,6 +26,10 @@ class PeminjamanService
 
         if ($status) {
             $query->where('status', $status);
+        }
+
+        if ($creatorId) {
+            $query->where('created_by', $creatorId);
         }
 
         return $query->paginate($perPage);
@@ -53,7 +57,7 @@ class PeminjamanService
         for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
             try {
                 return DB::transaction(function () use ($data, $userId) {
-                    $items = $this->normalizeItems($data['items']);
+            $items = $this->normalizeItems($data['items'] ?? []);
                     unset($data['items']);
 
                     $peminjaman = TransaksiPeminjaman::create([
