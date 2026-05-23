@@ -18,7 +18,13 @@ class PemusnahanController extends Controller
 
     public function index()
     {
-        $pemusnahans = TransaksiPemusnahan::with('aset')->latest()->paginate(10);
+        $query = TransaksiPemusnahan::with('aset');
+
+        if (!$this->canManageAll()) {
+            $query->where('created_by', auth()->id());
+        }
+
+        $pemusnahans = $query->latest()->paginate(10);
         return view('transaksi.pemusnahan.index', compact('pemusnahans'));
     }
 
@@ -69,7 +75,46 @@ class PemusnahanController extends Controller
 
     public function show(TransaksiPemusnahan $pemusnahan)
     {
+        $this->authorizeAccess($pemusnahan);
         $pemusnahan->load('aset');
         return view('transaksi.pemusnahan.show', compact('pemusnahan'));
+    }
+
+    public function destroy($id)
+    {
+        $pemusnahan = TransaksiPemusnahan::findOrFail($id);
+        $this->authorizeAccess($pemusnahan);
+
+        DB::beginTransaction();
+        try {
+            if ($pemusnahan->aset) {
+                $aset = $pemusnahan->aset;
+                $aset->jumlah_barang += $pemusnahan->jumlah_dimusnahkan;
+                if ($aset->jumlah_barang > 0) {
+                    $aset->is_active = true;
+                }
+                $aset->save();
+            }
+
+            $pemusnahan->delete();
+            DB::commit();
+            return redirect()->route('transaksi.pemusnahan.index')->with('success', 'Transaksi pemusnahan berhasil dihapus.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    private function canManageAll(): bool
+    {
+        return auth()->user()->is_super_admin
+            || auth()->user()->hasPermission('transaksi.pemusnahan.approve');
+    }
+
+    private function authorizeAccess($record): void
+    {
+        if (!$this->canManageAll() && (int) $record->created_by !== (int) auth()->id()) {
+            abort(403, 'Anda tidak memiliki akses ke transaksi ini.');
+        }
     }
 }

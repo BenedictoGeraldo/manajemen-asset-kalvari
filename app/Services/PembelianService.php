@@ -14,6 +14,7 @@ class PembelianService
     {
         $search = $filters['search'] ?? null;
         $status = $filters['status'] ?? null;
+        $creatorId = $filters['creator_id'] ?? null;
         $perPage = $filters['per_page'] ?? 10;
 
         $query = TransaksiPembelian::withCount('items')
@@ -23,6 +24,10 @@ class PembelianService
 
         if ($status) {
             $query->where('status', $status);
+        }
+
+        if ($creatorId) {
+            $query->where('created_by', $creatorId);
         }
 
         return $query->paginate($perPage);
@@ -54,6 +59,7 @@ class PembelianService
 
                     $pembelian = TransaksiPembelian::create([
                         ...$data,
+                        'status' => 'diajukan',
                         'nomor_pembelian' => $this->generateNomorPembelian($data['tanggal_pembelian']),
                         'total_nilai' => $totalNilai,
                         'created_by' => $userId,

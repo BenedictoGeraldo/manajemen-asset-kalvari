@@ -31,6 +31,10 @@ class PeminjamanController extends Controller
             'per_page' => $request->input('per_page', 10),
         ];
 
+        if (!$this->canManageAll()) {
+            $filters['creator_id'] = auth()->id();
+        }
+
         $peminjamans = $this->peminjamanService->getPaginatedPeminjaman($filters);
 
         return view('transaksi.peminjaman.index', [
@@ -61,6 +65,7 @@ class PeminjamanController extends Controller
     public function show(string $id): View
     {
         $peminjaman = $this->peminjamanService->getById((int) $id);
+        $this->authorizeAccess($peminjaman);
 
         return view('transaksi.peminjaman.show', compact('peminjaman'));
     }
@@ -68,6 +73,7 @@ class PeminjamanController extends Controller
     public function edit(string $id): View|RedirectResponse
     {
         $peminjaman = $this->peminjamanService->getById((int) $id);
+        $this->authorizeAccess($peminjaman);
 
         if (!$peminjaman->canEdit()) {
             return redirect()->route('transaksi.peminjaman.show', $peminjaman->id)
@@ -82,6 +88,9 @@ class PeminjamanController extends Controller
 
     public function update(UpdatePeminjamanRequest $request, string $id): RedirectResponse
     {
+        $peminjaman = $this->peminjamanService->getById((int) $id);
+        $this->authorizeAccess($peminjaman);
+
         try {
             $this->peminjamanService->update((int) $id, $request->validated(), auth()->id());
         } catch (\Throwable $e) {
@@ -94,6 +103,9 @@ class PeminjamanController extends Controller
 
     public function destroy(string $id): RedirectResponse
     {
+        $peminjaman = $this->peminjamanService->getById((int) $id);
+        $this->authorizeAccess($peminjaman);
+
         try {
             $this->peminjamanService->delete((int) $id, auth()->id());
         } catch (\Throwable $e) {
@@ -106,6 +118,8 @@ class PeminjamanController extends Controller
 
     public function approve(Request $request, string $id): RedirectResponse
     {
+        $this->requireAdmin();
+
         try {
             $this->peminjamanService->approve((int) $id, (int) auth()->id(), $request->input('catatan_approval'));
         } catch (\Throwable $e) {
@@ -119,6 +133,8 @@ class PeminjamanController extends Controller
 
     public function reject(Request $request, string $id): RedirectResponse
     {
+        $this->requireAdmin();
+
         try {
             $this->peminjamanService->reject((int) $id, (int) auth()->id(), $request->input('catatan_approval'));
         } catch (\Throwable $e) {
@@ -133,6 +149,7 @@ class PeminjamanController extends Controller
     public function handoverForm(string $id): View|RedirectResponse
     {
         $peminjaman = $this->peminjamanService->getById((int) $id);
+        $this->requireAdmin();
 
         if ($peminjaman->status !== \App\Enums\PeminjamanStatus::DISETUJUI) {
             return redirect()->route('transaksi.peminjaman.show', $id)
@@ -147,6 +164,8 @@ class PeminjamanController extends Controller
 
     public function handover(HandoverPeminjamanRequest $request, string $id): RedirectResponse
     {
+        $this->requireAdmin();
+
         try {
             $this->peminjamanService->handover((int) $id, $request->validated(), (int) auth()->id());
         } catch (\Throwable $e) {
@@ -160,6 +179,7 @@ class PeminjamanController extends Controller
     public function returnForm(string $id): View|RedirectResponse
     {
         $peminjaman = $this->peminjamanService->getById((int) $id);
+        $this->requireAdmin();
 
         if (!in_array($peminjaman->status, [\App\Enums\PeminjamanStatus::DIPINJAM, \App\Enums\PeminjamanStatus::TERLAMBAT], true)) {
             return redirect()->route('transaksi.peminjaman.show', $id)
@@ -174,6 +194,8 @@ class PeminjamanController extends Controller
 
     public function returnAssets(ReturnPeminjamanRequest $request, string $id): RedirectResponse
     {
+        $this->requireAdmin();
+
         try {
             $this->peminjamanService->returnAssets((int) $id, $request->validated(), (int) auth()->id());
         } catch (\Throwable $e) {
@@ -194,6 +216,26 @@ class PeminjamanController extends Controller
         }
 
         return Excel::download(new TransaksiPeminjamanExport(), $filename, \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    private function canManageAll(): bool
+    {
+        return auth()->user()->is_super_admin
+            || auth()->user()->hasPermission('transaksi.peminjaman.approve');
+    }
+
+    private function requireAdmin(): void
+    {
+        if (!$this->canManageAll()) {
+            abort(403, 'Anda tidak memiliki akses untuk aksi ini.');
+        }
+    }
+
+    private function authorizeAccess($record): void
+    {
+        if (!$this->canManageAll() && $record->created_by !== auth()->id()) {
+            abort(403, 'Anda tidak memiliki akses ke transaksi ini.');
+        }
     }
 
     private function formOptions(): array

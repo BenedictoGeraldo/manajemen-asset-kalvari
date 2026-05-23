@@ -15,6 +15,7 @@ class PemeliharaanService
         $search = $filters['search'] ?? null;
         $status = $filters['status'] ?? null;
         $jenis = $filters['jenis'] ?? null;
+        $creatorId = $filters['creator_id'] ?? null;
         $perPage = $filters['per_page'] ?? 10;
 
         $query = TransaksiPemeliharaan::with(['aset'])
@@ -28,6 +29,10 @@ class PemeliharaanService
 
         if ($jenis) {
             $query->where('jenis_pemeliharaan', $jenis);
+        }
+
+        if ($creatorId) {
+            $query->where('created_by', $creatorId);
         }
 
         return $query->paginate($perPage);

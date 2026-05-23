@@ -314,9 +314,16 @@ class PermissionSeeder extends Seeder
             [
                 'name' => 'transaksi.pembelian.approve',
                 'slug' => 'transaksi.pembelian.approve',
-                'display_name' => 'Setujui Pembelian',
+                'display_name' => 'Setujui Pembelian (Admin)',
                 'group' => 'Data Transaksional',
-                'description' => 'Dapat menyetujui pembelian dan posting ke data aset'
+                'description' => 'ADMIN: dapat menyetujui pembelian, posting ke data aset, edit, hapus, dan melihat semua data'
+            ],
+            [
+                'name' => 'transaksi.pembelian.export',
+                'slug' => 'transaksi.pembelian.export',
+                'display_name' => 'Export Pembelian',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat mengexport data transaksi pembelian ke Excel/CSV'
             ],
 
             // Transaksi Peminjaman
@@ -358,23 +365,23 @@ class PermissionSeeder extends Seeder
             [
                 'name' => 'transaksi.peminjaman.approve',
                 'slug' => 'transaksi.peminjaman.approve',
-                'display_name' => 'Setujui/Tolak Peminjaman',
+                'display_name' => 'Setujui/Tolak Peminjaman (Admin)',
                 'group' => 'Data Transaksional',
-                'description' => 'Dapat menyetujui atau menolak transaksi peminjaman'
+                'description' => 'ADMIN: dapat menyetujui/menolak, serah terima, pengembalian, edit, hapus, dan melihat semua data'
             ],
             [
                 'name' => 'transaksi.peminjaman.handover',
                 'slug' => 'transaksi.peminjaman.handover',
                 'display_name' => 'Serah Terima Peminjaman',
                 'group' => 'Data Transaksional',
-                'description' => 'Dapat memproses serah terima aset yang dipinjam'
+                'description' => 'Dapat memproses serah terima aset yang dipinjam (perlu akses admin)'
             ],
             [
                 'name' => 'transaksi.peminjaman.return',
                 'slug' => 'transaksi.peminjaman.return',
                 'display_name' => 'Pengembalian Peminjaman',
                 'group' => 'Data Transaksional',
-                'description' => 'Dapat memproses pengembalian aset yang dipinjam'
+                'description' => 'Dapat memproses pengembalian aset yang dipinjam (perlu akses admin)'
             ],
 
             // Transaksi Pemeliharaan
@@ -416,23 +423,23 @@ class PermissionSeeder extends Seeder
             [
                 'name' => 'transaksi.pemeliharaan.approve',
                 'slug' => 'transaksi.pemeliharaan.approve',
-                'display_name' => 'Setujui/Tolak Pemeliharaan',
+                'display_name' => 'Setujui/Tolak Pemeliharaan (Admin)',
                 'group' => 'Data Transaksional',
-                'description' => 'Dapat menyetujui atau menolak transaksi pemeliharaan'
+                'description' => 'ADMIN: dapat menyetujui/menolak, proses, selesaikan, edit, hapus, dan melihat semua data'
             ],
             [
                 'name' => 'transaksi.pemeliharaan.process',
                 'slug' => 'transaksi.pemeliharaan.process',
                 'display_name' => 'Proses Pemeliharaan',
                 'group' => 'Data Transaksional',
-                'description' => 'Dapat memulai proses pemeliharaan yang telah disetujui'
+                'description' => 'Dapat memulai proses pemeliharaan yang telah disetujui (perlu akses admin)'
             ],
             [
                 'name' => 'transaksi.pemeliharaan.complete',
                 'slug' => 'transaksi.pemeliharaan.complete',
                 'display_name' => 'Selesaikan Pemeliharaan',
                 'group' => 'Data Transaksional',
-                'description' => 'Dapat menyelesaikan pemeliharaan dan memperbarui kondisi aset'
+                'description' => 'Dapat menyelesaikan pemeliharaan dan memperbarui kondisi aset (perlu akses admin)'
             ],
 
             // Transaksi Mutasi Aset
@@ -474,23 +481,23 @@ class PermissionSeeder extends Seeder
             [
                 'name' => 'transaksi.mutasi_aset.approve',
                 'slug' => 'transaksi.mutasi_aset.approve',
-                'display_name' => 'Setujui/Tolak Mutasi Aset',
+                'display_name' => 'Setujui/Tolak Mutasi Aset (Admin)',
                 'group' => 'Data Transaksional',
-                'description' => 'Dapat menyetujui atau menolak transaksi mutasi aset'
+                'description' => 'ADMIN: dapat menyetujui/menolak, proses, selesaikan, edit, hapus, dan melihat semua data'
             ],
             [
                 'name' => 'transaksi.mutasi_aset.process',
                 'slug' => 'transaksi.mutasi_aset.process',
                 'display_name' => 'Proses Mutasi Aset',
                 'group' => 'Data Transaksional',
-                'description' => 'Dapat memulai proses mutasi aset yang telah disetujui'
+                'description' => 'Dapat memulai proses mutasi aset yang telah disetujui (perlu akses admin)'
             ],
             [
                 'name' => 'transaksi.mutasi_aset.complete',
                 'slug' => 'transaksi.mutasi_aset.complete',
                 'display_name' => 'Selesaikan Mutasi Aset',
                 'group' => 'Data Transaksional',
-                'description' => 'Dapat menyelesaikan mutasi aset dan memperbarui data aset'
+                'description' => 'Dapat menyelesaikan mutasi aset dan memperbarui data aset (perlu akses admin)'
             ],
 
             // Transaksi Pemusnahan Aset
@@ -507,16 +514,16 @@ class PermissionSeeder extends Seeder
                 'description' => 'Dapat menambah transaksi pemusnahan aset baru'
             ],
             [
-                'name' => 'transaksi.pemusnahan.edit',
-                'display_name' => 'Edit Pemusnahan Aset',
-                'group' => 'Data Transaksional',
-                'description' => 'Dapat mengedit transaksi pemusnahan aset'
-            ],
-            [
                 'name' => 'transaksi.pemusnahan.delete',
                 'display_name' => 'Hapus Pemusnahan Aset',
                 'group' => 'Data Transaksional',
                 'description' => 'Dapat menghapus transaksi pemusnahan aset'
+            ],
+            [
+                'name' => 'transaksi.pemusnahan.approve',
+                'display_name' => 'Setujui Pemusnahan (Admin)',
+                'group' => 'Data Transaksional',
+                'description' => 'ADMIN: dapat menghapus, edit, dan melihat semua data pemusnahan'
             ],
         ];
 

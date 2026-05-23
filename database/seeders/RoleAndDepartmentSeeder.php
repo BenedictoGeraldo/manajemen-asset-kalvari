@@ -36,32 +36,39 @@ class RoleAndDepartmentSeeder extends Seeder
         );
 
         // 3. Assign Permissions to Admin Divisi
-        // Diberikan: akses dashboard, data aset (view, create, edit, delete, export), transaksi (view, create, approve khusus divisi)
         $adminDivisiPermissions = Permission::whereIn('name', [
             'dashboard.view',
-            'data-aset.view',
-            'data-aset.create',
-            'data-aset.edit',
-            'data-aset.delete',
-            'data-aset.export',
-            'transaksi.peminjaman.view',
-            'transaksi.peminjaman.create',
-            'transaksi.peminjaman.approve',
-            'transaksi.pemeliharaan.view',
-            'transaksi.pemeliharaan.create',
-            'transaksi.mutasi_aset.view'
+            'data-aset.view', 'data-aset.create', 'data-aset.edit', 'data-aset.delete', 'data-aset.export',
+            // Data Transaksional — admin divisi dapat semua akses
+            'transaksi.pembelian.view', 'transaksi.pembelian.create', 'transaksi.pembelian.approve',
+            'transaksi.peminjaman.view', 'transaksi.peminjaman.create', 'transaksi.peminjaman.approve',
+            'transaksi.pemeliharaan.view', 'transaksi.pemeliharaan.create', 'transaksi.pemeliharaan.approve',
+            'transaksi.mutasi_aset.view', 'transaksi.mutasi_aset.create', 'transaksi.mutasi_aset.approve',
+            'transaksi.pemusnahan.view', 'transaksi.pemusnahan.create', 'transaksi.pemusnahan.approve',
+            // Master data — view only
+            'master.kategori.view', 'master.lokasi.view', 'master.kondisi.view', 'master.pengelola.view',
+            // Laporan
+            'laporan.data-aset.view', 'laporan.mutasi-aset.view', 'laporan.pembelian.view', 'laporan.pemusnahan.view',
         ])->get();
 
-        $adminDivisiRole->permissions()->sync($adminDivisiPermissions->pluck('id')->toArray());
+        $adminDivisiRole->permissions()->sync(
+            $adminDivisiPermissions->mapWithKeys(fn($p) => [$p->id => ['can_read' => true, 'can_create' => true, 'can_update' => true, 'can_delete' => true]])->toArray()
+        );
 
-        // 4. Assign Permissions to Peminjam
+        // 4. Assign Permissions to Peminjam (user biasa: view + create sendiri saja)
         $peminjamPermissions = Permission::whereIn('name', [
             'dashboard.view',
             'data-aset.view',
-            'transaksi.peminjaman.view',
-            'transaksi.peminjaman.create'
+            // Data Transaksional — hanya view (milik sendiri) + create
+            'transaksi.pembelian.view', 'transaksi.pembelian.create',
+            'transaksi.peminjaman.view', 'transaksi.peminjaman.create',
+            'transaksi.pemeliharaan.view', 'transaksi.pemeliharaan.create',
+            'transaksi.mutasi_aset.view', 'transaksi.mutasi_aset.create',
+            'transaksi.pemusnahan.view', 'transaksi.pemusnahan.create',
         ])->get();
 
-        $peminjamRole->permissions()->sync($peminjamPermissions->pluck('id')->toArray());
+        $peminjamRole->permissions()->sync(
+            $peminjamPermissions->mapWithKeys(fn($p) => [$p->id => ['can_read' => true, 'can_create' => true, 'can_update' => false, 'can_delete' => false]])->toArray()
+        );
     }
 }

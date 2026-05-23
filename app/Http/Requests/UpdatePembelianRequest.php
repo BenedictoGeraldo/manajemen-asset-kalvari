@@ -26,7 +26,6 @@ class UpdatePembelianRequest extends FormRequest
             'vendor_nama' => 'required|string|max:150',
             'vendor_kontak' => 'nullable|string|max:100',
             'sumber_dana' => 'nullable|string|max:150',
-            'status' => 'required|in:draft,diajukan,dibatalkan',
             'catatan' => 'nullable|string',
 
             'items' => 'required|array|min:1',
