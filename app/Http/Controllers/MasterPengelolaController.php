@@ -58,6 +58,7 @@ class MasterPengelolaController extends Controller
             'is_active' => 'boolean'
         ]);
 
+        $validated['is_active'] = $request->boolean('is_active');
         MasterPengelola::create($validated);
 
         return redirect()->route('master.pengelola.index')
@@ -83,6 +84,13 @@ class MasterPengelolaController extends Controller
             'email' => 'nullable|email|max:100',
             'is_active' => 'boolean'
         ]);
+
+        $validated['is_active'] = $request->boolean('is_active');
+
+        if (!$validated['is_active'] && $pengelola->is_active && $pengelola->dataAset()->count() > 0) {
+            return redirect()->back()
+                ->with('error', 'Pengelola tidak dapat dinonaktifkan karena masih digunakan oleh aset!');
+        }
 
         $pengelola->update($validated);
 

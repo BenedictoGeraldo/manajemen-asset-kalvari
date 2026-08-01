@@ -180,6 +180,31 @@ class DataAsetKolektifController extends Controller
         $lokasis = $this->masterDataService->getActiveLokasis();
         $kondisis = $this->masterDataService->getActiveKondisis();
         $pengelolas = $this->masterDataService->getActivePengelolas();
+
+        if ($aset->kategori_id && !$kategoris->contains('id', $aset->kategori_id)) {
+            $inactiveKategori = \App\Models\MasterKategori::find($aset->kategori_id);
+            if ($inactiveKategori) {
+                $kategoris->push($inactiveKategori);
+            }
+        }
+        if ($aset->lokasi_id && !$lokasis->contains('id', $aset->lokasi_id)) {
+            $inactiveLokasi = \App\Models\MasterLokasi::find($aset->lokasi_id);
+            if ($inactiveLokasi) {
+                $lokasis->push($inactiveLokasi);
+            }
+        }
+        if ($aset->kondisi_id && !$kondisis->contains('id', $aset->kondisi_id)) {
+            $inactiveKondisi = \App\Models\MasterKondisi::find($aset->kondisi_id);
+            if ($inactiveKondisi) {
+                $kondisis->push($inactiveKondisi);
+            }
+        }
+        if ($aset->pengelola_id && !$pengelolas->contains('id', $aset->pengelola_id)) {
+            $inactivePengelola = \App\Models\MasterPengelola::find($aset->pengelola_id);
+            if ($inactivePengelola) {
+                $pengelolas->push($inactivePengelola);
+            }
+        }
         $departments = $this->masterDataService->getDepartmentOptions();
 
         if ($user && $user->isAdminDivisi()) {

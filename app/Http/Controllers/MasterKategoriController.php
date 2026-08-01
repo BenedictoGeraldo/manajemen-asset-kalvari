@@ -43,7 +43,9 @@ class MasterKategoriController extends Controller
 
     public function store(StoreMasterKategoriRequest $request)
     {
-        MasterKategori::create($request->validated());
+        $validated = $request->validated();
+        $validated['is_active'] = $request->boolean('is_active');
+        MasterKategori::create($validated);
 
         // Clear cache
         $this->masterDataService->clearMasterDataCache();
@@ -61,7 +63,15 @@ class MasterKategoriController extends Controller
     public function update(UpdateMasterKategoriRequest $request, string $id)
     {
         $kategori = MasterKategori::findOrFail($id);
-        $kategori->update($request->validated());
+        $validated = $request->validated();
+        $validated['is_active'] = $request->boolean('is_active');
+
+        if (!$validated['is_active'] && $kategori->is_active && $kategori->dataAset()->count() > 0) {
+            return redirect()->back()
+                ->with('error', 'Kategori tidak dapat dinonaktifkan karena masih digunakan oleh aset!');
+        }
+
+        $kategori->update($validated);
 
         // Clear cache
         $this->masterDataService->clearMasterDataCache();

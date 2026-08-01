@@ -41,6 +41,7 @@ class MasterKondisiController extends Controller
             'is_active' => 'boolean'
         ]);
 
+        $validated['is_active'] = $request->boolean('is_active');
         MasterKondisi::create($validated);
 
         return redirect()->route('master.kondisi.index')
@@ -64,6 +65,13 @@ class MasterKondisiController extends Controller
             'urutan' => 'required|integer|min:1',
             'is_active' => 'boolean'
         ]);
+
+        $validated['is_active'] = $request->boolean('is_active');
+
+        if (!$validated['is_active'] && $kondisi->is_active && $kondisi->dataAset()->count() > 0) {
+            return redirect()->back()
+                ->with('error', 'Kondisi tidak dapat dinonaktifkan karena masih digunakan oleh aset!');
+        }
 
         $kondisi->update($validated);
 

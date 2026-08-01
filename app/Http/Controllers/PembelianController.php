@@ -80,10 +80,28 @@ class PembelianController extends Controller
                 ->with('error', 'Transaksi yang sudah disetujui tidak dapat diubah.');
         }
 
-        return view('transaksi.pembelian.edit', [
-            'pembelian' => $pembelian,
-            ...$this->masterDataOptions(),
-        ]);
+        $options = $this->masterDataOptions();
+
+        foreach ($pembelian->items as $item) {
+            if ($item->kategori_id && !$options['kategoris']->contains('id', $item->kategori_id)) {
+                $inactive = \App\Models\MasterKategori::find($item->kategori_id);
+                if ($inactive) $options['kategoris']->push($inactive);
+            }
+            if ($item->lokasi_id && !$options['lokasis']->contains('id', $item->lokasi_id)) {
+                $inactive = \App\Models\MasterLokasi::find($item->lokasi_id);
+                if ($inactive) $options['lokasis']->push($inactive);
+            }
+            if ($item->kondisi_id && !$options['kondisis']->contains('id', $item->kondisi_id)) {
+                $inactive = \App\Models\MasterKondisi::find($item->kondisi_id);
+                if ($inactive) $options['kondisis']->push($inactive);
+            }
+            if ($item->pengelola_id && !$options['pengelolas']->contains('id', $item->pengelola_id)) {
+                $inactive = \App\Models\MasterPengelola::find($item->pengelola_id);
+                if ($inactive) $options['pengelolas']->push($inactive);
+            }
+        }
+
+        return view('transaksi.pembelian.edit', ['pembelian' => $pembelian, ...$options]);
     }
 
     public function update(UpdatePembelianRequest $request, string $id)
