@@ -15,15 +15,24 @@ class PembelianService
         $search = $filters['search'] ?? null;
         $status = $filters['status'] ?? null;
         $creatorId = $filters['creator_id'] ?? null;
+        $allowedDepartmentIds = $filters['allowed_department_ids'] ?? null;
         $perPage = $filters['per_page'] ?? 10;
 
-        $query = TransaksiPembelian::withCount('items')
+        $query = TransaksiPembelian::with(['items', 'department', 'approver', 'creator'])
             ->orderBy('tanggal_pembelian', 'desc')
             ->orderBy('created_at', 'desc')
             ->search($search);
 
         if ($status) {
             $query->where('status', $status);
+        }
+
+        if (is_array($allowedDepartmentIds)) {
+            if (empty($allowedDepartmentIds)) {
+                $query->whereRaw('1 = 0');
+            } else {
+                $query->whereIn('department_id', $allowedDepartmentIds);
+            }
         }
 
         if ($creatorId) {
@@ -42,6 +51,9 @@ class PembelianService
             'items.pengelola',
             'items.asetKolektif',
             'approver',
+            'rejecter',
+            'department',
+            'creator',
         ])->findOrFail($id);
     }
 
@@ -57,8 +69,15 @@ class PembelianService
 
                     $totalNilai = $this->calculateTotal($items);
 
+                    $creatorDepartmentId = null;
+                    if ($userId) {
+                        $user = \App\Models\User::find($userId);
+                        $creatorDepartmentId = $user?->department_id;
+                    }
+
                     $pembelian = TransaksiPembelian::create([
                         ...$data,
+                        'department_id' => $creatorDepartmentId,
                         'status' => 'diajukan',
                         'nomor_pembelian' => $this->generateNomorPembelian($data['tanggal_pembelian']),
                         'total_nilai' => $totalNilai,
@@ -90,8 +109,8 @@ class PembelianService
         return DB::transaction(function () use ($id, $data, $userId) {
             $pembelian = TransaksiPembelian::with('items')->findOrFail($id);
 
-            if ($pembelian->status === 'disetujui') {
-                throw new \RuntimeException('Transaksi yang sudah disetujui tidak dapat diubah.');
+            if (in_array($pembelian->status, ['disetujui', 'ditolak'])) {
+                throw new \RuntimeException('Transaksi yang sudah ' . $pembelian->status . ' tidak dapat diubah.');
             }
 
             $items = $data['items'];
@@ -122,8 +141,8 @@ class PembelianService
         return DB::transaction(function () use ($id, $userId) {
             $pembelian = TransaksiPembelian::findOrFail($id);
 
-            if ($pembelian->status === 'disetujui') {
-                throw new \RuntimeException('Transaksi yang sudah disetujui tidak dapat dihapus.');
+            if (in_array($pembelian->status, ['disetujui', 'ditolak'])) {
+                throw new \RuntimeException('Transaksi yang sudah ' . $pembelian->status . ' tidak dapat dihapus.');
             }
 
             $pembelian->update(['deleted_by' => $userId]);
@@ -131,10 +150,35 @@ class PembelianService
         });
     }
 
+    public function reject(int $id, string $alasan, int $userId): TransaksiPembelian
+    {
+        return DB::transaction(function () use ($id, $alasan, $userId) {
+            $pembelian = TransaksiPembelian::findOrFail($id);
+
+            if ($pembelian->status !== 'diajukan') {
+                throw new \RuntimeException('Hanya transaksi dengan status diajukan yang dapat ditolak.');
+            }
+
+            $pembelian->update([
+                'status' => 'ditolak',
+                'alasan_penolakan' => $alasan,
+                'rejected_at' => now(),
+                'rejected_by' => $userId,
+                'updated_by' => $userId,
+            ]);
+
+            return $pembelian->load('items.asetKolektif');
+        });
+    }
+
     public function approveAndPostToAset(int $id, int $userId): TransaksiPembelian
     {
         return DB::transaction(function () use ($id, $userId) {
             $pembelian = TransaksiPembelian::with('items')->findOrFail($id);
+
+            if ($pembelian->status === 'ditolak') {
+                throw new \RuntimeException('Transaksi yang sudah ditolak tidak dapat disetujui.');
+            }
 
             if ($pembelian->status === 'disetujui' && $pembelian->is_posted_to_aset) {
                 return $pembelian->load('items.asetKolektif');
@@ -148,6 +192,7 @@ class PembelianService
                 $aset = DataAsetKolektif::create([
                     'nama_aset' => $item->nama_item,
                     'kategori_id' => $item->kategori_id,
+                    'department_id' => $pembelian->department_id,
                     'deskripsi_aset' => $item->deskripsi,
                     'ukuran' => null,
                     'deskripsi_ukuran_bentuk' => null,

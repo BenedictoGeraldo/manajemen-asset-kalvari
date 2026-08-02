@@ -108,6 +108,16 @@
     </a>
 </div>
 
+@php
+    $lokasiGrouped = $lokasis->groupBy('nama_lokasi')->map(fn($items, $nama) => [
+        'group' => $nama,
+        'items' => $items->map(fn($x) => [
+            'id' => $x->id,
+            'label' => $x->sub_lokasi ?: $nama,
+        ])->values()->toArray(),
+    ])->values()->toArray();
+@endphp
+
 <script>
 (function() {
     const itemsContainer = document.getElementById('items-container');
@@ -116,14 +126,21 @@
     const initialItems = @json($itemsState);
 
     function buildOptions(list, selected) {
-        return list.map(option => {
-            const isSelected = String(option.id) === String(selected) ? 'selected' : '';
-            return `<option value="${option.id}" ${isSelected}>${option.label}</option>`;
+        return list.map(item => {
+            if (item.group !== undefined) {
+                const childOptions = (item.items || []).map(opt => {
+                    const isSelected = String(opt.id) === String(selected) ? 'selected' : '';
+                    return `<option value="${opt.id}" ${isSelected}>${opt.label}</option>`;
+                }).join('');
+                return `<optgroup label="${item.group}">${childOptions}</optgroup>`;
+            }
+            const isSelected = String(item.id) === String(selected) ? 'selected' : '';
+            return `<option value="${item.id}" ${isSelected}>${item.label}</option>`;
         }).join('');
     }
 
     const kategoriOptions = [{ id: '', label: 'Pilih Kategori' }, ...@json($kategoris->map(fn($x) => ['id' => $x->id, 'label' => $x->nama_kategori])->values())];
-    const lokasiOptions = [{ id: '', label: 'Pilih Lokasi' }, ...@json($lokasis->map(fn($x) => ['id' => $x->id, 'label' => $x->nama_lokasi])->values())];
+    const lokasiOptions = [{ id: '', label: 'Pilih Lokasi' }, ...@json($lokasiGrouped)];
     const kondisiOptions = [{ id: '', label: 'Pilih Kondisi' }, ...@json($kondisis->map(fn($x) => ['id' => $x->id, 'label' => $x->nama_kondisi])->values())];
     const pengelolaOptions = [{ id: '', label: 'Pilih Pengelola' }, ...@json($pengelolas->map(fn($x) => ['id' => $x->id, 'label' => $x->nama_pengelola])->values())];
 

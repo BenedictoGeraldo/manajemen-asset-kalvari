@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\TransaksiPembelianExport;
+use App\Http\Requests\RejectPembelianRequest;
 use App\Http\Requests\StorePembelianRequest;
 use App\Http\Requests\UpdatePembelianRequest;
 use App\Services\MasterDataService;
@@ -23,14 +24,17 @@ class PembelianController extends Controller
 
     public function index(Request $request)
     {
+        $user = auth()->user();
+
         $filters = [
             'search' => $request->input('search'),
             'status' => $request->input('status'),
             'per_page' => $request->input('per_page', 10),
         ];
 
-        if (!$this->canManageAll()) {
-            $filters['creator_id'] = auth()->id();
+        if (!$user->is_super_admin) {
+            $allowedDepartmentIds = $this->getAllowedDepartmentIds($user);
+            $filters['allowed_department_ids'] = $allowedDepartmentIds;
         }
 
         $pembelians = $this->pembelianService->getPaginatedPembelian($filters);
@@ -60,9 +64,7 @@ class PembelianController extends Controller
     {
         $pembelian = $this->pembelianService->getById((int) $id);
 
-        if (!$this->canManageAll() && $pembelian->created_by !== auth()->id()) {
-            abort(403, 'Anda tidak memiliki akses ke transaksi ini.');
-        }
+        $this->authorizeAccess($pembelian);
 
         return view('transaksi.pembelian.show', compact('pembelian'));
     }
@@ -71,13 +73,15 @@ class PembelianController extends Controller
     {
         $pembelian = $this->pembelianService->getById((int) $id);
 
-        if (!$this->canManageAll() && $pembelian->created_by !== auth()->id()) {
+        $this->authorizeAccess($pembelian);
+
+        if (!$this->canEditDelete($pembelian)) {
             abort(403, 'Anda tidak memiliki akses untuk mengubah transaksi ini.');
         }
 
-        if ($pembelian->status === 'disetujui') {
+        if ($pembelian->status === 'disetujui' || $pembelian->status === 'ditolak') {
             return redirect()->route('transaksi.pembelian.show', $pembelian->id)
-                ->with('error', 'Transaksi yang sudah disetujui tidak dapat diubah.');
+                ->with('error', 'Transaksi yang sudah ' . $pembelian->status . ' tidak dapat diubah.');
         }
 
         $options = $this->masterDataOptions();
@@ -108,7 +112,9 @@ class PembelianController extends Controller
     {
         $pembelian = $this->pembelianService->getById((int) $id);
 
-        if (!$this->canManageAll() && $pembelian->created_by !== auth()->id()) {
+        $this->authorizeAccess($pembelian);
+
+        if (!$this->canEditDelete($pembelian)) {
             abort(403, 'Anda tidak memiliki akses untuk mengubah transaksi ini.');
         }
 
@@ -126,7 +132,9 @@ class PembelianController extends Controller
     {
         $pembelian = $this->pembelianService->getById((int) $id);
 
-        if (!$this->canManageAll() && $pembelian->created_by !== auth()->id()) {
+        $this->authorizeAccess($pembelian);
+
+        if (!$this->canEditDelete($pembelian)) {
             abort(403, 'Anda tidak memiliki akses untuk menghapus transaksi ini.');
         }
 
@@ -142,8 +150,10 @@ class PembelianController extends Controller
 
     public function approve(string $id)
     {
-        if (!$this->canManageAll()) {
-            abort(403, 'Anda tidak memiliki akses untuk menyetujui.');
+        $pembelian = $this->pembelianService->getById((int) $id);
+
+        if (!$this->canApproveReject($pembelian)) {
+            abort(403, 'Anda tidak memiliki akses untuk menyetujui transaksi ini.');
         }
 
         try {
@@ -155,6 +165,25 @@ class PembelianController extends Controller
 
         return redirect()->route('transaksi.pembelian.show', $id)
             ->with('success', 'Pembelian disetujui dan berhasil diposting ke Data Aset.');
+    }
+
+    public function reject(RejectPembelianRequest $request, string $id)
+    {
+        $pembelian = $this->pembelianService->getById((int) $id);
+
+        if (!$this->canApproveReject($pembelian)) {
+            abort(403, 'Anda tidak memiliki akses untuk menolak transaksi ini.');
+        }
+
+        try {
+            $this->pembelianService->reject((int) $id, $request->validated()['alasan_penolakan'], (int) auth()->id());
+        } catch (\Throwable $e) {
+            return redirect()->route('transaksi.pembelian.show', $id)
+                ->with('error', 'Gagal menolak pembelian: ' . $e->getMessage());
+        }
+
+        return redirect()->route('transaksi.pembelian.show', $id)
+            ->with('success', 'Pembelian telah ditolak.');
     }
 
     public function export($format)
@@ -169,10 +198,60 @@ class PembelianController extends Controller
         return Excel::download(new TransaksiPembelianExport, $filename, \Maatwebsite\Excel\Excel::XLSX);
     }
 
-    private function canManageAll(): bool
+    private function authorizeAccess($pembelian): void
     {
-        return auth()->user()->is_super_admin
-            || auth()->user()->hasPermission('transaksi.pembelian.approve');
+        $user = auth()->user();
+
+        if ($user->is_super_admin) {
+            return;
+        }
+
+        $allowedDepartmentIds = $this->getAllowedDepartmentIds($user);
+
+        if (!in_array($pembelian->department_id, $allowedDepartmentIds)) {
+            abort(403, 'Anda tidak memiliki akses ke transaksi ini.');
+        }
+    }
+
+    private function canEditDelete($pembelian): bool
+    {
+        $user = auth()->user();
+
+        if ($user->is_super_admin) {
+            return true;
+        }
+
+        return $user->hasPermission('transaksi.pembelian.edit');
+    }
+
+    private function canApproveReject($pembelian): bool
+    {
+        $user = auth()->user();
+
+        if ($user->is_super_admin) {
+            return true;
+        }
+
+        if (!$user->hasPermission('transaksi.pembelian.approve')) {
+            return false;
+        }
+
+        $allowedDepartmentIds = $this->getAllowedDepartmentIds($user);
+
+        return in_array($pembelian->department_id, $allowedDepartmentIds);
+    }
+
+    private function getAllowedDepartmentIds($user): array
+    {
+        if (!$user->department_id) {
+            return [];
+        }
+
+        return \App\Models\Department::where('id', $user->department_id)
+            ->orWhere('parent_id', $user->department_id)
+            ->pluck('id')
+            ->map(fn($id) => (int) $id)
+            ->toArray();
     }
 
     private function masterDataOptions(): array

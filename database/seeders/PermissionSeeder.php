@@ -314,9 +314,16 @@ class PermissionSeeder extends Seeder
             [
                 'name' => 'transaksi.pembelian.approve',
                 'slug' => 'transaksi.pembelian.approve',
-                'display_name' => 'Setujui Pembelian (Admin)',
+                'display_name' => 'Setujui Pembelian',
                 'group' => 'Data Transaksional',
-                'description' => 'ADMIN: dapat menyetujui pembelian, posting ke data aset, edit, hapus, dan melihat semua data'
+                'description' => 'Dapat menyetujui pembelian dan posting ke data aset'
+            ],
+            [
+                'name' => 'transaksi.pembelian.reject',
+                'slug' => 'transaksi.pembelian.reject',
+                'display_name' => 'Tolak Pembelian',
+                'group' => 'Data Transaksional',
+                'description' => 'Dapat menolak transaksi pembelian'
             ],
             [
                 'name' => 'transaksi.pembelian.export',

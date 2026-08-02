@@ -134,6 +134,7 @@ Route::middleware('auth')->group(function () {
         Route::put('pembelian/{pembelian}', [PembelianController::class, 'update'])->name('pembelian.update')->middleware('permission:transaksi.pembelian.edit');
         Route::delete('pembelian/{pembelian}', [PembelianController::class, 'destroy'])->name('pembelian.destroy')->middleware('permission:transaksi.pembelian.delete');
         Route::post('pembelian/{pembelian}/approve', [PembelianController::class, 'approve'])->name('pembelian.approve')->middleware('permission:transaksi.pembelian.approve');
+        Route::post('pembelian/{pembelian}/reject', [PembelianController::class, 'reject'])->name('pembelian.reject')->middleware('permission:transaksi.pembelian.reject');
 
         Route::get('peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index')->middleware('permission:transaksi.peminjaman.view');
         Route::get('peminjaman-export/{format}', [PeminjamanController::class, 'export'])->name('peminjaman.export')->middleware('permission:transaksi.peminjaman.export');

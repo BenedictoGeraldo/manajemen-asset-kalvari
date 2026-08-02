@@ -149,10 +149,14 @@
                     <select name="lokasi_id" id="lokasi_id" required
                             class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('lokasi_id') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Pilih Lokasi</option>
-                        @foreach($lokasis as $lok)
-                            <option value="{{ $lok->id }}" {{ old('lokasi_id') == $lok->id ? 'selected' : '' }}>
-                                {{ $lok->nama_lokasi }} - {{ $lok->lokasi_lengkap }}
-                            </option>
+                        @foreach($lokasis->groupBy('nama_lokasi') as $nama => $items)
+                            <optgroup label="{{ $nama }}">
+                                @foreach($items as $lok)
+                                    <option value="{{ $lok->id }}" {{ old('lokasi_id') == $lok->id ? 'selected' : '' }}>
+                                        {{ $lok->sub_lokasi ?: $nama }}
+                                    </option>
+                                @endforeach
+                            </optgroup>
                         @endforeach
                     </select>
                     @error('lokasi_id')

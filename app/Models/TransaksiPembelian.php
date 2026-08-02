@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\TransaksiPembelianItem;
 use App\Models\User;
+use App\Models\Department;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -21,12 +22,16 @@ class TransaksiPembelian extends Model
         'vendor_nama',
         'vendor_kontak',
         'sumber_dana',
+        'department_id',
+        'alasan_penolakan',
         'status',
         'total_nilai',
         'catatan',
         'is_posted_to_aset',
         'approved_at',
         'approved_by',
+        'rejected_at',
+        'rejected_by',
         'aset_kolektif_id',
         'created_by',
         'updated_by',
@@ -38,6 +43,7 @@ class TransaksiPembelian extends Model
         'total_nilai' => 'decimal:2',
         'is_posted_to_aset' => 'boolean',
         'approved_at' => 'datetime',
+        'rejected_at' => 'datetime',
     ];
 
     public function items()
@@ -48,6 +54,16 @@ class TransaksiPembelian extends Model
     public function approver()
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function rejecter()
+    {
+        return $this->belongsTo(User::class, 'rejected_by');
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
     }
 
     public function creator()

@@ -40,7 +40,8 @@ class RoleAndDepartmentSeeder extends Seeder
             'dashboard.view',
             'data-aset.view', 'data-aset.create', 'data-aset.edit', 'data-aset.delete', 'data-aset.export',
             // Data Transaksional — admin divisi dapat semua akses
-            'transaksi.pembelian.view', 'transaksi.pembelian.create', 'transaksi.pembelian.approve',
+            'transaksi.pembelian.view', 'transaksi.pembelian.create', 'transaksi.pembelian.edit',
+            'transaksi.pembelian.delete', 'transaksi.pembelian.approve', 'transaksi.pembelian.reject',
             'transaksi.peminjaman.view', 'transaksi.peminjaman.create', 'transaksi.peminjaman.approve',
             'transaksi.pemeliharaan.view', 'transaksi.pemeliharaan.create', 'transaksi.pemeliharaan.approve',
             'transaksi.mutasi_aset.view', 'transaksi.mutasi_aset.create', 'transaksi.mutasi_aset.approve',
