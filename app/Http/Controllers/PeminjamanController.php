@@ -222,23 +222,6 @@ class PeminjamanController extends Controller
             ->with('success', 'Pengembalian aset berhasil diproses.');
     }
 
-    public function cancel(string $id): RedirectResponse
-    {
-        $this->requireAdmin();
-        $peminjaman = $this->peminjamanService->getById((int) $id);
-        $this->authorizeAccess($peminjaman);
-
-        try {
-            $this->peminjamanService->cancel((int) $id, (int) auth()->id());
-        } catch (\Throwable $e) {
-            return redirect()->route('transaksi.peminjaman.show', $id)
-                ->with('error', $e->getMessage());
-        }
-
-        return redirect()->route('transaksi.peminjaman.show', $id)
-            ->with('success', 'Transaksi peminjaman berhasil dibatalkan.');
-    }
-
     public function export(string $format)
     {
         $timestamp = now()->format('Y-m-d_His');
@@ -289,6 +272,14 @@ class PeminjamanController extends Controller
             ->where('is_active', true)
             ->orderBy('nama_aset')
             ->get(['id', 'kode_aset', 'nama_aset', 'jumlah_barang']);
+
+        $reservedMap = $this->peminjamanService->getReservedStock();
+
+        $asets->each(function ($aset) use ($reservedMap) {
+            $reserved = $reservedMap[$aset->id] ?? 0;
+            $aset->reserved = $reserved;
+            $aset->available = $aset->jumlah_barang - $reserved;
+        });
 
         return [
             'asets' => $asets,

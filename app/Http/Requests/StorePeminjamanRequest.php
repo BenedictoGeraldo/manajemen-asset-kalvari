@@ -27,7 +27,7 @@ class StorePeminjamanRequest extends FormRequest
             'nama_peminjam' => 'required|string|max:150',
             'kontak_peminjam' => 'nullable|string|max:100',
             'unit_peminjam' => 'nullable|string|max:150',
-            'status' => 'required|in:draft,diajukan,dibatalkan',
+            'status' => 'required|in:diajukan',
             'keperluan' => 'nullable|string',
             'catatan' => 'nullable|string',
 
