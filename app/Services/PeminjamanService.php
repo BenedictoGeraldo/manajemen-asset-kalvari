@@ -17,6 +17,7 @@ class PeminjamanService
         $search = $filters['search'] ?? null;
         $status = $filters['status'] ?? null;
         $creatorId = $filters['creator_id'] ?? null;
+        $departmentId = $filters['department_id'] ?? null;
         $perPage = $filters['per_page'] ?? 10;
 
         $query = TransaksiPeminjaman::withCount('items')
@@ -30,6 +31,12 @@ class PeminjamanService
 
         if ($creatorId) {
             $query->where('created_by', $creatorId);
+        }
+
+        if ($departmentId) {
+            $query->whereHas('creator', function ($q) use ($departmentId) {
+                $q->where('department_id', $departmentId);
+            });
         }
 
         return $query->paginate($perPage);
@@ -69,6 +76,14 @@ class PeminjamanService
 
                     foreach ($items as $item) {
                         $aset = DataAsetKolektif::findOrFail($item['data_aset_kolektif_id']);
+
+                        if ((int) $item['jumlah'] > (int) $aset->jumlah_barang) {
+                            throw new \RuntimeException(
+                                'Stok aset "' . $aset->nama_aset . '" tidak mencukupi.'
+                                . ' Tersedia: ' . $aset->jumlah_barang
+                                . ', diminta: ' . $item['jumlah'] . '.'
+                            );
+                        }
 
                         $peminjaman->items()->create([
                             ...$item,
@@ -254,6 +269,24 @@ class PeminjamanService
             ]);
 
             return $peminjaman->load('items.aset');
+        });
+    }
+
+    public function cancel(int $id, int $userId): TransaksiPeminjaman
+    {
+        return DB::transaction(function () use ($id, $userId) {
+            $peminjaman = TransaksiPeminjaman::findOrFail($id);
+
+            if (!in_array($peminjaman->status, [\App\Enums\PeminjamanStatus::DRAFT, \App\Enums\PeminjamanStatus::DIAJUKAN], true)) {
+                throw new \RuntimeException('Hanya transaksi dengan status Draft atau Diajukan yang dapat dibatalkan.');
+            }
+
+            $peminjaman->update([
+                'status' => \App\Enums\PeminjamanStatus::DIBATALKAN,
+                'updated_by' => $userId,
+            ]);
+
+            return $peminjaman;
         });
     }
 

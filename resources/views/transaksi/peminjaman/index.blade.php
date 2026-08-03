@@ -140,6 +140,16 @@
                                         </svg>
                                     </button>
                                     @endif
+
+                                    @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.peminjaman.approve')) && in_array($peminjaman->status, [\App\Enums\PeminjamanStatus::DRAFT, \App\Enums\PeminjamanStatus::DIAJUKAN]))
+                                    <button type="button"
+                                            @click="$dispatch('cancel-modal', { id: {{ $peminjaman->id }}, nomor: '{{ $peminjaman->nomor_peminjaman }}' })"
+                                            class="action-delete-inline" title="Batalkan">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
@@ -159,6 +169,17 @@
 </div>
 
 <x-delete-modal action-url="{{ url('transaksi/peminjaman') }}" />
+
+<x-confirm-action-modal
+    title="Konfirmasi Batalkan Peminjaman"
+    message="Apakah Anda yakin ingin <strong>membatalkan</strong> transaksi <strong x-text='recordNomor'></strong>?"
+    confirmLabel="Ya, Batalkan"
+    confirmButtonClass="btn-danger-sm"
+    iconType="warning"
+    event="cancel-modal"
+    actionUrl="{{ url('transaksi/peminjaman') }}"
+    actionSuffix="/cancel"
+/>
 
 @endsection
 

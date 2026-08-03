@@ -150,6 +150,7 @@ Route::middleware('auth')->group(function () {
         Route::post('peminjaman/{peminjaman}/handover', [PeminjamanController::class, 'handover'])->name('peminjaman.handover')->middleware('permission:transaksi.peminjaman.handover');
         Route::get('peminjaman/{peminjaman}/return', [PeminjamanController::class, 'returnForm'])->name('peminjaman.return.form')->middleware('permission:transaksi.peminjaman.return');
         Route::post('peminjaman/{peminjaman}/return', [PeminjamanController::class, 'returnAssets'])->name('peminjaman.return')->middleware('permission:transaksi.peminjaman.return');
+        Route::post('peminjaman/{peminjaman}/cancel', [PeminjamanController::class, 'cancel'])->name('peminjaman.cancel')->middleware('permission:transaksi.peminjaman.approve');
 
         Route::get('pemeliharaan', [PemeliharaanController::class, 'index'])->name('pemeliharaan.index')->middleware('permission:transaksi.pemeliharaan.view');
         Route::get('pemeliharaan-export/{format}', [PemeliharaanController::class, 'export'])->name('pemeliharaan.export')->middleware('permission:transaksi.pemeliharaan.export');

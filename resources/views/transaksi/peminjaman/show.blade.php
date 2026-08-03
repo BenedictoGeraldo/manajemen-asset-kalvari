@@ -33,25 +33,32 @@
             @endif
 
             @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.peminjaman.approve')) && in_array($peminjaman->status, [\App\Enums\PeminjamanStatus::DRAFT, \App\Enums\PeminjamanStatus::DIAJUKAN]))
-            <form action="{{ route('transaksi.peminjaman.approve', $peminjaman->id) }}" method="POST" class="inline-flex">
-                @csrf
-                <button type="submit" class="btn-export-sm">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                    Setujui
-                </button>
-            </form>
+            <button type="button"
+                    @click="$dispatch('approve-modal', { id: {{ $peminjaman->id }}, nomor: '{{ $peminjaman->nomor_peminjaman }}' })"
+                    class="btn-export-sm">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Setujui
+            </button>
 
-            <form action="{{ route('transaksi.peminjaman.reject', $peminjaman->id) }}" method="POST" class="inline-flex">
-                @csrf
-                <button type="submit" class="btn-danger-sm">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    Tolak
-                </button>
-            </form>
+            <button type="button"
+                    @click="$dispatch('reject-modal', { id: {{ $peminjaman->id }}, nomor: '{{ $peminjaman->nomor_peminjaman }}' })"
+                    class="btn-danger-sm">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Tolak
+            </button>
+
+            <button type="button"
+                    @click="$dispatch('cancel-modal', { id: {{ $peminjaman->id }}, nomor: '{{ $peminjaman->nomor_peminjaman }}' })"
+                    class="btn-c-outline">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Batalkan
+            </button>
             @endif
 
             @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.peminjaman.handover')) && $peminjaman->status === \App\Enums\PeminjamanStatus::DISETUJUI)
@@ -179,6 +186,46 @@
 </div>
 
 <x-delete-modal action-url="{{ url('transaksi/peminjaman') }}" />
+
+<x-confirm-action-modal
+    title="Konfirmasi Setujui Peminjaman"
+    message="Apakah Anda yakin ingin <strong>menyetujui</strong> transaksi <strong x-text='recordNomor'></strong>?"
+    confirmLabel="Setujui"
+    confirmButtonClass="btn-export-sm"
+    iconType="success"
+    event="approve-modal"
+    actionUrl="{{ url('transaksi/peminjaman') }}"
+    actionSuffix="/approve"
+    textareaName="catatan_approval"
+    textareaLabel="Catatan (opsional)"
+    textareaPlaceholder="Tulis catatan persetujuan..."
+/>
+
+<x-confirm-action-modal
+    title="Konfirmasi Tolak Peminjaman"
+    message="Apakah Anda yakin ingin <strong>menolak</strong> transaksi <strong x-text='recordNomor'></strong>? Penolakan bersifat final dan tidak dapat diubah."
+    confirmLabel="Tolak"
+    confirmButtonClass="btn-danger-sm"
+    iconType="danger"
+    event="reject-modal"
+    actionUrl="{{ url('transaksi/peminjaman') }}"
+    actionSuffix="/reject"
+    textareaName="catatan_approval"
+    textareaLabel="Alasan Penolakan"
+    textareaRequired="true"
+    textareaPlaceholder="Tulis alasan penolakan..."
+/>
+
+<x-confirm-action-modal
+    title="Konfirmasi Batalkan Peminjaman"
+    message="Apakah Anda yakin ingin <strong>membatalkan</strong> transaksi <strong x-text='recordNomor'></strong>?"
+    confirmLabel="Ya, Batalkan"
+    confirmButtonClass="btn-danger-sm"
+    iconType="warning"
+    event="cancel-modal"
+    actionUrl="{{ url('transaksi/peminjaman') }}"
+    actionSuffix="/cancel"
+/>
 
 @endsection
 
