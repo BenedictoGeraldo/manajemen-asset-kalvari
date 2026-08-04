@@ -16,6 +16,7 @@ class PemeliharaanService
         $status = $filters['status'] ?? null;
         $jenis = $filters['jenis'] ?? null;
         $creatorId = $filters['creator_id'] ?? null;
+        $departmentId = $filters['department_id'] ?? null;
         $perPage = $filters['per_page'] ?? 10;
 
         $query = TransaksiPemeliharaan::with(['aset'])
@@ -33,6 +34,12 @@ class PemeliharaanService
 
         if ($creatorId) {
             $query->where('created_by', $creatorId);
+        }
+
+        if ($departmentId) {
+            $query->whereHas('creator', function ($q) use ($departmentId) {
+                $q->where('department_id', $departmentId);
+            });
         }
 
         return $query->paginate($perPage);
