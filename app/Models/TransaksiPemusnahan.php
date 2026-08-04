@@ -21,6 +21,8 @@ class TransaksiPemusnahan extends Model
         'alasan_pemusnahan',
         'metode_pemusnahan',
         'penanggung_jawab',
+        'nama_pengaju',
+        'unit_pengaju',
         'catatan',
         'dokumen_berita_acara',
         'created_by',

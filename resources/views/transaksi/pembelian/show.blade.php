@@ -115,6 +115,14 @@
                 <p class="font-medium text-gray-900">{{ $pembelian->creator->name ?? '-' }}</p>
             </div>
             <div>
+                <p class="text-gray-500">Nama Pengaju</p>
+                <p class="font-medium text-gray-900">{{ $pembelian->nama_pengaju ?: '-' }}</p>
+            </div>
+            <div>
+                <p class="text-gray-500">Unit Pengaju</p>
+                <p class="font-medium text-gray-900">{{ $pembelian->unit_pengaju ?: '-' }}</p>
+            </div>
+            <div>
                 <p class="text-gray-500">Sudah Diposting ke Aset</p>
                 <p class="font-medium text-gray-900">{{ $pembelian->is_posted_to_aset ? 'Ya' : 'Belum' }}</p>
             </div>

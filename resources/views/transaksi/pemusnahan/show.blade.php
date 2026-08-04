@@ -58,6 +58,14 @@
                             <p class="text-xs text-gray-500">Penanggung Jawab</p>
                             <p class="text-sm text-gray-900">{{ $pemusnahan->penanggung_jawab }}</p>
                         </div>
+                        <div>
+                            <p class="text-xs text-gray-500">Nama Pengaju</p>
+                            <p class="text-sm text-gray-900">{{ $pemusnahan->nama_pengaju ?: '-' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500">Unit Pengaju</p>
+                            <p class="text-sm text-gray-900">{{ $pemusnahan->unit_pengaju ?: '-' }}</p>
+                        </div>
                     </div>
                 </div>
 

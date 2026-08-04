@@ -17,9 +17,10 @@ class StoreMutasiAsetRequest extends FormRequest
             'data_aset_kolektif_id' => ['required', 'exists:data_aset_kolektif,id'],
             'tanggal_mutasi' => ['required', 'date', 'date_format:Y-m-d'],
             'jenis_mutasi' => ['required', 'in:transfer_lokasi,perubahan_kondisi,write_off,penghapusan'],
-            'status' => ['required', 'in:draft,diajukan,dibatalkan'],
             'lokasi_baru_id' => ['nullable', 'exists:master_lokasi,id'],
             'kondisi_id' => ['nullable', 'exists:master_kondisi,id'],
+            'nama_pengaju' => ['nullable', 'string', 'max:255'],
+            'unit_pengaju' => ['nullable', 'string', 'max:255'],
             'alasan' => ['nullable', 'string'],
             'catatan' => ['nullable', 'string'],
         ];

@@ -41,14 +41,19 @@
     </div>
 
     <div>
-        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status <span class="text-red-500">*</span></label>
-        @php $selectedStatus = old('status', $pemeliharaan->status ?? 'draft'); @endphp
-        <select id="status" name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-            <option value="draft" {{ $selectedStatus === 'draft' ? 'selected' : '' }}>Draft</option>
-            <option value="diajukan" {{ $selectedStatus === 'diajukan' ? 'selected' : '' }}>Diajukan</option>
-            <option value="dibatalkan" {{ $selectedStatus === 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
-        </select>
-        @error('status')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+        <label for="nama_pengaju" class="block text-sm font-medium text-gray-700 mb-1">Nama Pengaju</label>
+        <input type="text" id="nama_pengaju" name="nama_pengaju"
+               value="{{ old('nama_pengaju', $pemeliharaan->nama_pengaju ?? (isset($pemeliharaan) ? '' : auth()->user()->name)) }}"
+               readonly
+               class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700">
+    </div>
+
+    <div>
+        <label for="unit_pengaju" class="block text-sm font-medium text-gray-700 mb-1">Unit / Departemen</label>
+        <input type="text" id="unit_pengaju" name="unit_pengaju"
+               value="{{ old('unit_pengaju', $pemeliharaan->unit_pengaju ?? (isset($pemeliharaan) ? '' : optional(auth()->user()->department)->name)) }}"
+               readonly
+               class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700">
     </div>
 
     <div>
@@ -108,6 +113,10 @@
         <textarea id="catatan" name="catatan" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ old('catatan', $pemeliharaan->catatan ?? '') }}</textarea>
     </div>
 </div>
+
+@if(!isset($pemeliharaan))
+<input type="hidden" name="status" value="diajukan">
+@endif
 
 <div class="mt-6 flex items-center space-x-3">
     <button type="submit" class="btn-a-sm">

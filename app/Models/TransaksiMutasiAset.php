@@ -27,6 +27,8 @@ class TransaksiMutasiAset extends Model
         'penanggung_jawab_baru_id',
         'kondisi_id',
         'alasan',
+        'nama_pengaju',
+        'unit_pengaju',
         'catatan',
         'catatan_approval',
         'tanggal_diajukan',

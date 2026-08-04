@@ -16,6 +16,7 @@ class MutasiAsetService
         $status = $filters['status'] ?? null;
         $jenis = $filters['jenis'] ?? null;
         $creatorId = $filters['creator_id'] ?? null;
+        $departmentId = $filters['department_id'] ?? null;
         $perPage = $filters['per_page'] ?? 10;
 
         $query = TransaksiMutasiAset::with(['aset'])
@@ -33,6 +34,12 @@ class MutasiAsetService
 
         if ($creatorId) {
             $query->where('created_by', $creatorId);
+        }
+
+        if ($departmentId) {
+            $query->whereHas('creator', function ($q) use ($departmentId) {
+                $q->where('department_id', $departmentId);
+            });
         }
 
         return $query->paginate($perPage);
@@ -71,6 +78,7 @@ class MutasiAsetService
 
             // Snapshot lokasi, department, dan penanggung jawab saat ini
             $data['nomor_mutasi'] = $nomor;
+            $data['status'] = 'diajukan';
             $data['lokasi_lama_id'] = $aset->lokasi_id;
             // `pengelola_id` berasal dari master_pengelola, bukan tabel departments.
             // Hindari assignment FK yang tidak kompatibel agar proses simpan tidak gagal.

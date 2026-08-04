@@ -8,11 +8,7 @@
         'penghapusan' => 'Penghapusan',
     ];
 
-    $statusOptions = [
-        'draft' => 'Draft',
-        'diajukan' => 'Diajukan',
-        'dibatalkan' => 'Dibatalkan',
-    ];
+    $statusOptions = [];
 
     $submitLabel = $submitLabel ?? 'Simpan Pengajuan';
 @endphp
@@ -66,22 +62,26 @@
             @enderror
         </div>
 
-        <!-- Status -->
+        <!-- Nama Pengaju (readonly) -->
         <div>
-            <label for="status" class="block text-sm font-medium text-gray-700 mb-1">
-                Status <span class="text-red-500">*</span>
+            <label for="nama_pengaju" class="block text-sm font-medium text-gray-700 mb-1">
+                Nama Pengaju
             </label>
-            <select id="status" name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 appearance-none bg-white cursor-pointer" required>
-                <option value="">-- Pilih Status --</option>
-                @foreach($statusOptions as $value => $label)
-                    <option value="{{ $value }}" @selected(old('status', isset($mutasi) ? $mutasi->status : 'draft') == $value)>
-                        {{ $label }}
-                    </option>
-                @endforeach
-            </select>
-            @error('status')
-                <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-            @enderror
+            <input type="text" id="nama_pengaju" name="nama_pengaju"
+                   value="{{ old('nama_pengaju', isset($mutasi) ? $mutasi->nama_pengaju : auth()->user()->name) }}"
+                   readonly
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700">
+        </div>
+
+        <!-- Unit Pengaju (readonly) -->
+        <div>
+            <label for="unit_pengaju" class="block text-sm font-medium text-gray-700 mb-1">
+                Unit / Departemen
+            </label>
+            <input type="text" id="unit_pengaju" name="unit_pengaju"
+                   value="{{ old('unit_pengaju', isset($mutasi) ? $mutasi->unit_pengaju : optional(auth()->user()->department)->name) }}"
+                   readonly
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700">
         </div>
 
         <!-- Lokasi Baru (conditional) -->
@@ -142,6 +142,10 @@
             @enderror
         </div>
     </div>
+
+    @if(!isset($mutasi))
+    <input type="hidden" name="status" value="diajukan">
+    @endif
 
     <!-- Buttons -->
     <div class="flex gap-3 pt-4 border-t">

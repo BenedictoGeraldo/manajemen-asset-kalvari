@@ -78,6 +78,7 @@ class PemeliharaanService
 
                     return TransaksiPemeliharaan::create([
                         ...$data,
+                        'status' => 'diajukan',
                         'nomor_pemeliharaan' => $this->generateNomorPemeliharaan($data['tanggal_pengajuan']),
                         'created_by' => $userId,
                         'updated_by' => $userId,

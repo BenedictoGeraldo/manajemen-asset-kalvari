@@ -65,6 +65,22 @@
                 @error('penanggung_jawab') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
+            <div>
+                <label for="nama_pengaju" class="block text-sm font-medium text-gray-700 mb-1">Nama Pengaju</label>
+                <input type="text" name="nama_pengaju" id="nama_pengaju"
+                       value="{{ old('nama_pengaju', auth()->user()->name) }}"
+                       readonly
+                       class="w-full rounded-md border-gray-300 bg-gray-100 text-gray-700 shadow-sm">
+            </div>
+
+            <div>
+                <label for="unit_pengaju" class="block text-sm font-medium text-gray-700 mb-1">Unit / Departemen</label>
+                <input type="text" name="unit_pengaju" id="unit_pengaju"
+                       value="{{ old('unit_pengaju', optional(auth()->user()->department)->name) }}"
+                       readonly
+                       class="w-full rounded-md border-gray-300 bg-gray-100 text-gray-700 shadow-sm">
+            </div>
+
             <div class="col-span-1 md:col-span-2">
                 <label for="alasan_pemusnahan" class="block text-sm font-medium text-gray-700 mb-1">Alasan Pemusnahan <span class="text-red-500">*</span></label>
                 <input type="text" name="alasan_pemusnahan" id="alasan_pemusnahan" value="{{ old('alasan_pemusnahan') }}" placeholder="Contoh: Barang rusak total/tidak bisa diperbaiki"

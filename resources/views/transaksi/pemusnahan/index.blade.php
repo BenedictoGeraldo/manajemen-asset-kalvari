@@ -36,6 +36,7 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metode</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penanggung Jawab</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pengaju</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
@@ -51,13 +52,17 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $p->tanggal_pemusnahan->format('d/m/Y') }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $p->metode_pemusnahan }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $p->penanggung_jawab }}</td>
+                    <td class="px-6 py-4 text-sm text-gray-700">
+                        <div class="font-medium text-gray-900">{{ $p->nama_pengaju ?? '-' }}</div>
+                        <div class="text-xs text-gray-500">{{ $p->unit_pengaju ?? '-' }}</div>
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <a href="{{ route('transaksi.pemusnahan.show', $p->id) }}" class="text-blue-600 hover:text-blue-900 mr-3">Detail</a>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="px-6 py-4 text-center text-gray-500 italic">Belum ada data pemusnahan aset.</td>
+                    <td colspan="8" class="px-6 py-4 text-center text-gray-500 italic">Belum ada data pemusnahan aset.</td>
                 </tr>
                 @endforelse
             </tbody>

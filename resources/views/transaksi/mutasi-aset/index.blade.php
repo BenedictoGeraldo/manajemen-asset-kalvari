@@ -83,6 +83,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aset</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Mutasi</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pengaju</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                     </tr>
@@ -97,6 +98,10 @@
                                 <p class="text-gray-600">{{ $mutasi->aset->kode_aset }}</p>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ ucfirst(str_replace('_', ' ', $mutasi->jenis_mutasi)) }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">
+                                <div class="font-medium text-gray-900">{{ $mutasi->nama_pengaju ?? '-' }}</div>
+                                <div class="text-xs text-gray-500">{{ $mutasi->unit_pengaju ?? '-' }}</div>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
                                 @php
                                     $statusColors = [
@@ -131,7 +136,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                            <td colspan="7" class="px-6 py-8 text-center text-gray-500">
                                 Tidak ada data mutasi aset
                             </td>
                         </tr>

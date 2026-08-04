@@ -90,6 +90,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aset</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pengaju</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Biaya</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
@@ -106,6 +107,10 @@
                                 <div class="text-xs text-gray-500">{{ $pemeliharaan->aset->kode_aset ?? '-' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ ucfirst($pemeliharaan->jenis_pemeliharaan) }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">
+                                <div class="font-medium text-gray-900">{{ $pemeliharaan->nama_pengaju ?? '-' }}</div>
+                                <div class="text-xs text-gray-500">{{ $pemeliharaan->unit_pengaju ?? '-' }}</div>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Rp {{ number_format($pemeliharaan->realisasi_biaya > 0 ? $pemeliharaan->realisasi_biaya : $pemeliharaan->estimasi_biaya, 0, ',', '.') }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @php
@@ -148,7 +153,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada transaksi pemeliharaan.</td>
+                            <td colspan="9" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada transaksi pemeliharaan.</td>
                         </tr>
                     @endforelse
                 </tbody>

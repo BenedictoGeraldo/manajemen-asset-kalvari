@@ -43,6 +43,8 @@ class PemusnahanController extends Controller
             'alasan_pemusnahan' => 'required|string|max:255',
             'metode_pemusnahan' => 'required|string|max:255',
             'penanggung_jawab' => 'required|string|max:255',
+            'nama_pengaju' => 'nullable|string|max:255',
+            'unit_pengaju' => 'nullable|string|max:255',
             'catatan' => 'nullable|string',
         ]);
 
@@ -56,7 +58,8 @@ class PemusnahanController extends Controller
         try {
             TransaksiPemusnahan::create($request->only([
                 'aset_id', 'jumlah_dimusnahkan', 'tanggal_pemusnahan',
-                'alasan_pemusnahan', 'metode_pemusnahan', 'penanggung_jawab', 'catatan',
+                'alasan_pemusnahan', 'metode_pemusnahan', 'penanggung_jawab',
+                'nama_pengaju', 'unit_pengaju', 'catatan',
             ]));
 
             $aset->jumlah_barang -= $request->jumlah_dimusnahkan;

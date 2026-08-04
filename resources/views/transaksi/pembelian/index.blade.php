@@ -103,7 +103,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No Pembelian</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vendor</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Departemen</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pengaju</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -119,7 +119,10 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ optional($pembelian->tanggal_pembelian)->format('d/m/Y') }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $pembelian->vendor_nama }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $pembelian->department->name ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">
+                                <div class="font-medium text-gray-900">{{ $pembelian->nama_pengaju ?? '-' }}</div>
+                                <div class="text-xs text-gray-500">{{ $pembelian->unit_pengaju ?? '-' }}</div>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $pembelian->items_count }} item</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Rp {{ number_format($pembelian->total_nilai, 0, ',', '.') }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">

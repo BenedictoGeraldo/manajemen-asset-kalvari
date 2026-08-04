@@ -21,6 +21,8 @@ class TransaksiPembelian extends Model
         'tanggal_pembelian',
         'vendor_nama',
         'vendor_kontak',
+        'nama_pengaju',
+        'unit_pengaju',
         'sumber_dana',
         'department_id',
         'alasan_penolakan',

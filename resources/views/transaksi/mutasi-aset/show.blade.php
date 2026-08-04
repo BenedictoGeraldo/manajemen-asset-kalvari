@@ -147,8 +147,16 @@
                         <p class="font-medium text-gray-900 mt-1">{{ $mutasi->approver?->name ?? '-' }}</p>
                     </div>
                     <div class="pb-3">
-                        <p class="text-sm text-gray-600">Tanggal Mulai</p>
-                        <p class="font-medium text-gray-900 mt-1">{{ $mutasi->tanggal_mulai?->format('d/m/Y H:i') ?? '-' }}</p>
+                        <p class="text-sm text-gray-600">Disetujui Oleh</p>
+                        <p class="font-medium text-gray-900 mt-1">{{ $mutasi->approver?->name ?? '-' }}</p>
+                    </div>
+                    <div class="pb-3">
+                        <p class="text-sm text-gray-600">Nama Pengaju</p>
+                        <p class="font-medium text-gray-900 mt-1">{{ $mutasi->nama_pengaju ?: '-' }}</p>
+                    </div>
+                    <div class="pb-3">
+                        <p class="text-sm text-gray-600">Unit Pengaju</p>
+                        <p class="font-medium text-gray-900 mt-1">{{ $mutasi->unit_pengaju ?: '-' }}</p>
                     </div>
                     <div class="pb-3">
                         <p class="text-sm text-gray-600">Tanggal Selesai</p>
