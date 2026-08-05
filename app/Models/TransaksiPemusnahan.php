@@ -50,4 +50,21 @@ class TransaksiPemusnahan extends Model
             }
         });
     }
+
+    public function scopeSearch($query, ?string $search)
+    {
+        if (!$search) {
+            return $query;
+        }
+
+        return $query->where(function ($q) use ($search) {
+            $q->where('kode_transaksi', 'like', "%{$search}%")
+                ->orWhere('penanggung_jawab', 'like', "%{$search}%")
+                ->orWhere('alasan_pemusnahan', 'like', "%{$search}%")
+                ->orWhereHas('aset', function ($q) use ($search) {
+                    $q->where('nama_aset', 'like', "%{$search}%")
+                        ->orWhere('kode_aset', 'like', "%{$search}%");
+                });
+        });
+    }
 }

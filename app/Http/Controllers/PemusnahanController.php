@@ -16,15 +16,24 @@ class PemusnahanController extends Controller
         $this->middleware('permission:transaksi.pemusnahan.delete')->only('destroy');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $query = TransaksiPemusnahan::with('aset');
+        $search = $request->input('search');
+        $query = TransaksiPemusnahan::with('aset')->orderByDesc('created_at')->search($search);
 
-        if (!$this->canManageAll()) {
-            $query->where('created_by', auth()->id());
+        $user = auth()->user();
+
+        if ($user->is_super_admin) {
+            // no filter — lihat semua
+        } elseif ($user->isAdminDivisi()) {
+            $query->whereHas('creator', function ($q) use ($user) {
+                $q->where('department_id', $user->department_id);
+            });
+        } else {
+            $query->where('created_by', $user->id);
         }
 
-        $pemusnahans = $query->latest()->paginate(10);
+        $pemusnahans = $query->paginate(10)->withQueryString();
         return view('transaksi.pemusnahan.index', compact('pemusnahans'));
     }
 
@@ -116,8 +125,20 @@ class PemusnahanController extends Controller
 
     private function authorizeAccess($record): void
     {
-        if (!$this->canManageAll() && (int) $record->created_by !== (int) auth()->id()) {
-            abort(403, 'Anda tidak memiliki akses ke transaksi ini.');
+        $user = auth()->user();
+
+        if ($user->is_super_admin) {
+            return;
         }
+
+        if ($user->isAdminDivisi()) {
+            if ($record->creator && $record->creator->department_id === $user->department_id) {
+                return;
+            }
+        } elseif ((int) $record->created_by === (int) $user->id) {
+            return;
+        }
+
+        abort(403, 'Anda tidak memiliki akses ke transaksi ini.');
     }
 }

@@ -175,7 +175,6 @@ Route::middleware('auth')->group(function () {
         Route::delete('mutasi-aset/{mutasi_aset}', [MutasiAsetController::class, 'destroy'])->name('mutasi_aset.destroy')->middleware('permission:transaksi.mutasi_aset.delete');
         Route::post('mutasi-aset/{mutasi_aset}/approve', [MutasiAsetController::class, 'approve'])->name('mutasi_aset.approve')->middleware('permission:transaksi.mutasi_aset.approve');
         Route::post('mutasi-aset/{mutasi_aset}/reject', [MutasiAsetController::class, 'reject'])->name('mutasi_aset.reject')->middleware('permission:transaksi.mutasi_aset.approve');
-        Route::post('mutasi-aset/{mutasi_aset}/process', [MutasiAsetController::class, 'process'])->name('mutasi_aset.process')->middleware('permission:transaksi.mutasi_aset.process');
         Route::get('mutasi-aset/{mutasi_aset}/complete', [MutasiAsetController::class, 'completeForm'])->name('mutasi_aset.complete.form')->middleware('permission:transaksi.mutasi_aset.complete');
         Route::post('mutasi-aset/{mutasi_aset}/complete', [MutasiAsetController::class, 'complete'])->name('mutasi_aset.complete')->middleware('permission:transaksi.mutasi_aset.complete');
         

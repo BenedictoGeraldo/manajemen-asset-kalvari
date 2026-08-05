@@ -1,19 +1,9 @@
 @php
     $mutasi = $mutasi ?? null;
-
-    $jenisOptions = [
-        'transfer_lokasi' => 'Transfer Lokasi',
-        'perubahan_kondisi' => 'Perubahan Kondisi',
-        'write_off' => 'Write Off',
-        'penghapusan' => 'Penghapusan',
-    ];
-
-    $statusOptions = [];
-
     $submitLabel = $submitLabel ?? 'Simpan Pengajuan';
 @endphp
 
-<div x-data="{ jenisSelected: '{{ old('jenis_mutasi', isset($mutasi) ? $mutasi->jenis_mutasi : '') }}' }" class="space-y-6">
+<div class="space-y-6">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Aset -->
         <div>
@@ -44,24 +34,6 @@
             @enderror
         </div>
 
-        <!-- Jenis Mutasi -->
-        <div>
-            <label for="jenis_mutasi" class="block text-sm font-medium text-gray-700 mb-1">
-                Jenis Mutasi <span class="text-red-500">*</span>
-            </label>
-            <select id="jenis_mutasi" name="jenis_mutasi" x-model="jenisSelected" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 appearance-none bg-white cursor-pointer" required>
-                <option value="">-- Pilih Jenis Mutasi --</option>
-                @foreach($jenisOptions as $value => $label)
-                    <option value="{{ $value }}" @selected(old('jenis_mutasi', isset($mutasi) ? $mutasi->jenis_mutasi : null) == $value)>
-                        {{ $label }}
-                    </option>
-                @endforeach
-            </select>
-            @error('jenis_mutasi')
-                <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-            @enderror
-        </div>
-
         <!-- Nama Pengaju (readonly) -->
         <div>
             <label for="nama_pengaju" class="block text-sm font-medium text-gray-700 mb-1">
@@ -84,38 +56,24 @@
                    class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700">
         </div>
 
-        <!-- Lokasi Baru (conditional) -->
-        <div x-show="jenisSelected === 'transfer_lokasi'">
+        <!-- Lokasi Baru -->
+        <div>
             <label for="lokasi_baru_id" class="block text-sm font-medium text-gray-700 mb-1">
-                Lokasi Baru
+                Lokasi Baru <span class="text-red-500">*</span>
             </label>
-            <select id="lokasi_baru_id" name="lokasi_baru_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 appearance-none bg-white cursor-pointer">
+            <select id="lokasi_baru_id" name="lokasi_baru_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 appearance-none bg-white cursor-pointer">
                 <option value="">-- Pilih Lokasi --</option>
-                @foreach($lokasis as $lokasi)
-                    <option value="{{ $lokasi->id }}" @selected(old('lokasi_baru_id', isset($mutasi) ? $mutasi->lokasi_baru_id : null) == $lokasi->id)>
-                        {{ $lokasi->nama_lokasi }}
-                    </option>
+                @foreach($lokasiGrouped as $group)
+                    <optgroup label="{{ $group['group'] }}">
+                        @foreach($group['items'] as $item)
+                            <option value="{{ $item['id'] }}" @selected(old('lokasi_baru_id', isset($mutasi) ? $mutasi->lokasi_baru_id : null) == $item['id'])>
+                                {{ $item['label'] }}
+                            </option>
+                        @endforeach
+                    </optgroup>
                 @endforeach
             </select>
             @error('lokasi_baru_id')
-                <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-            @enderror
-        </div>
-
-        <!-- Kondisi (conditional) -->
-        <div x-show="jenisSelected === 'perubahan_kondisi'">
-            <label for="kondisi_id" class="block text-sm font-medium text-gray-700 mb-1">
-                Kondisi
-            </label>
-            <select id="kondisi_id" name="kondisi_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 appearance-none bg-white cursor-pointer">
-                <option value="">-- Pilih Kondisi --</option>
-                @foreach($kondisis as $kondisi)
-                    <option value="{{ $kondisi->id }}" @selected(old('kondisi_id', isset($mutasi) ? $mutasi->kondisi_id : null) == $kondisi->id)>
-                        {{ $kondisi->nama_kondisi }}
-                    </option>
-                @endforeach
-            </select>
-            @error('kondisi_id')
                 <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
             @enderror
         </div>
@@ -143,6 +101,7 @@
         </div>
     </div>
 
+    <input type="hidden" name="jenis_mutasi" value="transfer_lokasi">
     @if(!isset($mutasi))
     <input type="hidden" name="status" value="diajukan">
     @endif
@@ -157,4 +116,3 @@
         </a>
     </div>
 </div>
-

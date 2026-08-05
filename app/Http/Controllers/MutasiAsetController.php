@@ -161,26 +161,12 @@ class MutasiAsetController extends Controller
         }
     }
 
-    public function process(TransaksiMutasiAset $mutasiAset)
-    {
-        $this->requireAdmin();
-
-        try {
-            $userId = auth()->id();
-            $this->mutasiService->startProcess($mutasiAset->id, $userId);
-
-            return back()->with('success', 'Proses mutasi aset dimulai');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Gagal memulai proses mutasi aset: ' . $e->getMessage());
-        }
-    }
-
     public function completeForm(TransaksiMutasiAset $mutasiAset)
     {
         $this->requireAdmin();
 
-        if ($mutasiAset->status !== 'proses') {
-            return back()->with('error', 'Hanya mutasi dengan status proses yang bisa diselesaikan');
+        if ($mutasiAset->status !== 'disetujui') {
+            return back()->with('error', 'Hanya mutasi dengan status disetujui yang bisa diselesaikan');
         }
 
         return view('transaksi.mutasi-aset.complete', compact('mutasiAset'));
@@ -241,10 +227,18 @@ class MutasiAsetController extends Controller
             ->orderBy('nama_aset')
             ->get(['id', 'kode_aset', 'nama_aset']);
 
+        $lokasis = $this->masterDataService->getActiveLokasis();
+        $lokasiGrouped = $lokasis->groupBy('nama_lokasi')->map(fn($items, $nama) => [
+            'group' => $nama,
+            'items' => $items->map(fn($x) => [
+                'id' => $x->id,
+                'label' => $x->sub_lokasi ?: $nama,
+            ])->values()->toArray(),
+        ])->values()->toArray();
+
         return [
             'asets' => $asets,
-            'lokasis' => $this->masterDataService->getActiveLokasis(),
-            'kondisis' => $this->masterDataService->getActiveKondisis(),
+            'lokasiGrouped' => $lokasiGrouped,
         ];
     }
 }

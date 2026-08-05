@@ -145,7 +145,10 @@ class MutasiAsetService
             $mutasi->update([
                 'status' => 'disetujui',
                 'tanggal_disetujui' => now(),
+                'tanggal_mulai' => now(),
                 'approved_by' => $userId,
+                'started_by' => $userId,
+                'tanggal_diajukan' => $mutasi->tanggal_diajukan ?? now(),
                 'catatan_approval' => $catatan,
             ]);
 
@@ -197,23 +200,15 @@ class MutasiAsetService
         return DB::transaction(function () use ($id, $data, $userId) {
             $mutasi = TransaksiMutasiAset::findOrFail($id);
 
-            if ($mutasi->status !== 'proses') {
-                throw new \Exception('Hanya transaksi dengan status proses yang bisa diselesaikan');
+            if ($mutasi->status !== 'disetujui') {
+                throw new \Exception('Hanya transaksi dengan status disetujui yang bisa diselesaikan');
             }
 
-            // Update aset dengan lokasi/department/penanggung jawab baru sesuai jenis mutasi
+            // Update lokasi aset
             $aset = DataAsetKolektif::findOrFail($mutasi->data_aset_kolektif_id);
 
-            if ($mutasi->jenis_mutasi === 'transfer_lokasi' && $mutasi->lokasi_baru_id) {
+            if ($mutasi->lokasi_baru_id) {
                 $aset->lokasi_id = $mutasi->lokasi_baru_id;
-            }
-
-            if ($mutasi->jenis_mutasi === 'perubahan_kondisi' && $mutasi->kondisi_id) {
-                $aset->kondisi_id = $mutasi->kondisi_id;
-            }
-
-            if ($mutasi->jenis_mutasi === 'write_off' || $mutasi->jenis_mutasi === 'penghapusan') {
-                $aset->is_active = false;
             }
 
             $aset->updated_by = $userId;
