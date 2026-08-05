@@ -9,31 +9,15 @@ use Illuminate\Support\Facades\DB;
 
 class PemusnahanController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('permission:transaksi.pemusnahan.view')->only(['index', 'show']);
-        $this->middleware('permission:transaksi.pemusnahan.create')->only(['create', 'store']);
-        $this->middleware('permission:transaksi.pemusnahan.delete')->only('destroy');
-    }
-
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $query = TransaksiPemusnahan::with('aset')->orderByDesc('created_at')->search($search);
+        $pemusnahans = TransaksiPemusnahan::with('aset')
+            ->orderByDesc('created_at')
+            ->search($search)
+            ->paginate(10)
+            ->withQueryString();
 
-        $user = auth()->user();
-
-        if ($user->is_super_admin) {
-            // no filter — lihat semua
-        } elseif ($user->isAdminDivisi()) {
-            $query->whereHas('creator', function ($q) use ($user) {
-                $q->where('department_id', $user->department_id);
-            });
-        } else {
-            $query->where('created_by', $user->id);
-        }
-
-        $pemusnahans = $query->paginate(10)->withQueryString();
         return view('transaksi.pemusnahan.index', compact('pemusnahans'));
     }
 
@@ -87,7 +71,6 @@ class PemusnahanController extends Controller
 
     public function show(TransaksiPemusnahan $pemusnahan)
     {
-        $this->authorizeAccess($pemusnahan);
         $pemusnahan->load('aset');
         return view('transaksi.pemusnahan.show', compact('pemusnahan'));
     }
@@ -95,7 +78,6 @@ class PemusnahanController extends Controller
     public function destroy($id)
     {
         $pemusnahan = TransaksiPemusnahan::findOrFail($id);
-        $this->authorizeAccess($pemusnahan);
 
         DB::beginTransaction();
         try {
@@ -115,30 +97,5 @@ class PemusnahanController extends Controller
             DB::rollBack();
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
-    }
-
-    private function canManageAll(): bool
-    {
-        return auth()->user()->is_super_admin
-            || auth()->user()->hasPermission('transaksi.pemusnahan.approve');
-    }
-
-    private function authorizeAccess($record): void
-    {
-        $user = auth()->user();
-
-        if ($user->is_super_admin) {
-            return;
-        }
-
-        if ($user->isAdminDivisi()) {
-            if ($record->creator && $record->creator->department_id === $user->department_id) {
-                return;
-            }
-        } elseif ((int) $record->created_by === (int) $user->id) {
-            return;
-        }
-
-        abort(403, 'Anda tidak memiliki akses ke transaksi ini.');
     }
 }

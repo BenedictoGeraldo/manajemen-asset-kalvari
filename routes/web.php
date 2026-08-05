@@ -179,11 +179,11 @@ Route::middleware('auth')->group(function () {
         Route::post('mutasi-aset/{mutasi_aset}/complete', [MutasiAsetController::class, 'complete'])->name('mutasi_aset.complete')->middleware('permission:transaksi.mutasi_aset.complete');
         
         // Pemusnahan Aset
-        Route::get('pemusnahan', [PemusnahanController::class, 'index'])->name('pemusnahan.index')->middleware('permission:transaksi.pemusnahan.view');
-        Route::get('pemusnahan/create', [PemusnahanController::class, 'create'])->name('pemusnahan.create')->middleware('permission:transaksi.pemusnahan.create');
-        Route::post('pemusnahan', [PemusnahanController::class, 'store'])->name('pemusnahan.store')->middleware('permission:transaksi.pemusnahan.create');
-        Route::get('pemusnahan/{pemusnahan}', [PemusnahanController::class, 'show'])->name('pemusnahan.show')->middleware('permission:transaksi.pemusnahan.view');
-        Route::delete('pemusnahan/{pemusnahan}', [PemusnahanController::class, 'destroy'])->name('pemusnahan.destroy')->middleware('permission:transaksi.pemusnahan.delete');
+        Route::get('pemusnahan', [PemusnahanController::class, 'index'])->name('pemusnahan.index')->middleware('superadmin');
+        Route::get('pemusnahan/create', [PemusnahanController::class, 'create'])->name('pemusnahan.create')->middleware('superadmin');
+        Route::post('pemusnahan', [PemusnahanController::class, 'store'])->name('pemusnahan.store')->middleware('superadmin');
+        Route::get('pemusnahan/{pemusnahan}', [PemusnahanController::class, 'show'])->name('pemusnahan.show')->middleware('superadmin');
+        Route::delete('pemusnahan/{pemusnahan}', [PemusnahanController::class, 'destroy'])->name('pemusnahan.destroy')->middleware('superadmin');
     });
 
     // Rute untuk laporan

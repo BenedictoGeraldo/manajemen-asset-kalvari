@@ -19,7 +19,7 @@ class MutasiAsetService
         $departmentId = $filters['department_id'] ?? null;
         $perPage = $filters['per_page'] ?? 10;
 
-        $query = TransaksiMutasiAset::with(['aset'])
+        $query = TransaksiMutasiAset::with(['aset', 'lokasiBaru'])
             ->orderByDesc('tanggal_mutasi')
             ->orderByDesc('created_at')
             ->search($search);
