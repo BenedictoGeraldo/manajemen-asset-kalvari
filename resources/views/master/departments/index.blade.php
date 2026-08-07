@@ -23,7 +23,7 @@
             <h3 class="text-lg font-semibold text-gray-800">Daftar Departemen</h3>
             <p class="text-sm text-gray-600 mt-1">Kelola struktur departemen dan divisi</p>
         </div>
-        <a href="{{ route('departments.create') }}" data-navigate
+        <a href="{{ route('master.departments.create') }}" data-navigate
            class="btn-a-sm">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -55,11 +55,11 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $department->type ?? '-' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $department->parent ? $department->parent->name : '-' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="{{ route('departments.edit', $department) }}" data-navigate
+                            <a href="{{ route('master.departments.edit', $department) }}" data-navigate
                                class="text-blue-600 hover:text-blue-900 mr-3">
                                 Edit
                             </a>
-                            <form action="{{ route('departments.destroy', $department) }}" method="POST" class="inline"
+                            <form action="{{ route('master.departments.destroy', $department) }}" method="POST" class="inline"
                                   onsubmit="return confirm('Apakah Anda yakin ingin menghapus departemen ini?')">
                                 @csrf
                                 @method('DELETE')

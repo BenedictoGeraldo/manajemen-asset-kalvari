@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataAsetKolektifController;
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\MasterKategoriController;
 use App\Http\Controllers\MasterLokasiController;
 use App\Http\Controllers\MasterKondisiController;
@@ -100,6 +101,14 @@ Route::middleware('auth')->group(function () {
         Route::put('pengelola/{pengelola}', [MasterPengelolaController::class, 'update'])->name('pengelola.update')->middleware('permission:master.pengelola.edit');
         Route::delete('pengelola/{pengelola}', [MasterPengelolaController::class, 'destroy'])->name('pengelola.destroy')->middleware('permission:master.pengelola.delete');
         Route::get('pengelola-export/{format}', [MasterPengelolaController::class, 'export'])->name('pengelola.export')->middleware('permission:master.pengelola.view');
+
+        // Master Departemen
+        Route::get('departments', [DepartmentController::class, 'index'])->name('departments.index')->middleware('permission:master.departments.view');
+        Route::get('departments/create', [DepartmentController::class, 'create'])->name('departments.create')->middleware('permission:master.departments.create');
+        Route::post('departments', [DepartmentController::class, 'store'])->name('departments.store')->middleware('permission:master.departments.create');
+        Route::get('departments/{department}/edit', [DepartmentController::class, 'edit'])->name('departments.edit')->middleware('permission:master.departments.edit');
+        Route::put('departments/{department}', [DepartmentController::class, 'update'])->name('departments.update')->middleware('permission:master.departments.edit');
+        Route::delete('departments/{department}', [DepartmentController::class, 'destroy'])->name('departments.destroy')->middleware('permission:master.departments.delete');
     });
 
     // Rute untuk user management
@@ -110,9 +119,6 @@ Route::middleware('auth')->group(function () {
     Route::put('user-management/{user}', [UserManagementController::class, 'update'])->name('user-management.update')->middleware('permission:user-management.edit');
     Route::delete('user-management/{user}', [UserManagementController::class, 'destroy'])->name('user-management.destroy')->middleware('permission:user-management.delete');
 
-    // Rute untuk department management
-    Route::resource('departments', \App\Http\Controllers\DepartmentController::class)->middleware('permission:user-management.view');
-    
     // Rute untuk role management
     Route::resource('roles', \App\Http\Controllers\RoleController::class)->middleware('permission:user-management.view');
     

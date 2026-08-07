@@ -159,6 +159,32 @@ class PermissionSeeder extends Seeder
                 'description' => 'Dapat menghapus pengelola'
             ],
 
+            // Master Departemen
+            [
+                'name' => 'master.departments.view',
+                'display_name' => 'Lihat Departemen',
+                'group' => 'Master Data',
+                'description' => 'Dapat melihat daftar departemen'
+            ],
+            [
+                'name' => 'master.departments.create',
+                'display_name' => 'Tambah Departemen',
+                'group' => 'Master Data',
+                'description' => 'Dapat menambah departemen baru'
+            ],
+            [
+                'name' => 'master.departments.edit',
+                'display_name' => 'Edit Departemen',
+                'group' => 'Master Data',
+                'description' => 'Dapat mengedit data departemen'
+            ],
+            [
+                'name' => 'master.departments.delete',
+                'display_name' => 'Hapus Departemen',
+                'group' => 'Master Data',
+                'description' => 'Dapat menghapus departemen'
+            ],
+
             // User Management
             [
                 'name' => 'user-management.view',
@@ -183,32 +209,6 @@ class PermissionSeeder extends Seeder
                 'display_name' => 'Hapus User',
                 'group' => 'Pengaturan',
                 'description' => 'Dapat menghapus user'
-            ],
-
-            // Department Management
-            [
-                'name' => 'departments.view',
-                'display_name' => 'Lihat Departemen',
-                'group' => 'Pengaturan',
-                'description' => 'Dapat melihat daftar departemen'
-            ],
-            [
-                'name' => 'departments.create',
-                'display_name' => 'Tambah Departemen',
-                'group' => 'Pengaturan',
-                'description' => 'Dapat menambah departemen baru'
-            ],
-            [
-                'name' => 'departments.edit',
-                'display_name' => 'Edit Departemen',
-                'group' => 'Pengaturan',
-                'description' => 'Dapat mengedit data departemen'
-            ],
-            [
-                'name' => 'departments.delete',
-                'display_name' => 'Hapus Departemen',
-                'group' => 'Pengaturan',
-                'description' => 'Dapat menghapus departemen'
             ],
 
             // Role Management
