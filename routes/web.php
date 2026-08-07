@@ -186,20 +186,20 @@ Route::middleware('auth')->group(function () {
         Route::delete('pemusnahan/{pemusnahan}', [PemusnahanController::class, 'destroy'])->name('pemusnahan.destroy')->middleware('superadmin');
     });
 
-    // Rute untuk laporan
-    Route::prefix('laporan')->name('laporan.')->group(function () {
-        Route::get('data-aset', [LaporanController::class, 'dataAset'])->name('data-aset.index')->middleware('permission:laporan.data-aset.view');
-        Route::get('data-aset-export/{format}', [LaporanController::class, 'exportDataAset'])->name('data-aset.export')->middleware('permission:laporan.data-aset.view');
-        Route::get('mutasi-aset', [LaporanController::class, 'mutasiAset'])->name('mutasi-aset.index')->middleware('permission:laporan.mutasi-aset.view');
-        Route::get('mutasi-aset-export/{format}', [LaporanController::class, 'exportMutasiAset'])->name('mutasi-aset.export')->middleware('permission:laporan.mutasi-aset.view');
-        Route::get('pembelian', [LaporanController::class, 'pembelian'])->name('pembelian.index')->middleware('permission:laporan.pembelian.view');
-        Route::get('pembelian-export/{format}', [LaporanController::class, 'exportPembelian'])->name('pembelian.export')->middleware('permission:laporan.pembelian.view');
-        Route::get('pemusnahan', [LaporanController::class, 'pemusnahan'])->name('pemusnahan.index')->middleware('permission:laporan.pemusnahan.view');
-        Route::get('pemusnahan-export/{format}', [LaporanController::class, 'exportPemusnahan'])->name('pemusnahan.export')->middleware('permission:laporan.pemusnahan.view');
+    // Rute untuk laporan (hanya Super Admin)
+    Route::prefix('laporan')->name('laporan.')->middleware('superadmin')->group(function () {
+        Route::get('data-aset', [LaporanController::class, 'dataAset'])->name('data-aset.index');
+        Route::get('data-aset-export/{format}', [LaporanController::class, 'exportDataAset'])->name('data-aset.export');
+        Route::get('mutasi-aset', [LaporanController::class, 'mutasiAset'])->name('mutasi-aset.index');
+        Route::get('mutasi-aset-export/{format}', [LaporanController::class, 'exportMutasiAset'])->name('mutasi-aset.export');
+        Route::get('pembelian', [LaporanController::class, 'pembelian'])->name('pembelian.index');
+        Route::get('pembelian-export/{format}', [LaporanController::class, 'exportPembelian'])->name('pembelian.export');
+        Route::get('pemusnahan', [LaporanController::class, 'pemusnahan'])->name('pemusnahan.index');
+        Route::get('pemusnahan-export/{format}', [LaporanController::class, 'exportPemusnahan'])->name('pemusnahan.export');
         
         // Print QR Code
-        Route::get('print-qr', [PrintAsetController::class, 'index'])->name('print-qr.index')->middleware('permission:laporan.print-qr.view');
-        Route::get('print-qr/generate', [PrintAsetController::class, 'generate'])->name('print-qr.generate')->middleware('permission:laporan.print-qr.view');
+        Route::get('print-qr', [PrintAsetController::class, 'index'])->name('print-qr.index');
+        Route::get('print-qr/generate', [PrintAsetController::class, 'generate'])->name('print-qr.generate');
     });
 
     // Rute untuk logout

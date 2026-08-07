@@ -167,7 +167,7 @@
             </div>
             @endif
 
-            @if(auth()->user()->is_super_admin || auth()->user()->hasAnyPermission(['laporan.data-aset.view', 'laporan.mutasi-aset.view', 'laporan.pembelian.view', 'laporan.pemusnahan.view', 'laporan.print-qr.view']))
+            @if(auth()->user()->is_super_admin)
             <div class="relative" x-data="{ open: {{ $isLaporanActive ? 'true' : 'false' }} }">
                 <button @click="open = !open"
                         data-sidebar-parent="laporan"
@@ -182,41 +182,31 @@
                 </button>
 
                 <div x-show="open && !sidebarMinimized" class="mt-1 ml-4 space-y-1">
-                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('laporan.data-aset.view'))
                     <a href="{{ route('laporan.data-aset.index') }}" data-navigate data-route="laporan-data-aset"
                        class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('laporan.data-aset.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6" /></svg>
                         <span class="whitespace-nowrap">Laporan Data Aset</span>
                     </a>
-                    @endif
-                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('laporan.mutasi-aset.view'))
                     <a href="{{ route('laporan.mutasi-aset.index') }}" data-navigate data-route="laporan-mutasi-aset"
                        class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('laporan.mutasi-aset.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
                         <span class="whitespace-nowrap">Laporan Mutasi Aset</span>
                     </a>
-                    @endif
-                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('laporan.pembelian.view'))
                     <a href="{{ route('laporan.pembelian.index') }}" data-navigate data-route="laporan-pembelian"
                        class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('laporan.pembelian.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4" /></svg>
                         <span class="whitespace-nowrap">Laporan Pembelian</span>
                     </a>
-                    @endif
-                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('laporan.pemusnahan.view'))
                     <a href="{{ route('laporan.pemusnahan.index') }}" data-navigate data-route="laporan-pemusnahan"
                        class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('laporan.pemusnahan.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                         <span class="whitespace-nowrap">Laporan Pemusnahan</span>
                     </a>
-                    @endif
-                    @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('laporan.print-qr.view'))
                     <a href="{{ route('laporan.print-qr.index') }}" data-navigate data-route="print-qr"
                        class="nav-link submenu-link flex items-center px-4 py-2 text-sm rounded-lg transition-colors duration-150 {{ request()->routeIs('laporan.print-qr.*') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100' }}">
                         <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" /></svg>
                         <span class="whitespace-nowrap">Cetak QR Code</span>
                     </a>
-                    @endif
                 </div>
             </div>
             @endif

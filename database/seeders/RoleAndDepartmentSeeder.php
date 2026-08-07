@@ -45,10 +45,8 @@ class RoleAndDepartmentSeeder extends Seeder
             'transaksi.peminjaman.view', 'transaksi.peminjaman.create', 'transaksi.peminjaman.approve',
             'transaksi.pemeliharaan.view', 'transaksi.pemeliharaan.create', 'transaksi.pemeliharaan.approve',
             'transaksi.mutasi_aset.view', 'transaksi.mutasi_aset.create', 'transaksi.mutasi_aset.approve',
-            // Laporan
+            // Master Data
             'master.kategori.view', 'master.lokasi.view', 'master.kondisi.view', 'master.pengelola.view',
-            // Laporan
-            'laporan.data-aset.view', 'laporan.mutasi-aset.view', 'laporan.pembelian.view', 'laporan.pemusnahan.view',
         ])->get();
 
         $adminDivisiRole->permissions()->sync(
