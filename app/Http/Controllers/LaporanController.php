@@ -131,19 +131,27 @@ class LaporanController extends Controller
     {
         $filters = [
             'search' => $request->input('search'),
+            'metode_pemusnahan' => $request->input('metode_pemusnahan'),
         ];
 
         $laporanPemusnahan = $this->buildPemusnahanQuery($filters)
             ->paginate(10)
             ->appends($request->query());
 
-        return view('laporan.pemusnahan.index', compact('laporanPemusnahan', 'filters'));
+        $metodeList = \App\Models\TransaksiPemusnahan::distinct()
+            ->whereNotNull('metode_pemusnahan')
+            ->where('metode_pemusnahan', '!=', '')
+            ->orderBy('metode_pemusnahan')
+            ->pluck('metode_pemusnahan');
+
+        return view('laporan.pemusnahan.index', compact('laporanPemusnahan', 'filters', 'metodeList'));
     }
 
     public function exportPemusnahan(Request $request, string $format)
     {
         $filters = [
             'search' => $request->input('search'),
+            'metode_pemusnahan' => $request->input('metode_pemusnahan'),
         ];
 
         $laporanPemusnahan = $this->buildPemusnahanQuery($filters)->get();
@@ -170,7 +178,11 @@ class LaporanController extends Controller
                 })
                 ->orWhere('kode_transaksi', 'like', "%{$search}%")
                 ->orWhere('alasan_pemusnahan', 'like', "%{$search}%")
-                ->orWhere('metode_pemusnahan', 'like', "%{$search}%");
+                ->orWhere('metode_pemusnahan', 'like', "%{$search}%")
+                ->orWhere('penanggung_jawab', 'like', "%{$search}%");
+            })
+            ->when($filters['metode_pemusnahan'] ?? null, function (Builder $query, $metode) {
+                $query->where('metode_pemusnahan', $metode);
             })
             ->orderByDesc('tanggal_pemusnahan');
     }

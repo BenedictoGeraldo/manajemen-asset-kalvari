@@ -56,8 +56,7 @@
                     Terapkan Filter
                 </button>
                 <a href="{{ route('laporan.pembelian.index') }}"
-                   data-navigate
-                   class="btn-c-outline">
+                   class="btn-c-sm">
                     Reset
                 </a>
             </div>

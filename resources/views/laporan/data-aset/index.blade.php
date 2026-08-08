@@ -98,8 +98,7 @@
                         Terapkan Filter
                     </button>
                     <a href="{{ route('laporan.data-aset.index') }}"
-                       data-navigate
-                       class="btn-c-outline">
+                       class="btn-c-sm">
                         Reset
                     </a>
                 </div>

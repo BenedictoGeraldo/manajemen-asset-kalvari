@@ -19,7 +19,7 @@
 
     <div class="bg-white rounded-lg shadow border border-gray-100 p-4 mb-6">
         <form method="GET" action="{{ route('laporan.pemusnahan.index') }}" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="md:col-span-2">
                     <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Pencarian</label>
                     <div class="search-input-wrapper">
@@ -27,7 +27,7 @@
                                id="search"
                                name="search"
                                value="{{ $filters['search'] ?? '' }}"
-                               placeholder="Kode transaksi, nama aset, alasan, metode..."
+                               placeholder="Kode transaksi, nama aset, alasan..."
                                class="search-input-control w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <button type="submit" class="search-submit-btn" aria-label="Cari">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -37,14 +37,27 @@
                     </div>
                 </div>
 
+                <div>
+                    <label for="metode_pemusnahan" class="block text-sm font-medium text-gray-700 mb-1">Metode Pemusnahan</label>
+                    <select id="metode_pemusnahan"
+                            name="metode_pemusnahan"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Semua Metode</option>
+                        @foreach($metodeList as $metode)
+                            <option value="{{ $metode }}" {{ ($filters['metode_pemusnahan'] ?? '') === $metode ? 'selected' : '' }}>
+                                {{ $metode }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
                 <div class="flex items-end gap-2">
                     <button type="submit"
                             class="btn-a-sm">
                         Terapkan Filter
                     </button>
                     <a href="{{ route('laporan.pemusnahan.index') }}"
-                       data-navigate
-                       class="btn-c-outline">
+                       class="btn-c-sm">
                         Reset
                     </a>
                 </div>
