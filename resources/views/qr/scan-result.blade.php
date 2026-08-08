@@ -144,18 +144,6 @@
                 </div>
                 @endauth
 
-                <div class="flex items-center p-3 bg-white/60 rounded-2xl border border-gray-100 shadow-sm">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mr-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="text-[11px] uppercase tracking-wider font-bold text-gray-400">Status Aset</p>
-                        <p class="text-sm font-semibold text-gray-800">{{ $aset->is_active ? 'Aktif' : 'Nonaktif' }}</p>
-                    </div>
-                </div>
-
             </div>
 
             <div class="mt-8 text-center space-y-3">
