@@ -391,12 +391,6 @@ class DataAsetKolektifController extends Controller
         );
     }
 
-    public function printLabel(string $id)
-    {
-        $aset = $this->dataAsetService->getAsetById((int) $id);
-        return view('data-aset.label', compact('aset'));
-    }
-
     private function convertImageToBase64(UploadedFile $file): string
     {
         $mimeType = $file->getMimeType() ?: 'image/jpeg';

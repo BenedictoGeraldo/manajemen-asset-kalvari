@@ -59,7 +59,6 @@ Route::middleware('auth')->group(function () {
     Route::get('data-aset/{data_aset}/edit', [DataAsetKolektifController::class, 'edit'])->name('data-aset.edit')->middleware('permission:data-aset.edit');
     Route::put('data-aset/{data_aset}', [DataAsetKolektifController::class, 'update'])->name('data-aset.update')->middleware('permission:data-aset.edit');
     Route::delete('data-aset/{data_aset}', [DataAsetKolektifController::class, 'destroy'])->name('data-aset.destroy')->middleware('permission:data-aset.delete');
-    Route::get('data-aset/{data_aset}/label', [DataAsetKolektifController::class, 'printLabel'])->name('data-aset.label')->middleware('permission:data-aset.view');
     Route::get('get-sub-departments', [DataAsetKolektifController::class, 'getSubDepartments'])->name('get-sub-departments')->middleware('permission:data-aset.view');
 
     // Rute untuk master data
