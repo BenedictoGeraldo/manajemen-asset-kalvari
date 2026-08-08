@@ -41,10 +41,10 @@ class LaporanPemusnahanExport implements FromCollection, WithHeadings, WithMappi
         return [
             $pemusnahan->id,
             $pemusnahan->kode_transaksi,
-            $pemusnahan->aset->nama_aset,
-            $pemusnahan->aset->kode_aset,
+            $pemusnahan->aset?->nama_aset ?? '-',
+            $pemusnahan->aset?->kode_aset ?? '-',
             $pemusnahan->jumlah_dimusnahkan,
-            $pemusnahan->tanggal_pemusnahan->format('d/m/Y'),
+            optional($pemusnahan->tanggal_pemusnahan)->format('d/m/Y') ?? '-',
             $pemusnahan->alasan_pemusnahan,
             $pemusnahan->metode_pemusnahan,
             $pemusnahan->penanggung_jawab,

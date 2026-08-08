@@ -80,7 +80,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status Aset</label>
                     <select id="status"
@@ -89,19 +89,6 @@
                         <option value="">Semua Status</option>
                         <option value="aktif" {{ ($filters['status'] ?? '') === 'aktif' ? 'selected' : '' }}>Aktif</option>
                         <option value="nonaktif" {{ ($filters['status'] ?? '') === 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="per_page" class="block text-sm font-medium text-gray-700 mb-1">Data per Halaman</label>
-                    <select id="per_page"
-                            name="per_page"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        @foreach([10, 25, 50, 100] as $size)
-                            <option value="{{ $size }}" {{ (int) ($filters['per_page'] ?? 10) === $size ? 'selected' : '' }}>
-                                {{ $size }} / halaman
-                            </option>
-                        @endforeach
                     </select>
                 </div>
 
@@ -151,10 +138,6 @@
                     <a href="{{ route('laporan.data-aset.export', array_merge(['format' => 'csv'], request()->except('page'))) }}"
                        class="dropdown-export-item">
                         Export ke CSV (.csv)
-                    </a>
-                    <a href="{{ route('laporan.data-aset.export', array_merge(['format' => 'pdf'], request()->except('page'))) }}"
-                       class="dropdown-export-item">
-                        Export ke PDF (.pdf)
                     </a>
                 </div>
             </div>

@@ -152,7 +152,7 @@
                     <div class="asset-name">{{ $asset->nama_aset }}</div>
                     <div class="asset-code">{{ $asset->kode_aset }}</div>
                     <div class="asset-meta">
-                        {{ $asset->lokasi->nama_lokasi }} | {{ $asset->kategori->nama_kategori }}
+                        {{ $asset->lokasi?->nama_lokasi ?? '-' }} | {{ $asset->kategori?->nama_kategori ?? '-' }}
                     </div>
                 </div>
             </div>

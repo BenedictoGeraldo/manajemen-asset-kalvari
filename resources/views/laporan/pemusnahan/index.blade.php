@@ -4,73 +4,130 @@
 @section('page-title', 'Laporan Pemusnahan')
 
 @section('content')
-<div class="bg-white rounded-lg shadow p-6 content-fade-in">
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h2 class="text-2xl font-bold text-gray-800">Laporan Pemusnahan Aset</h2>
-            <p class="text-gray-600">Rekapitulasi data penghapusan aset.</p>
+<div class="p-6">
+    @if(session('success'))
+        <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+            <span class="block sm:inline">{{ session('success') }}</span>
         </div>
-        <div class="flex space-x-2">
-            <div class="relative" x-data="{ open: false }">
-                <button @click="open = !open" class="btn-export-sm flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    Export
-                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-                <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-50">
-                    <a href="{{ route('laporan.pemusnahan.export', 'xlsx') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Excel (.xlsx)</a>
-                    <a href="{{ route('laporan.pemusnahan.export', 'csv') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">CSV (.csv)</a>
-                    <a href="{{ route('laporan.pemusnahan.export', 'pdf') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">PDF (.pdf)</a>
+    @endif
+
+    @if(session('error'))
+        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <span class="block sm:inline">{{ session('error') }}</span>
+        </div>
+    @endif
+
+    <div class="bg-white rounded-lg shadow border border-gray-100 p-4 mb-6">
+        <form method="GET" action="{{ route('laporan.pemusnahan.index') }}" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="md:col-span-2">
+                    <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Pencarian</label>
+                    <div class="search-input-wrapper">
+                        <input type="text"
+                               id="search"
+                               name="search"
+                               value="{{ $filters['search'] ?? '' }}"
+                               placeholder="Kode transaksi, nama aset, alasan, metode..."
+                               class="search-input-control w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button type="submit" class="search-submit-btn" aria-label="Cari">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-end gap-2">
+                    <button type="submit"
+                            class="btn-a-sm">
+                        Terapkan Filter
+                    </button>
+                    <a href="{{ route('laporan.pemusnahan.index') }}"
+                       data-navigate
+                       class="btn-c-outline">
+                        Reset
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="flex justify-end mb-4">
+        <div class="relative" x-data="{ open: false }">
+            <button @click="open = !open"
+                    @click.away="open = false"
+                    class="btn-export-sm">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Export Laporan
+                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+
+            <div x-show="open"
+                 x-cloak
+                 x-transition:enter="transition ease-out duration-100"
+                 x-transition:enter-start="transform opacity-0 scale-95"
+                 x-transition:enter-end="transform opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-75"
+                 x-transition:leave-start="transform opacity-100 scale-100"
+                 x-transition:leave-end="transform opacity-0 scale-95"
+                 class="absolute right-0 mt-2 w-52 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                <div class="py-1">
+                    <a href="{{ route('laporan.pemusnahan.export', array_merge(['format' => 'xlsx'], request()->except('page'))) }}"
+                       class="dropdown-export-item">
+                        Export ke Excel (.xlsx)
+                    </a>
+                    <a href="{{ route('laporan.pemusnahan.export', array_merge(['format' => 'csv'], request()->except('page'))) }}"
+                       class="dropdown-export-item">
+                        Export ke CSV (.csv)
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <form method="GET" class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="col-span-1 md:col-span-2">
-            <input type="text" name="search" value="{{ $filters['search'] ?? '' }}" placeholder="Cari kode atau nama aset..." 
-                   class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kode Transaksi</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aset</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metode</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alasan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penanggung Jawab</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($laporanPemusnahan as $p)
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ optional($p->tanggal_pemusnahan)->format('d/m/Y') ?? '-' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $p->kode_transaksi }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $p->aset?->nama_aset ?? '-' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $p->jumlah_dimusnahkan }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $p->metode_pemusnahan }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-700">{{ $p->alasan_pemusnahan }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $p->penanggung_jawab }}</td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="7" class="px-6 py-6 text-center text-sm text-gray-500">
+                            Tidak ada data pemusnahan yang sesuai filter.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
-        <button type="submit" class="btn-a-sm w-full">Filter</button>
-    </form>
 
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aset</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metode</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alasan</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PJ</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                @forelse($laporanPemusnahan as $p)
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $p->tanggal_pemusnahan->format('d/m/Y') }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-medium">{{ $p->aset->nama_aset }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $p->jumlah_dimusnahkan }} unit</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $p->metode_pemusnahan }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">{{ $p->alasan_pemusnahan }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $p->penanggung_jawab }}</td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">Data tidak ditemukan.</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-
-    <div class="mt-6">
-        {{ $laporanPemusnahan->links() }}
+        <div class="px-6 py-4 bg-gray-50 border-t">
+            {{ $laporanPemusnahan->links() }}
+        </div>
     </div>
 </div>
 @endsection

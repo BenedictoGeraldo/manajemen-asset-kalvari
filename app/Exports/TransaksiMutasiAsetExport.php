@@ -39,7 +39,7 @@ class TransaksiMutasiAsetExport implements FromCollection, WithHeadings, WithMap
     {
         return [
             $mutasi->nomor_mutasi,
-            $mutasi->tanggal_mutasi->format('d/m/Y'),
+            $mutasi->tanggal_mutasi?->format('d/m/Y') ?? '-',
             $mutasi->aset?->kode_aset,
             $mutasi->aset?->nama_aset,
             ucfirst($mutasi->status),
