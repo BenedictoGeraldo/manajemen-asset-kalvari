@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\TransaksiPemeliharaanExport;
 use App\Http\Requests\CompletePemeliharaanRequest;
 use App\Http\Requests\StorePemeliharaanRequest;
 use App\Http\Requests\UpdatePemeliharaanRequest;
@@ -12,7 +11,6 @@ use App\Services\PemeliharaanService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Maatwebsite\Excel\Facades\Excel;
 
 class PemeliharaanController extends Controller
 {
@@ -34,7 +32,7 @@ class PemeliharaanController extends Controller
         $user = auth()->user();
 
         if ($user->is_super_admin) {
-            // no filter — lihat semua record
+            // no filter ï¿½ lihat semua record
         } elseif ($user->isAdminDivisi()) {
             $filters['department_id'] = $user->department_id;
         } else {
@@ -205,18 +203,6 @@ class PemeliharaanController extends Controller
 
         return redirect()->route('transaksi.pemeliharaan.show', $id)
             ->with('success', 'Pemeliharaan berhasil diselesaikan dan kondisi aset diperbarui.');
-    }
-
-    public function export(string $format)
-    {
-        $timestamp = now()->format('Y-m-d_His');
-        $filename = "transaksi-pemeliharaan_{$timestamp}.{$format}";
-
-        if ($format === 'csv') {
-            return Excel::download(new TransaksiPemeliharaanExport(), $filename, \Maatwebsite\Excel\Excel::CSV);
-        }
-
-        return Excel::download(new TransaksiPemeliharaanExport(), $filename, \Maatwebsite\Excel\Excel::XLSX);
     }
 
     private function canManageAll(): bool

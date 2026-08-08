@@ -40,46 +40,6 @@
             </form>
 
             <div class="flex space-x-3 mt-2 sm:mt-0">
-                @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.pembelian.view'))
-                <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" @click.away="open = false"
-                            class="btn-export">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        Export Data
-                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <div x-show="open"
-                         x-transition:enter="transition ease-out duration-100"
-                         x-transition:enter-start="transform opacity-0 scale-95"
-                         x-transition:enter-end="transform opacity-100 scale-100"
-                         x-transition:leave="transition ease-in duration-75"
-                         x-transition:leave-start="transform opacity-100 scale-100"
-                         x-transition:leave-end="transform opacity-0 scale-95"
-                         class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                        <div class="py-1">
-                                     <a href="{{ route('transaksi.pembelian.export', 'xlsx') }}"
-                                         class="dropdown-export-item">
-                                <svg class="w-4 h-4 mr-2 export-icon-xlsx" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z"/>
-                                </svg>
-                                Export ke Excel (.xlsx)
-                            </a>
-                                     <a href="{{ route('transaksi.pembelian.export', 'csv') }}"
-                                         class="dropdown-export-item">
-                                <svg class="w-4 h-4 mr-2 export-icon-csv" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z"/>
-                                </svg>
-                                Export ke CSV (.csv)
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                @endif
-
                 @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.pembelian.create'))
                 <a href="{{ route('transaksi.pembelian.create') }}" data-navigate
                    class="btn-a">

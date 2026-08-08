@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\TransaksiPeminjamanExport;
 use App\Http\Requests\HandoverPeminjamanRequest;
 use App\Http\Requests\ReturnPeminjamanRequest;
 use App\Http\Requests\StorePeminjamanRequest;
@@ -13,7 +12,6 @@ use App\Services\PeminjamanService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Maatwebsite\Excel\Facades\Excel;
 
 class PeminjamanController extends Controller
 {
@@ -220,18 +218,6 @@ class PeminjamanController extends Controller
 
         return redirect()->route('transaksi.peminjaman.show', $id)
             ->with('success', 'Pengembalian aset berhasil diproses.');
-    }
-
-    public function export(string $format)
-    {
-        $timestamp = now()->format('Y-m-d_His');
-        $filename = "transaksi-peminjaman_{$timestamp}.{$format}";
-
-        if ($format === 'csv') {
-            return Excel::download(new TransaksiPeminjamanExport(), $filename, \Maatwebsite\Excel\Excel::CSV);
-        }
-
-        return Excel::download(new TransaksiPeminjamanExport(), $filename, \Maatwebsite\Excel\Excel::XLSX);
     }
 
     private function canManageAll(): bool

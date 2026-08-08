@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\TransaksiMutasiAsetExport;
 use App\Http\Requests\StoreMutasiAsetRequest;
 use App\Http\Requests\UpdateMutasiAsetRequest;
 use App\Http\Requests\CompleteMutasiAsetRequest;
@@ -10,7 +9,6 @@ use App\Models\TransaksiMutasiAset;
 use App\Models\DataAsetKolektif;
 use App\Services\MutasiAsetService;
 use App\Services\MasterDataService;
-use Maatwebsite\Excel\Facades\Excel;
 
 class MutasiAsetController extends Controller
 {
@@ -36,21 +34,6 @@ class MutasiAsetController extends Controller
         $mutasis = $this->mutasiService->getPaginatedMutasi($filters);
 
         return view('transaksi.mutasi-aset.index', compact('mutasis', 'filters'));
-    }
-
-    public function export(string $format)
-    {
-        $filters = request()->only(['search', 'status', 'jenis']);
-        $mutasis = TransaksiMutasiAset::with(['aset'])
-            ->search($filters['search'] ?? null)
-            ->when($filters['status'] ?? null, fn($q) => $q->where('status', $filters['status']))
-            ->when($filters['jenis'] ?? null, fn($q) => $q->where('jenis_mutasi', $filters['jenis']))
-            ->get();
-
-        return Excel::download(
-            new TransaksiMutasiAsetExport($mutasis),
-            'mutasi-aset-' . now()->format('Ymd-His') . '.' . ($format === 'xlsx' ? 'xlsx' : 'csv')
-        );
     }
 
     public function create()

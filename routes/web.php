@@ -59,7 +59,6 @@ Route::middleware('auth')->group(function () {
     Route::get('data-aset/{data_aset}/edit', [DataAsetKolektifController::class, 'edit'])->name('data-aset.edit')->middleware('permission:data-aset.edit');
     Route::put('data-aset/{data_aset}', [DataAsetKolektifController::class, 'update'])->name('data-aset.update')->middleware('permission:data-aset.edit');
     Route::delete('data-aset/{data_aset}', [DataAsetKolektifController::class, 'destroy'])->name('data-aset.destroy')->middleware('permission:data-aset.delete');
-    Route::get('data-aset-export/{format}', [DataAsetKolektifController::class, 'export'])->name('data-aset.export')->middleware('permission:data-aset.export');
     Route::get('data-aset/{data_aset}/label', [DataAsetKolektifController::class, 'printLabel'])->name('data-aset.label')->middleware('permission:data-aset.view');
     Route::get('get-sub-departments', [DataAsetKolektifController::class, 'getSubDepartments'])->name('get-sub-departments')->middleware('permission:data-aset.view');
 
@@ -132,7 +131,6 @@ Route::middleware('auth')->group(function () {
     // Rute untuk data transaksional
     Route::prefix('transaksi')->name('transaksi.')->group(function () {
         Route::get('pembelian', [PembelianController::class, 'index'])->name('pembelian.index')->middleware('permission:transaksi.pembelian.view');
-        Route::get('pembelian-export/{format}', [PembelianController::class, 'export'])->name('pembelian.export')->middleware('permission:transaksi.pembelian.view');
         Route::get('pembelian/create', [PembelianController::class, 'create'])->name('pembelian.create')->middleware('permission:transaksi.pembelian.create');
         Route::post('pembelian', [PembelianController::class, 'store'])->name('pembelian.store')->middleware('permission:transaksi.pembelian.create');
         Route::get('pembelian/{pembelian}', [PembelianController::class, 'show'])->name('pembelian.show')->middleware('permission:transaksi.pembelian.view');
@@ -143,7 +141,6 @@ Route::middleware('auth')->group(function () {
         Route::post('pembelian/{pembelian}/reject', [PembelianController::class, 'reject'])->name('pembelian.reject')->middleware('permission:transaksi.pembelian.reject');
 
         Route::get('peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index')->middleware('permission:transaksi.peminjaman.view');
-        Route::get('peminjaman-export/{format}', [PeminjamanController::class, 'export'])->name('peminjaman.export')->middleware('permission:transaksi.peminjaman.export');
         Route::get('peminjaman/create', [PeminjamanController::class, 'create'])->name('peminjaman.create')->middleware('permission:transaksi.peminjaman.create');
         Route::post('peminjaman', [PeminjamanController::class, 'store'])->name('peminjaman.store')->middleware('permission:transaksi.peminjaman.create');
         Route::get('peminjaman/{peminjaman}', [PeminjamanController::class, 'show'])->name('peminjaman.show')->middleware('permission:transaksi.peminjaman.view');
@@ -158,7 +155,6 @@ Route::middleware('auth')->group(function () {
         Route::post('peminjaman/{peminjaman}/return', [PeminjamanController::class, 'returnAssets'])->name('peminjaman.return')->middleware('permission:transaksi.peminjaman.return');
 
         Route::get('pemeliharaan', [PemeliharaanController::class, 'index'])->name('pemeliharaan.index')->middleware('permission:transaksi.pemeliharaan.view');
-        Route::get('pemeliharaan-export/{format}', [PemeliharaanController::class, 'export'])->name('pemeliharaan.export')->middleware('permission:transaksi.pemeliharaan.export');
         Route::get('pemeliharaan/create', [PemeliharaanController::class, 'create'])->name('pemeliharaan.create')->middleware('permission:transaksi.pemeliharaan.create');
         Route::post('pemeliharaan', [PemeliharaanController::class, 'store'])->name('pemeliharaan.store')->middleware('permission:transaksi.pemeliharaan.create');
         Route::get('pemeliharaan/{pemeliharaan}', [PemeliharaanController::class, 'show'])->name('pemeliharaan.show')->middleware('permission:transaksi.pemeliharaan.view');
@@ -172,7 +168,6 @@ Route::middleware('auth')->group(function () {
         Route::post('pemeliharaan/{pemeliharaan}/complete', [PemeliharaanController::class, 'complete'])->name('pemeliharaan.complete')->middleware('permission:transaksi.pemeliharaan.complete');
 
         Route::get('mutasi-aset', [MutasiAsetController::class, 'index'])->name('mutasi_aset.index')->middleware('permission:transaksi.mutasi_aset.view');
-        Route::get('mutasi-aset-export/{format}', [MutasiAsetController::class, 'export'])->name('mutasi_aset.export')->middleware('permission:transaksi.mutasi_aset.export');
         Route::get('mutasi-aset/create', [MutasiAsetController::class, 'create'])->name('mutasi_aset.create')->middleware('permission:transaksi.mutasi_aset.create');
         Route::post('mutasi-aset', [MutasiAsetController::class, 'store'])->name('mutasi_aset.store')->middleware('permission:transaksi.mutasi_aset.create');
         Route::get('mutasi-aset/{mutasi_aset}', [MutasiAsetController::class, 'show'])->name('mutasi_aset.show')->middleware('permission:transaksi.mutasi_aset.view');

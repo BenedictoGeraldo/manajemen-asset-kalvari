@@ -6,7 +6,6 @@ use App\Services\DataAsetService;
 use App\Services\MasterDataService;
 use App\Http\Requests\StoreDataAsetRequest;
 use App\Http\Requests\UpdateDataAsetRequest;
-use App\Exports\DataAsetExport;
 use App\Imports\DataAsetImport;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -316,18 +315,6 @@ class DataAsetKolektifController extends Controller
 
         $subDepartments = $this->masterDataService->getSubDepartments($parentId);
         return response()->json($subDepartments);
-    }
-
-    public function export($format)
-    {
-        $timestamp = now()->format('Y-m-d_His');
-        $filename = "data-aset_{$timestamp}.{$format}";
-
-        if ($format === 'csv') {
-            return Excel::download(new DataAsetExport, $filename, \Maatwebsite\Excel\Excel::CSV);
-        }
-
-        return Excel::download(new DataAsetExport, $filename, \Maatwebsite\Excel\Excel::XLSX);
     }
 
     public function importForm()
