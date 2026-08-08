@@ -145,7 +145,7 @@
         @foreach($assets as $asset)
             <div class="label-card">
                 <div class="qr-section">
-                    {!! QrCode::size(80)->margin(0)->generate($asset->kode_aset) !!}
+                    {!! QrCode::size(80)->margin(1)->generate(url('/qr/'.$asset->id.'/scan')) !!}
                 </div>
                 <div class="info-section">
                     <div class="church-name">{{ setting('church_name', 'Gereja Kalvari') }}</div>

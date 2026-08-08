@@ -15,7 +15,7 @@ class QrAsetController extends Controller
     {
         $aset = DataAsetKolektif::findOrFail($id);
         
-        $scanUrl = route('qr.scan', $aset->id);
+        $scanUrl = url('/qr/'.$aset->id.'/scan');
         
         $qrCode = QrCode::format('svg')
                     ->size(300)
@@ -35,7 +35,7 @@ class QrAsetController extends Controller
     public function scanResult($id)
     {
         // Get aset details along with relations to display
-        $aset = DataAsetKolektif::with(['lokasi', 'kategori'])->findOrFail($id);
+        $aset = DataAsetKolektif::with(['lokasi', 'kategori', 'kondisi', 'pengelola'])->findOrFail($id);
         return view('qr.scan-result', compact('aset'));
     }
 }

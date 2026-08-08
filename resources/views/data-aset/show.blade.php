@@ -209,7 +209,7 @@
             <div class="bg-white rounded-lg shadow p-6 text-center">
                 <h4 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2 text-left">QR Code Aset</h4>
                 <div class="inline-block p-2 bg-white border border-gray-200 rounded-xl mb-3 shadow-sm">
-                    {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(160)->margin(1)->generate(route('qr.scan', $aset->id)) !!}
+                    {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(160)->margin(1)->generate(url('/qr/'.$aset->id.'/scan')) !!}
                 </div>
                 <p class="text-sm text-gray-500 mb-3">Scan untuk melihat info publik.</p>
                 <a href="{{ route('qr.download', $aset->id) }}" target="_blank"
