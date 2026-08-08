@@ -6,6 +6,7 @@ use App\Models\DataAsetKolektif;
 use App\Models\TransaksiPemusnahan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class PemusnahanController extends Controller
 {
@@ -34,7 +35,7 @@ class PemusnahanController extends Controller
             'jumlah_dimusnahkan' => 'required|integer|min:1',
             'tanggal_pemusnahan' => 'required|date',
             'alasan_pemusnahan' => 'required|string|max:255',
-            'metode_pemusnahan' => 'required|string|max:255',
+            'metode_pemusnahan' => ['required', 'string', 'max:255', Rule::in(TransaksiPemusnahan::METODE_LIST)],
             'penanggung_jawab' => 'required|string|max:255',
             'nama_pengaju' => 'nullable|string|max:255',
             'unit_pengaju' => 'nullable|string|max:255',

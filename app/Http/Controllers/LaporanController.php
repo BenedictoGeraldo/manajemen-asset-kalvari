@@ -8,6 +8,7 @@ use App\Exports\TransaksiMutasiAsetExport;
 use App\Models\DataAsetKolektif;
 use App\Models\TransaksiPembelian;
 use App\Models\TransaksiMutasiAset;
+use App\Models\TransaksiPemusnahan;
 use App\Services\MasterDataService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -138,11 +139,7 @@ class LaporanController extends Controller
             ->paginate(10)
             ->appends($request->query());
 
-        $metodeList = \App\Models\TransaksiPemusnahan::distinct()
-            ->whereNotNull('metode_pemusnahan')
-            ->where('metode_pemusnahan', '!=', '')
-            ->orderBy('metode_pemusnahan')
-            ->pluck('metode_pemusnahan');
+        $metodeList = TransaksiPemusnahan::METODE_LIST;
 
         return view('laporan.pemusnahan.index', compact('laporanPemusnahan', 'filters', 'metodeList'));
     }
@@ -169,7 +166,7 @@ class LaporanController extends Controller
     {
         $search = trim((string) ($filters['search'] ?? ''));
 
-        return \App\Models\TransaksiPemusnahan::query()
+        return TransaksiPemusnahan::query()
             ->with(['aset:id,kode_aset,nama_aset'])
             ->when($search !== '', function (Builder $query) use ($search) {
                 $query->whereHas('aset', function (Builder $asetQuery) use ($search) {

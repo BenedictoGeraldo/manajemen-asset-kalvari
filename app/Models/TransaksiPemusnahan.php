@@ -11,6 +11,8 @@ class TransaksiPemusnahan extends Model
 {
     use HasFactory, SoftDeletes, HasAuditColumns;
 
+    const METODE_LIST = ['Dihancurkan', 'Dibakar', 'Dibuang', 'Dijual', 'Dihibahkan'];
+
     protected $table = 'transaksi_pemusnahan';
 
     protected $fillable = [

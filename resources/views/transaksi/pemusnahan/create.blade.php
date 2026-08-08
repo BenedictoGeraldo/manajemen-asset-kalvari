@@ -53,8 +53,7 @@
                     <label for="metode_pemusnahan" class="block text-sm font-medium text-gray-700 mb-1">Metode Pemusnahan <span class="text-red-500">*</span></label>
                     <select id="metode_pemusnahan" name="metode_pemusnahan" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">Pilih Metode</option>
-                        @php $metodeList = ['Dihancurkan', 'Dibakar', 'Dibuang', 'Dijual', 'Dihibahkan']; @endphp
-                        @foreach($metodeList as $metode)
+                        @foreach(\App\Models\TransaksiPemusnahan::METODE_LIST as $metode)
                             <option value="{{ $metode }}" {{ old('metode_pemusnahan') == $metode ? 'selected' : '' }}>{{ $metode }}</option>
                         @endforeach
                     </select>
