@@ -24,8 +24,10 @@ class UpdatePembelianRequest extends FormRequest
         return [
             'tanggal_pembelian' => 'required|date',
             'vendor_nama' => 'required|string|max:150',
-            'vendor_kontak' => 'nullable|string|max:100',
-            'sumber_dana' => 'nullable|string|max:150',
+            'vendor_kontak'      => 'nullable|string|max:100',
+            'nama_pengaju'       => 'nullable|string|max:255',
+            'unit_pengaju'       => 'nullable|string|max:255',
+            'sumber_dana'        => 'nullable|string|max:150',
             'catatan' => 'nullable|string',
 
             'items' => 'required|array|min:1',

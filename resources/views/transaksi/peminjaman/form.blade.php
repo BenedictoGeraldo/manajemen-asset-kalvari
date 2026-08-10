@@ -30,7 +30,7 @@
             <label for="tanggal_pengajuan" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Pengajuan <span class="text-red-500">*</span></label>
             <input type="date" id="tanggal_pengajuan" name="tanggal_pengajuan" required
                    value="{{ old('tanggal_pengajuan', isset($peminjaman) ? optional($peminjaman->tanggal_pengajuan)->format('Y-m-d') : date('Y-m-d')) }}"
-                   class="w-full rounded-lg @error('tanggal_pengajuan') border-red-500 @else border-gray-300 @enderror focus:border-blue-500 focus:ring-blue-500">
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('tanggal_pengajuan') border-red-500 @enderror">
             @error('tanggal_pengajuan')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
         </div>
 
@@ -38,14 +38,15 @@
             <label for="tanggal_rencana_kembali" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Rencana Kembali</label>
             <input type="date" id="tanggal_rencana_kembali" name="tanggal_rencana_kembali"
                    value="{{ old('tanggal_rencana_kembali', isset($peminjaman) ? optional($peminjaman->tanggal_rencana_kembali)->format('Y-m-d') : '') }}"
-                   class="w-full rounded-lg @error('tanggal_rencana_kembali') border-red-500 @else border-gray-300 @enderror focus:border-blue-500 focus:ring-blue-500">
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('tanggal_rencana_kembali') border-red-500 @enderror">
             @error('tanggal_rencana_kembali')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
         </div>
 
         <div>
             <label for="nama_peminjam" class="block text-sm font-medium text-gray-700 mb-1">Nama Peminjam <span class="text-red-500">*</span></label>
-            <input type="text" id="nama_peminjam" name="nama_peminjam" required value="{{ old('nama_peminjam', $peminjaman->nama_peminjam ?? '') }}"
-                   class="w-full rounded-lg @error('nama_peminjam') border-red-500 @else border-gray-300 @enderror focus:border-blue-500 focus:ring-blue-500">
+            <input type="text" id="nama_peminjam" name="nama_peminjam" required value="{{ old('nama_peminjam', $peminjaman->nama_peminjam ?? (isset($peminjaman) ? '' : auth()->user()->name)) }}"
+                   @if(!isset($peminjaman)) readonly @endif
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @if(!isset($peminjaman)) bg-gray-100 @endif @error('nama_peminjam') border-red-500 @enderror">
             @error('nama_peminjam')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
         </div>
 
@@ -55,22 +56,25 @@
                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         </div>
 
-        <div>
+        <div class="{{ isset($peminjaman) ? '' : 'md:col-span-2' }}">
             <label for="unit_peminjam" class="block text-sm font-medium text-gray-700 mb-1">Unit / Departemen</label>
-            <input type="text" id="unit_peminjam" name="unit_peminjam" value="{{ old('unit_peminjam', $peminjaman->unit_peminjam ?? '') }}"
-                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <input type="text" id="unit_peminjam" name="unit_peminjam" value="{{ old('unit_peminjam', $peminjaman->unit_peminjam ?? (isset($peminjaman) ? '' : optional(auth()->user()->department)->name)) }}"
+                   @if(!isset($peminjaman)) readonly @endif
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @if(!isset($peminjaman)) bg-gray-100 @endif">
         </div>
 
+        @if(isset($peminjaman))
         <div>
             <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status <span class="text-red-500">*</span></label>
             @php $selectedStatus = old('status', $peminjaman->status ?? 'draft'); @endphp
-            <select id="status" name="status" class="w-full rounded-lg @error('status') border-red-500 @else border-gray-300 @enderror focus:border-blue-500 focus:ring-blue-500">
+            <select id="status" name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('status') border-red-500 @enderror">
                 <option value="draft" {{ $selectedStatus === 'draft' ? 'selected' : '' }}>Draft</option>
                 <option value="diajukan" {{ $selectedStatus === 'diajukan' ? 'selected' : '' }}>Diajukan</option>
                 <option value="dibatalkan" {{ $selectedStatus === 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
             </select>
             @error('status')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
         </div>
+        @endif
 
         <div class="md:col-span-2">
             <label for="keperluan" class="block text-sm font-medium text-gray-700 mb-1">Keperluan</label>
@@ -83,6 +87,10 @@
         </div>
     </div>
 </div>
+
+@if(!isset($peminjaman))
+<input type="hidden" name="status" value="diajukan">
+@endif
 
 <div class="mt-8 border-t pt-6">
     <div class="flex items-center justify-between mb-4">
@@ -111,7 +119,7 @@
     const addItemButton = document.getElementById('btn-add-item');
     const initialItems = @json($itemsState);
 
-    const asetOptions = [{ id: '', label: 'Pilih Aset' }, ...@json($asets->map(fn($x) => ['id' => $x->id, 'label' => ($x->kode_aset ?? '-') . ' - ' . $x->nama_aset . ' (Stok: ' . $x->jumlah_barang . ')'])->values())];
+    const asetOptions = [{ id: '', label: 'Pilih Aset' }, ...@json($asets->map(fn($x) => ['id' => $x->id, 'label' => ($x->kode_aset ?? '-') . ' - ' . $x->nama_aset . ' (Tersedia: ' . $x->available . ')'])->values())];
 
     function buildOptions(list, selected) {
         return list.map(option => {

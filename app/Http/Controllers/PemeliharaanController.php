@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\TransaksiPemeliharaanExport;
 use App\Http\Requests\CompletePemeliharaanRequest;
 use App\Http\Requests\StorePemeliharaanRequest;
 use App\Http\Requests\UpdatePemeliharaanRequest;
@@ -12,7 +11,6 @@ use App\Services\PemeliharaanService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Maatwebsite\Excel\Facades\Excel;
 
 class PemeliharaanController extends Controller
 {
@@ -31,8 +29,14 @@ class PemeliharaanController extends Controller
             'per_page' => $request->input('per_page', 10),
         ];
 
-        if (!$this->canManageAll()) {
-            $filters['creator_id'] = auth()->id();
+        $user = auth()->user();
+
+        if ($user->is_super_admin) {
+            // no filter � lihat semua record
+        } elseif ($user->isAdminDivisi()) {
+            $filters['department_id'] = $user->department_id;
+        } else {
+            $filters['creator_id'] = $user->id;
         }
 
         $pemeliharaans = $this->pemeliharaanService->getPaginatedPemeliharaan($filters);
@@ -120,6 +124,8 @@ class PemeliharaanController extends Controller
     public function approve(Request $request, string $id): RedirectResponse
     {
         $this->requireAdmin();
+        $pemeliharaan = $this->pemeliharaanService->getById((int) $id);
+        $this->authorizeAccess($pemeliharaan);
 
         try {
             $this->pemeliharaanService->approve((int) $id, (int) auth()->id(), $request->input('catatan_approval'));
@@ -135,6 +141,8 @@ class PemeliharaanController extends Controller
     public function reject(Request $request, string $id): RedirectResponse
     {
         $this->requireAdmin();
+        $pemeliharaan = $this->pemeliharaanService->getById((int) $id);
+        $this->authorizeAccess($pemeliharaan);
 
         try {
             $this->pemeliharaanService->reject((int) $id, (int) auth()->id(), $request->input('catatan_approval'));
@@ -150,6 +158,8 @@ class PemeliharaanController extends Controller
     public function startProcess(string $id): RedirectResponse
     {
         $this->requireAdmin();
+        $pemeliharaan = $this->pemeliharaanService->getById((int) $id);
+        $this->authorizeAccess($pemeliharaan);
 
         try {
             $this->pemeliharaanService->startProcess((int) $id, (int) auth()->id());
@@ -166,6 +176,7 @@ class PemeliharaanController extends Controller
     {
         $pemeliharaan = $this->pemeliharaanService->getById((int) $id);
         $this->requireAdmin();
+        $this->authorizeAccess($pemeliharaan);
 
         if ($pemeliharaan->status !== 'proses') {
             return redirect()->route('transaksi.pemeliharaan.show', $id)
@@ -181,6 +192,8 @@ class PemeliharaanController extends Controller
     public function complete(CompletePemeliharaanRequest $request, string $id): RedirectResponse
     {
         $this->requireAdmin();
+        $pemeliharaan = $this->pemeliharaanService->getById((int) $id);
+        $this->authorizeAccess($pemeliharaan);
 
         try {
             $this->pemeliharaanService->complete((int) $id, $request->validated(), (int) auth()->id());
@@ -190,18 +203,6 @@ class PemeliharaanController extends Controller
 
         return redirect()->route('transaksi.pemeliharaan.show', $id)
             ->with('success', 'Pemeliharaan berhasil diselesaikan dan kondisi aset diperbarui.');
-    }
-
-    public function export(string $format)
-    {
-        $timestamp = now()->format('Y-m-d_His');
-        $filename = "transaksi-pemeliharaan_{$timestamp}.{$format}";
-
-        if ($format === 'csv') {
-            return Excel::download(new TransaksiPemeliharaanExport(), $filename, \Maatwebsite\Excel\Excel::CSV);
-        }
-
-        return Excel::download(new TransaksiPemeliharaanExport(), $filename, \Maatwebsite\Excel\Excel::XLSX);
     }
 
     private function canManageAll(): bool
@@ -219,9 +220,21 @@ class PemeliharaanController extends Controller
 
     private function authorizeAccess($record): void
     {
-        if (!$this->canManageAll() && $record->created_by !== auth()->id()) {
-            abort(403, 'Anda tidak memiliki akses ke transaksi ini.');
+        $user = auth()->user();
+
+        if ($user->is_super_admin) {
+            return;
         }
+
+        if ($user->isAdminDivisi()) {
+            if ($record->creator && $record->creator->department_id === $user->department_id) {
+                return;
+            }
+        } elseif ($record->created_by === $user->id) {
+            return;
+        }
+
+        abort(403, 'Anda tidak memiliki akses ke transaksi ini.');
     }
 
     private function formOptions(): array

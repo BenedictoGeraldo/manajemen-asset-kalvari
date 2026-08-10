@@ -40,46 +40,6 @@
             </form>
 
             <div class="flex space-x-3 mt-2 sm:mt-0">
-                @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.pembelian.view'))
-                <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" @click.away="open = false"
-                            class="btn-export">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        Export Data
-                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <div x-show="open"
-                         x-transition:enter="transition ease-out duration-100"
-                         x-transition:enter-start="transform opacity-0 scale-95"
-                         x-transition:enter-end="transform opacity-100 scale-100"
-                         x-transition:leave="transition ease-in duration-75"
-                         x-transition:leave-start="transform opacity-100 scale-100"
-                         x-transition:leave-end="transform opacity-0 scale-95"
-                         class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                        <div class="py-1">
-                                     <a href="{{ route('transaksi.pembelian.export', 'xlsx') }}"
-                                         class="dropdown-export-item">
-                                <svg class="w-4 h-4 mr-2 export-icon-xlsx" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z"/>
-                                </svg>
-                                Export ke Excel (.xlsx)
-                            </a>
-                                     <a href="{{ route('transaksi.pembelian.export', 'csv') }}"
-                                         class="dropdown-export-item">
-                                <svg class="w-4 h-4 mr-2 export-icon-csv" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z"/>
-                                </svg>
-                                Export ke CSV (.csv)
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                @endif
-
                 @if(auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.pembelian.create'))
                 <a href="{{ route('transaksi.pembelian.create') }}" data-navigate
                    class="btn-a">
@@ -103,6 +63,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No Pembelian</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vendor</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pengaju</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -118,6 +79,10 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ optional($pembelian->tanggal_pembelian)->format('d/m/Y') }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $pembelian->vendor_nama }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">
+                                <div class="font-medium text-gray-900">{{ $pembelian->nama_pengaju ?? '-' }}</div>
+                                <div class="text-xs text-gray-500">{{ $pembelian->unit_pengaju ?? '-' }}</div>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $pembelian->items_count }} item</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Rp {{ number_format($pembelian->total_nilai, 0, ',', '.') }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -126,6 +91,7 @@
                                         'draft' => 'bg-gray-100 text-gray-700',
                                         'diajukan' => 'bg-yellow-100 text-yellow-800',
                                         'disetujui' => 'bg-green-100 text-green-800',
+                                        'ditolak' => 'bg-red-100 text-red-700',
                                         'dibatalkan' => 'bg-red-100 text-red-700',
                                     ];
                                 @endphp
@@ -141,14 +107,14 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                         </svg>
                                     </a>
-                                    @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.pembelian.edit')) && $pembelian->status !== 'disetujui')
+                                    @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.pembelian.edit')) && !in_array($pembelian->status, ['disetujui', 'ditolak']))
                                     <a href="{{ route('transaksi.pembelian.edit', $pembelian->id) }}" data-navigate class="action-edit" title="Edit">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
                                     </a>
                                     @endif
-                                    @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.pembelian.delete')) && $pembelian->status !== 'disetujui')
+                                    @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.pembelian.delete')) && !in_array($pembelian->status, ['disetujui', 'ditolak']))
                                     <button type="button"
                                             @click="$dispatch('delete-modal', { id: {{ $pembelian->id }}, nomor: '{{ $pembelian->nomor_pembelian }}' })"
                                             class="action-delete" title="Hapus">
@@ -162,7 +128,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada transaksi pembelian.</td>
+                            <td colspan="9" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada transaksi pembelian.</td>
                         </tr>
                     @endforelse
                 </tbody>

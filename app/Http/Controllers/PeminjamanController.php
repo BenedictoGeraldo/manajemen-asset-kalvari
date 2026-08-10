@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\TransaksiPeminjamanExport;
 use App\Http\Requests\HandoverPeminjamanRequest;
 use App\Http\Requests\ReturnPeminjamanRequest;
 use App\Http\Requests\StorePeminjamanRequest;
@@ -13,7 +12,6 @@ use App\Services\PeminjamanService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Maatwebsite\Excel\Facades\Excel;
 
 class PeminjamanController extends Controller
 {
@@ -31,8 +29,14 @@ class PeminjamanController extends Controller
             'per_page' => $request->input('per_page', 10),
         ];
 
-        if (!$this->canManageAll()) {
-            $filters['creator_id'] = auth()->id();
+        $user = auth()->user();
+
+        if ($user->is_super_admin) {
+            // no filter — lihat semua record
+        } elseif ($user->isAdminDivisi()) {
+            $filters['department_id'] = $user->department_id;
+        } else {
+            $filters['creator_id'] = $user->id;
         }
 
         $peminjamans = $this->peminjamanService->getPaginatedPeminjaman($filters);
@@ -119,6 +123,8 @@ class PeminjamanController extends Controller
     public function approve(Request $request, string $id): RedirectResponse
     {
         $this->requireAdmin();
+        $peminjaman = $this->peminjamanService->getById((int) $id);
+        $this->authorizeAccess($peminjaman);
 
         try {
             $this->peminjamanService->approve((int) $id, (int) auth()->id(), $request->input('catatan_approval'));
@@ -134,6 +140,8 @@ class PeminjamanController extends Controller
     public function reject(Request $request, string $id): RedirectResponse
     {
         $this->requireAdmin();
+        $peminjaman = $this->peminjamanService->getById((int) $id);
+        $this->authorizeAccess($peminjaman);
 
         try {
             $this->peminjamanService->reject((int) $id, (int) auth()->id(), $request->input('catatan_approval'));
@@ -150,6 +158,7 @@ class PeminjamanController extends Controller
     {
         $peminjaman = $this->peminjamanService->getById((int) $id);
         $this->requireAdmin();
+        $this->authorizeAccess($peminjaman);
 
         if ($peminjaman->status !== \App\Enums\PeminjamanStatus::DISETUJUI) {
             return redirect()->route('transaksi.peminjaman.show', $id)
@@ -165,6 +174,8 @@ class PeminjamanController extends Controller
     public function handover(HandoverPeminjamanRequest $request, string $id): RedirectResponse
     {
         $this->requireAdmin();
+        $peminjaman = $this->peminjamanService->getById((int) $id);
+        $this->authorizeAccess($peminjaman);
 
         try {
             $this->peminjamanService->handover((int) $id, $request->validated(), (int) auth()->id());
@@ -180,6 +191,7 @@ class PeminjamanController extends Controller
     {
         $peminjaman = $this->peminjamanService->getById((int) $id);
         $this->requireAdmin();
+        $this->authorizeAccess($peminjaman);
 
         if (!in_array($peminjaman->status, [\App\Enums\PeminjamanStatus::DIPINJAM, \App\Enums\PeminjamanStatus::TERLAMBAT], true)) {
             return redirect()->route('transaksi.peminjaman.show', $id)
@@ -195,6 +207,8 @@ class PeminjamanController extends Controller
     public function returnAssets(ReturnPeminjamanRequest $request, string $id): RedirectResponse
     {
         $this->requireAdmin();
+        $peminjaman = $this->peminjamanService->getById((int) $id);
+        $this->authorizeAccess($peminjaman);
 
         try {
             $this->peminjamanService->returnAssets((int) $id, $request->validated(), (int) auth()->id());
@@ -204,18 +218,6 @@ class PeminjamanController extends Controller
 
         return redirect()->route('transaksi.peminjaman.show', $id)
             ->with('success', 'Pengembalian aset berhasil diproses.');
-    }
-
-    public function export(string $format)
-    {
-        $timestamp = now()->format('Y-m-d_His');
-        $filename = "transaksi-peminjaman_{$timestamp}.{$format}";
-
-        if ($format === 'csv') {
-            return Excel::download(new TransaksiPeminjamanExport(), $filename, \Maatwebsite\Excel\Excel::CSV);
-        }
-
-        return Excel::download(new TransaksiPeminjamanExport(), $filename, \Maatwebsite\Excel\Excel::XLSX);
     }
 
     private function canManageAll(): bool
@@ -233,9 +235,21 @@ class PeminjamanController extends Controller
 
     private function authorizeAccess($record): void
     {
-        if (!$this->canManageAll() && $record->created_by !== auth()->id()) {
-            abort(403, 'Anda tidak memiliki akses ke transaksi ini.');
+        $user = auth()->user();
+
+        if ($user->is_super_admin) {
+            return;
         }
+
+        if ($user->isAdminDivisi()) {
+            if ($record->creator && $record->creator->department_id === $user->department_id) {
+                return;
+            }
+        } elseif ($record->created_by === $user->id) {
+            return;
+        }
+
+        abort(403, 'Anda tidak memiliki akses ke transaksi ini.');
     }
 
     private function formOptions(): array
@@ -244,6 +258,14 @@ class PeminjamanController extends Controller
             ->where('is_active', true)
             ->orderBy('nama_aset')
             ->get(['id', 'kode_aset', 'nama_aset', 'jumlah_barang']);
+
+        $reservedMap = $this->peminjamanService->getReservedStock();
+
+        $asets->each(function ($aset) use ($reservedMap) {
+            $reserved = $reservedMap[$aset->id] ?? 0;
+            $aset->reserved = $reserved;
+            $aset->available = $aset->jumlah_barang - $reserved;
+        });
 
         return [
             'asets' => $asets,

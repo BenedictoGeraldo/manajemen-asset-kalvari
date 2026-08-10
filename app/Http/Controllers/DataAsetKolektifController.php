@@ -6,7 +6,6 @@ use App\Services\DataAsetService;
 use App\Services\MasterDataService;
 use App\Http\Requests\StoreDataAsetRequest;
 use App\Http\Requests\UpdateDataAsetRequest;
-use App\Exports\DataAsetExport;
 use App\Imports\DataAsetImport;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -180,6 +179,31 @@ class DataAsetKolektifController extends Controller
         $lokasis = $this->masterDataService->getActiveLokasis();
         $kondisis = $this->masterDataService->getActiveKondisis();
         $pengelolas = $this->masterDataService->getActivePengelolas();
+
+        if ($aset->kategori_id && !$kategoris->contains('id', $aset->kategori_id)) {
+            $inactiveKategori = \App\Models\MasterKategori::find($aset->kategori_id);
+            if ($inactiveKategori) {
+                $kategoris->push($inactiveKategori);
+            }
+        }
+        if ($aset->lokasi_id && !$lokasis->contains('id', $aset->lokasi_id)) {
+            $inactiveLokasi = \App\Models\MasterLokasi::find($aset->lokasi_id);
+            if ($inactiveLokasi) {
+                $lokasis->push($inactiveLokasi);
+            }
+        }
+        if ($aset->kondisi_id && !$kondisis->contains('id', $aset->kondisi_id)) {
+            $inactiveKondisi = \App\Models\MasterKondisi::find($aset->kondisi_id);
+            if ($inactiveKondisi) {
+                $kondisis->push($inactiveKondisi);
+            }
+        }
+        if ($aset->pengelola_id && !$pengelolas->contains('id', $aset->pengelola_id)) {
+            $inactivePengelola = \App\Models\MasterPengelola::find($aset->pengelola_id);
+            if ($inactivePengelola) {
+                $pengelolas->push($inactivePengelola);
+            }
+        }
         $departments = $this->masterDataService->getDepartmentOptions();
 
         if ($user && $user->isAdminDivisi()) {
@@ -293,18 +317,6 @@ class DataAsetKolektifController extends Controller
         return response()->json($subDepartments);
     }
 
-    public function export($format)
-    {
-        $timestamp = now()->format('Y-m-d_His');
-        $filename = "data-aset_{$timestamp}.{$format}";
-
-        if ($format === 'csv') {
-            return Excel::download(new DataAsetExport, $filename, \Maatwebsite\Excel\Excel::CSV);
-        }
-
-        return Excel::download(new DataAsetExport, $filename, \Maatwebsite\Excel\Excel::XLSX);
-    }
-
     public function importForm()
     {
         return view('data-aset.import');
@@ -377,12 +389,6 @@ class DataAsetKolektifController extends Controller
             },
             'template-import-aset.xlsx'
         );
-    }
-
-    public function printLabel(string $id)
-    {
-        $aset = $this->dataAsetService->getAsetById((int) $id);
-        return view('data-aset.label', compact('aset'));
     }
 
     private function convertImageToBase64(UploadedFile $file): string

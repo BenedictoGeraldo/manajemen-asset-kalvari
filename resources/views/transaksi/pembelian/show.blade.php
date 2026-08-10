@@ -33,7 +33,7 @@
                 Kembali
             </a>
 
-            @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.pembelian.edit')) && $pembelian->status !== 'disetujui')
+            @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.pembelian.edit')) && !in_array($pembelian->status, ['disetujui', 'ditolak']))
             <a href="{{ route('transaksi.pembelian.edit', $pembelian->id) }}" data-navigate
                class="btn-b-sm">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -43,7 +43,7 @@
             </a>
             @endif
 
-            @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.pembelian.approve')) && $pembelian->status !== 'disetujui')
+            @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.pembelian.approve')) && $pembelian->status === 'diajukan')
             <form action="{{ route('transaksi.pembelian.approve', $pembelian->id) }}" method="POST" onsubmit="return confirm('Setujui pembelian ini dan posting ke data aset?')" class="inline-flex">
                 @csrf
                 <button type="submit" class="btn-export-sm" title="Setujui & Posting">
@@ -55,7 +55,18 @@
             </form>
             @endif
 
-            @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.pembelian.delete')) && $pembelian->status !== 'disetujui')
+            @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.pembelian.reject')) && $pembelian->status === 'diajukan')
+            <button type="button"
+                    @click="$dispatch('reject-modal', { id: {{ $pembelian->id }}, nomor: '{{ $pembelian->nomor_pembelian }}' })"
+                    class="btn-danger-sm" title="Tolak">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Tolak
+            </button>
+            @endif
+
+            @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.pembelian.delete')) && !in_array($pembelian->status, ['disetujui', 'ditolak']))
             <button type="button"
                     @click="$dispatch('delete-modal', { id: {{ $pembelian->id }}, nomor: '{{ $pembelian->nomor_pembelian }}' })"
                     class="btn-danger-sm" title="Hapus">
@@ -96,10 +107,47 @@
                 <p class="font-medium text-gray-900">{{ $pembelian->vendor_kontak ?: '-' }}</p>
             </div>
             <div>
+                <p class="text-gray-500">Departemen</p>
+                <p class="font-medium text-gray-900">{{ $pembelian->department->name ?? '-' }}</p>
+            </div>
+            <div>
+                <p class="text-gray-500">Dibuat Oleh</p>
+                <p class="font-medium text-gray-900">{{ $pembelian->creator->name ?? '-' }}</p>
+            </div>
+            <div>
+                <p class="text-gray-500">Nama Pengaju</p>
+                <p class="font-medium text-gray-900">{{ $pembelian->nama_pengaju ?: '-' }}</p>
+            </div>
+            <div>
+                <p class="text-gray-500">Unit Pengaju</p>
+                <p class="font-medium text-gray-900">{{ $pembelian->unit_pengaju ?: '-' }}</p>
+            </div>
+            <div>
                 <p class="text-gray-500">Sudah Diposting ke Aset</p>
                 <p class="font-medium text-gray-900">{{ $pembelian->is_posted_to_aset ? 'Ya' : 'Belum' }}</p>
             </div>
+            @if($pembelian->status === 'disetujui' && $pembelian->approver)
+            <div>
+                <p class="text-gray-500">Disetujui Oleh</p>
+                <p class="font-medium text-gray-900">{{ $pembelian->approver->name }}</p>
+            </div>
+            @endif
+            @if($pembelian->status === 'ditolak' && $pembelian->rejecter)
+            <div>
+                <p class="text-gray-500">Ditolak Oleh</p>
+                <p class="font-medium text-gray-900">{{ $pembelian->rejecter->name }}</p>
+            </div>
+            @endif
         </div>
+
+        @if($pembelian->status === 'ditolak' && $pembelian->alasan_penolakan)
+            <div class="mt-4 border-t pt-4">
+                <p class="text-sm text-gray-500">Alasan Penolakan</p>
+                <div class="mt-1 p-3 bg-red-50 border border-red-200 rounded">
+                    <p class="text-sm text-red-800">{{ $pembelian->alasan_penolakan }}</p>
+                </div>
+            </div>
+        @endif
 
         @if($pembelian->catatan)
             <div class="mt-4 border-t pt-4">
@@ -228,5 +276,80 @@
         </div>
     </div>
 </div>
-@endsection
 
+<!-- Reject Modal -->
+<div x-data="{ show: false, rejectId: null, nomorPembelian: '', alasan: '' }"
+     @reject-modal.window="show = true; rejectId = $event.detail.id; nomorPembelian = $event.detail.nomor; alasan = ''"
+     x-show="show"
+     x-cloak
+     class="fixed inset-0 z-50 overflow-y-auto"
+     aria-labelledby="reject-modal-title"
+     role="dialog"
+     aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div x-show="show"
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+             aria-hidden="true"></div>
+
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+        <div x-show="show"
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+             x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+             x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+             class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <form action="#" method="POST" x-bind:action="'{{ url('transaksi/pembelian') }}/' + rejectId + '/reject'">
+                @csrf
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="reject-modal-title">
+                                Konfirmasi Tolak Pembelian
+                            </h3>
+                            <div class="mt-3">
+                                <p class="text-sm text-gray-500 mb-3">
+                                    Apakah Anda yakin ingin <strong>menolak</strong> transaksi <strong x-text="nomorPembelian"></strong>?
+                                    Penolakan bersifat final dan tidak dapat diubah.
+                                </p>
+                                <div>
+                                    <label for="alasan_penolakan" class="block text-sm font-medium text-gray-700 mb-1">Alasan Penolakan <span class="text-red-500">*</span></label>
+                                    <textarea id="alasan_penolakan" name="alasan_penolakan" rows="3" x-model="alasan"
+                                              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 text-sm"
+                                              placeholder="Tulis alasan penolakan..." required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="submit"
+                            :disabled="!alasan.trim()"
+                            :class="alasan.trim() ? 'btn-danger-sm' : 'btn-c-outline opacity-50 cursor-not-allowed'"
+                            class="w-full inline-flex justify-center sm:ml-3 sm:w-auto sm:text-sm">
+                        Tolak
+                    </button>
+                    <button type="button"
+                            @click="show = false"
+                            class="btn-c-outline mt-3 w-full inline-flex justify-center sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection

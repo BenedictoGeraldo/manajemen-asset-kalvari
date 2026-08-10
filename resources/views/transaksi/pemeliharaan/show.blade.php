@@ -96,6 +96,8 @@
                     <div><p class="text-gray-500">Prioritas</p><p class="font-medium text-gray-900">{{ ucfirst($pemeliharaan->prioritas) }}</p></div>
                     <div><p class="text-gray-500">Vendor / Teknisi</p><p class="font-medium text-gray-900">{{ $pemeliharaan->vendor_nama ?: '-' }}</p></div>
                     <div><p class="text-gray-500">Kontak Vendor</p><p class="font-medium text-gray-900">{{ $pemeliharaan->vendor_kontak ?: '-' }}</p></div>
+                    <div><p class="text-gray-500">Nama Pengaju</p><p class="font-medium text-gray-900">{{ $pemeliharaan->nama_pengaju ?: '-' }}</p></div>
+                    <div><p class="text-gray-500">Unit Pengaju</p><p class="font-medium text-gray-900">{{ $pemeliharaan->unit_pengaju ?: '-' }}</p></div>
                     <div><p class="text-gray-500">Estimasi Biaya</p><p class="font-medium text-gray-900">Rp {{ number_format($pemeliharaan->estimasi_biaya, 0, ',', '.') }}</p></div>
                     <div><p class="text-gray-500">Realisasi Biaya</p><p class="font-medium text-gray-900">Rp {{ number_format($pemeliharaan->realisasi_biaya, 0, ',', '.') }}</p></div>
                     <div><p class="text-gray-500">Tanggal Mulai</p><p class="font-medium text-gray-900">{{ optional($pemeliharaan->tanggal_mulai)->format('d/m/Y H:i') ?: '-' }}</p></div>

@@ -28,6 +28,8 @@ class TransaksiPemeliharaan extends Model
         'kondisi_sesudah_id',
         'vendor_nama',
         'vendor_kontak',
+        'nama_pengaju',
+        'unit_pengaju',
         'estimasi_biaya',
         'realisasi_biaya',
         'keluhan',

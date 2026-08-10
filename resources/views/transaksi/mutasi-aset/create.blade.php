@@ -13,7 +13,7 @@
     <div class="bg-white rounded-lg shadow p-6">
         <form method="POST" action="{{ route('transaksi.mutasi_aset.store') }}">
             @csrf
-            @include('transaksi.mutasi_aset.form', ['submitLabel' => 'Simpan Pengajuan'])
+            @include('transaksi.mutasi-aset.form', ['submitLabel' => 'Simpan Pengajuan'])
         </form>
     </div>
 </div>

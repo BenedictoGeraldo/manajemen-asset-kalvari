@@ -22,36 +22,24 @@
                 Kembali
             </a>
 
-            @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.peminjaman.edit')) && $peminjaman->canEdit())
-            <a href="{{ route('transaksi.peminjaman.edit', $peminjaman->id) }}" data-navigate
-               class="btn-b-sm">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-                Edit
-            </a>
-            @endif
-
             @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.peminjaman.approve')) && in_array($peminjaman->status, [\App\Enums\PeminjamanStatus::DRAFT, \App\Enums\PeminjamanStatus::DIAJUKAN]))
-            <form action="{{ route('transaksi.peminjaman.approve', $peminjaman->id) }}" method="POST" class="inline-flex">
-                @csrf
-                <button type="submit" class="btn-export-sm">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                    Setujui
-                </button>
-            </form>
+            <button type="button"
+                    @click="$dispatch('approve-modal', { id: {{ $peminjaman->id }}, nomor: '{{ $peminjaman->nomor_peminjaman }}' })"
+                    class="btn-export-sm">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Setujui
+            </button>
 
-            <form action="{{ route('transaksi.peminjaman.reject', $peminjaman->id) }}" method="POST" class="inline-flex">
-                @csrf
-                <button type="submit" class="btn-danger-sm">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    Tolak
-                </button>
-            </form>
+            <button type="button"
+                    @click="$dispatch('reject-modal', { id: {{ $peminjaman->id }}, nomor: '{{ $peminjaman->nomor_peminjaman }}' })"
+                    class="btn-danger-sm">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Tolak
+            </button>
             @endif
 
             @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.peminjaman.handover')) && $peminjaman->status === \App\Enums\PeminjamanStatus::DISETUJUI)
@@ -72,17 +60,6 @@
                 </svg>
                 Pengembalian
             </a>
-            @endif
-
-            @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.peminjaman.delete')) && $peminjaman->canDelete())
-            <button type="button"
-                    @click="$dispatch('delete-modal', { id: {{ $peminjaman->id }}, nomor: '{{ $peminjaman->nomor_peminjaman }}' })"
-                    class="btn-danger-sm">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-                Hapus
-            </button>
             @endif
         </div>
     </div>
@@ -178,7 +155,34 @@
     </div>
 </div>
 
-<x-delete-modal action-url="{{ url('transaksi/peminjaman') }}" />
+<x-confirm-action-modal
+    title="Konfirmasi Setujui Peminjaman"
+    message="Apakah Anda yakin ingin <strong>menyetujui</strong> transaksi <strong x-text='recordNomor'></strong>?"
+    confirmLabel="Setujui"
+    confirmButtonClass="btn-export-sm"
+    iconType="success"
+    event="approve-modal"
+    actionUrl="{{ url('transaksi/peminjaman') }}"
+    actionSuffix="/approve"
+    textareaName="catatan_approval"
+    textareaLabel="Catatan (opsional)"
+    textareaPlaceholder="Tulis catatan persetujuan..."
+/>
+
+<x-confirm-action-modal
+    title="Konfirmasi Tolak Peminjaman"
+    message="Apakah Anda yakin ingin <strong>menolak</strong> transaksi <strong x-text='recordNomor'></strong>? Penolakan bersifat final dan tidak dapat diubah."
+    confirmLabel="Tolak"
+    confirmButtonClass="btn-danger-sm"
+    iconType="danger"
+    event="reject-modal"
+    actionUrl="{{ url('transaksi/peminjaman') }}"
+    actionSuffix="/reject"
+    textareaName="catatan_approval"
+    textareaLabel="Alasan Penolakan"
+    textareaRequired="true"
+    textareaPlaceholder="Tulis alasan penolakan..."
+/>
 
 @endsection
 

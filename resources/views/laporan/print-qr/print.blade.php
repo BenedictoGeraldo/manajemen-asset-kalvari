@@ -145,14 +145,14 @@
         @foreach($assets as $asset)
             <div class="label-card">
                 <div class="qr-section">
-                    {!! QrCode::size(80)->margin(0)->generate($asset->kode_aset) !!}
+                    {!! QrCode::size(80)->margin(1)->generate(url('/qr/'.$asset->id.'/scan')) !!}
                 </div>
                 <div class="info-section">
                     <div class="church-name">{{ setting('church_name', 'Gereja Kalvari') }}</div>
                     <div class="asset-name">{{ $asset->nama_aset }}</div>
                     <div class="asset-code">{{ $asset->kode_aset }}</div>
                     <div class="asset-meta">
-                        {{ $asset->lokasi->nama_lokasi }} | {{ $asset->kategori->nama_kategori }}
+                        {{ $asset->lokasi?->nama_lokasi ?? '-' }} | {{ $asset->kategori?->nama_kategori ?? '-' }}
                     </div>
                 </div>
             </div>

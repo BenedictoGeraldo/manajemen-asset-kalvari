@@ -6,25 +6,19 @@ use App\Models\DataAsetKolektif;
 use App\Models\TransaksiPemusnahan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class PemusnahanController extends Controller
 {
-    public function __construct()
+    public function index(Request $request)
     {
-        $this->middleware('permission:transaksi.pemusnahan.view')->only(['index', 'show']);
-        $this->middleware('permission:transaksi.pemusnahan.create')->only(['create', 'store']);
-        $this->middleware('permission:transaksi.pemusnahan.delete')->only('destroy');
-    }
+        $search = $request->input('search');
+        $pemusnahans = TransaksiPemusnahan::with('aset')
+            ->orderByDesc('created_at')
+            ->search($search)
+            ->paginate(10)
+            ->withQueryString();
 
-    public function index()
-    {
-        $query = TransaksiPemusnahan::with('aset');
-
-        if (!$this->canManageAll()) {
-            $query->where('created_by', auth()->id());
-        }
-
-        $pemusnahans = $query->latest()->paginate(10);
         return view('transaksi.pemusnahan.index', compact('pemusnahans'));
     }
 
@@ -41,8 +35,10 @@ class PemusnahanController extends Controller
             'jumlah_dimusnahkan' => 'required|integer|min:1',
             'tanggal_pemusnahan' => 'required|date',
             'alasan_pemusnahan' => 'required|string|max:255',
-            'metode_pemusnahan' => 'required|string|max:255',
+            'metode_pemusnahan' => ['required', 'string', 'max:255', Rule::in(TransaksiPemusnahan::METODE_LIST)],
             'penanggung_jawab' => 'required|string|max:255',
+            'nama_pengaju' => 'nullable|string|max:255',
+            'unit_pengaju' => 'nullable|string|max:255',
             'catatan' => 'nullable|string',
         ]);
 
@@ -56,7 +52,8 @@ class PemusnahanController extends Controller
         try {
             TransaksiPemusnahan::create($request->only([
                 'aset_id', 'jumlah_dimusnahkan', 'tanggal_pemusnahan',
-                'alasan_pemusnahan', 'metode_pemusnahan', 'penanggung_jawab', 'catatan',
+                'alasan_pemusnahan', 'metode_pemusnahan', 'penanggung_jawab',
+                'nama_pengaju', 'unit_pengaju', 'catatan',
             ]));
 
             $aset->jumlah_barang -= $request->jumlah_dimusnahkan;
@@ -75,7 +72,6 @@ class PemusnahanController extends Controller
 
     public function show(TransaksiPemusnahan $pemusnahan)
     {
-        $this->authorizeAccess($pemusnahan);
         $pemusnahan->load('aset');
         return view('transaksi.pemusnahan.show', compact('pemusnahan'));
     }
@@ -83,7 +79,6 @@ class PemusnahanController extends Controller
     public function destroy($id)
     {
         $pemusnahan = TransaksiPemusnahan::findOrFail($id);
-        $this->authorizeAccess($pemusnahan);
 
         DB::beginTransaction();
         try {
@@ -102,19 +97,6 @@ class PemusnahanController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
-    }
-
-    private function canManageAll(): bool
-    {
-        return auth()->user()->is_super_admin
-            || auth()->user()->hasPermission('transaksi.pemusnahan.approve');
-    }
-
-    private function authorizeAccess($record): void
-    {
-        if (!$this->canManageAll() && (int) $record->created_by !== (int) auth()->id()) {
-            abort(403, 'Anda tidak memiliki akses ke transaksi ini.');
         }
     }
 }

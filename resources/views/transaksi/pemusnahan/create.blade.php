@@ -1,88 +1,115 @@
 @extends('layouts.main')
 
 @section('title', 'Catat Pemusnahan Aset')
-@section('page-title', 'Tambah Pemusnahan')
+@section('page-title', 'Tambah Pemusnahan Aset')
 
 @section('content')
-<div class="max-w-4xl mx-auto bg-white rounded-lg shadow p-6 content-fade-in">
+<div class="p-6">
     <div class="mb-6">
-        <h2 class="text-2xl font-bold text-gray-800">Catat Pemusnahan Aset</h2>
-        <p class="text-gray-600">Formulir untuk mencatat penghapusan aset dari inventaris.</p>
+        <h3 class="text-xl font-semibold text-gray-800">Form Pencatatan Pemusnahan Aset</h3>
+        <p class="text-sm text-gray-600 mt-1">Catat pemusnahan aset dari inventaris.</p>
     </div>
 
     @if(session('error'))
-        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
-            {{ session('error') }}
+        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <span class="block sm:inline">{{ session('error') }}</span>
         </div>
     @endif
 
-    <form action="{{ route('transaksi.pemusnahan.store') }}" method="POST">
-        @csrf
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="col-span-1 md:col-span-2">
-                <label for="aset_id" class="block text-sm font-medium text-gray-700 mb-1">Pilih Aset <span class="text-red-500">*</span></label>
-                <select name="aset_id" id="aset_id" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-                    <option value="">-- Pilih Aset --</option>
-                    @foreach($asets as $aset)
-                        <option value="{{ $aset->id }}" {{ old('aset_id') == $aset->id ? 'selected' : '' }}>
-                            {{ $aset->nama_aset }} ({{ $aset->kode_aset }}) - Stok: {{ $aset->jumlah_barang }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('aset_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+    <div class="bg-white rounded-lg shadow p-6">
+        <form method="POST" action="{{ route('transaksi.pemusnahan.store') }}">
+            @csrf
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="aset_id" class="block text-sm font-medium text-gray-700 mb-1">Aset <span class="text-red-500">*</span></label>
+                    <select id="aset_id" name="aset_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">Pilih Aset</option>
+                        @foreach($asets as $aset)
+                            <option value="{{ $aset->id }}" {{ old('aset_id') == $aset->id ? 'selected' : '' }}>
+                                {{ $aset->kode_aset ?? '-' }} - {{ $aset->nama_aset }} (Stok: {{ $aset->jumlah_barang }})
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('aset_id')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                </div>
+
+                <div>
+                    <label for="tanggal_pemusnahan" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Pemusnahan <span class="text-red-500">*</span></label>
+                    <input type="date" id="tanggal_pemusnahan" name="tanggal_pemusnahan" required
+                           value="{{ old('tanggal_pemusnahan', date('Y-m-d')) }}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    @error('tanggal_pemusnahan')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                </div>
+
+                <div>
+                    <label for="jumlah_dimusnahkan" class="block text-sm font-medium text-gray-700 mb-1">Jumlah Dimusnahkan <span class="text-red-500">*</span></label>
+                    <input type="number" id="jumlah_dimusnahkan" name="jumlah_dimusnahkan" min="1" required
+                           value="{{ old('jumlah_dimusnahkan', 1) }}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    @error('jumlah_dimusnahkan')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                </div>
+
+                <div>
+                    <label for="metode_pemusnahan" class="block text-sm font-medium text-gray-700 mb-1">Metode Pemusnahan <span class="text-red-500">*</span></label>
+                    <select id="metode_pemusnahan" name="metode_pemusnahan" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">Pilih Metode</option>
+                        @foreach(\App\Models\TransaksiPemusnahan::METODE_LIST as $metode)
+                            <option value="{{ $metode }}" {{ old('metode_pemusnahan') == $metode ? 'selected' : '' }}>{{ $metode }}</option>
+                        @endforeach
+                    </select>
+                    @error('metode_pemusnahan')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                </div>
+
+                <div>
+                    <label for="penanggung_jawab" class="block text-sm font-medium text-gray-700 mb-1">Penanggung Jawab <span class="text-red-500">*</span></label>
+                    <input type="text" id="penanggung_jawab" name="penanggung_jawab" required
+                           value="{{ old('penanggung_jawab') }}"
+                           placeholder="Contoh: Bpk. Andi (Koordinator Aset)"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    @error('penanggung_jawab')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                </div>
+
+                <div>
+                    <label for="nama_pengaju" class="block text-sm font-medium text-gray-700 mb-1">Nama Pengaju</label>
+                    <input type="text" id="nama_pengaju" name="nama_pengaju"
+                           value="{{ old('nama_pengaju', auth()->user()->name) }}"
+                           readonly
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700">
+                </div>
+
+                <div>
+                    <label for="unit_pengaju" class="block text-sm font-medium text-gray-700 mb-1">Unit / Departemen</label>
+                    <input type="text" id="unit_pengaju" name="unit_pengaju"
+                           value="{{ old('unit_pengaju', optional(auth()->user()->department)->name) }}"
+                           readonly
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700">
+                </div>
+
+                <div class="md:col-span-2">
+                    <label for="alasan_pemusnahan" class="block text-sm font-medium text-gray-700 mb-1">Alasan Pemusnahan <span class="text-red-500">*</span></label>
+                    <input type="text" id="alasan_pemusnahan" name="alasan_pemusnahan" required
+                           value="{{ old('alasan_pemusnahan') }}"
+                           placeholder="Contoh: Barang rusak total, tidak bisa diperbaiki"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    @error('alasan_pemusnahan')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                </div>
+
+                <div class="md:col-span-2">
+                    <label for="catatan" class="block text-sm font-medium text-gray-700 mb-1">Catatan Tambahan</label>
+                    <textarea id="catatan" name="catatan" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ old('catatan') }}</textarea>
+                    @error('catatan')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                </div>
             </div>
 
-            <div>
-                <label for="jumlah_dimusnahkan" class="block text-sm font-medium text-gray-700 mb-1">Jumlah Dimusnahkan <span class="text-red-500">*</span></label>
-                <input type="number" name="jumlah_dimusnahkan" id="jumlah_dimusnahkan" min="1" value="{{ old('jumlah_dimusnahkan', 1) }}"
-                       class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-                @error('jumlah_dimusnahkan') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            <div class="mt-6 flex items-center space-x-3">
+                <button type="submit" class="btn-a-sm">
+                    Simpan Transaksi
+                </button>
+                <a href="{{ route('transaksi.pemusnahan.index') }}" data-navigate class="btn-c-sm">
+                    Batal
+                </a>
             </div>
-
-            <div>
-                <label for="tanggal_pemusnahan" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Pemusnahan <span class="text-red-500">*</span></label>
-                <input type="date" name="tanggal_pemusnahan" id="tanggal_pemusnahan" value="{{ old('tanggal_pemusnahan', date('Y-m-d')) }}"
-                       class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-                @error('tanggal_pemusnahan') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-            </div>
-
-            <div>
-                <label for="metode_pemusnahan" class="block text-sm font-medium text-gray-700 mb-1">Metode Pemusnahan <span class="text-red-500">*</span></label>
-                <select name="metode_pemusnahan" id="metode_pemusnahan" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-                    <option value="Dihancurkan" {{ old('metode_pemusnahan') == 'Dihancurkan' ? 'selected' : '' }}>Dihancurkan</option>
-                    <option value="Dibakar" {{ old('metode_pemusnahan') == 'Dibakar' ? 'selected' : '' }}>Dibakar</option>
-                    <option value="Dibuang" {{ old('metode_pemusnahan') == 'Dibuang' ? 'selected' : '' }}>Dibuang</option>
-                    <option value="Dijual" {{ old('metode_pemusnahan') == 'Dijual' ? 'selected' : '' }}>Dijual/Lelang</option>
-                    <option value="Dihibahkan" {{ old('metode_pemusnahan') == 'Dihibahkan' ? 'selected' : '' }}>Dihibahkan</option>
-                </select>
-                @error('metode_pemusnahan') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-            </div>
-
-            <div>
-                <label for="penanggung_jawab" class="block text-sm font-medium text-gray-700 mb-1">Penanggung Jawab <span class="text-red-500">*</span></label>
-                <input type="text" name="penanggung_jawab" id="penanggung_jawab" value="{{ old('penanggung_jawab') }}" placeholder="Contoh: Bpk. Andi (Koordinator Aset)"
-                       class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-                @error('penanggung_jawab') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-            </div>
-
-            <div class="col-span-1 md:col-span-2">
-                <label for="alasan_pemusnahan" class="block text-sm font-medium text-gray-700 mb-1">Alasan Pemusnahan <span class="text-red-500">*</span></label>
-                <input type="text" name="alasan_pemusnahan" id="alasan_pemusnahan" value="{{ old('alasan_pemusnahan') }}" placeholder="Contoh: Barang rusak total/tidak bisa diperbaiki"
-                       class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-                @error('alasan_pemusnahan') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-            </div>
-
-            <div class="col-span-1 md:col-span-2">
-                <label for="catatan" class="block text-sm font-medium text-gray-700 mb-1">Catatan Tambahan</label>
-                <textarea name="catatan" id="catatan" rows="3" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">{{ old('catatan') }}</textarea>
-                @error('catatan') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-            </div>
-        </div>
-
-        <div class="mt-8 flex justify-end space-x-3">
-            <a href="{{ route('transaksi.pemusnahan.index') }}" class="btn-c-sm">Batal</a>
-            <button type="submit" class="btn-a-sm">Simpan Transaksi</button>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 @endsection

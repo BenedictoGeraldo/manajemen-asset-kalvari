@@ -10,13 +10,13 @@ class DepartmentController extends Controller
     public function index()
     {
         $departments = Department::with('parent')->orderBy('name')->get();
-        return view('pengaturan.departments.index', compact('departments'));
+        return view('master.departments.index', compact('departments'));
     }
 
     public function create()
     {
         $parents = Department::orderBy('name')->get();
-        return view('pengaturan.departments.create', compact('parents'));
+        return view('master.departments.create', compact('parents'));
     }
 
     public function store(Request $request)
@@ -36,14 +36,14 @@ class DepartmentController extends Controller
             'created_by' => auth()->id(),
         ]);
 
-        return redirect()->route('departments.index')
+        return redirect()->route('master.departments.index')
             ->with('success', 'Departemen berhasil ditambahkan!');
     }
 
     public function edit(Department $department)
     {
         $parents = Department::where('id', '!=', $department->id)->orderBy('name')->get();
-        return view('pengaturan.departments.edit', compact('department', 'parents'));
+        return view('master.departments.edit', compact('department', 'parents'));
     }
 
     public function update(Request $request, Department $department)
@@ -63,26 +63,26 @@ class DepartmentController extends Controller
             'updated_by' => auth()->id(),
         ]);
 
-        return redirect()->route('departments.index')
+        return redirect()->route('master.departments.index')
             ->with('success', 'Departemen berhasil diupdate!');
     }
 
     public function destroy(Department $department)
     {
         if ($department->children()->count() > 0) {
-            return redirect()->route('departments.index')
+            return redirect()->route('master.departments.index')
                 ->with('error', 'Tidak dapat menghapus departemen yang memiliki sub-departemen!');
         }
 
         if ($department->users()->count() > 0) {
-            return redirect()->route('departments.index')
+            return redirect()->route('master.departments.index')
                 ->with('error', 'Tidak dapat menghapus departemen yang masih memiliki user!');
         }
 
         $department->update(['deleted_by' => auth()->id()]);
         $department->delete();
 
-        return redirect()->route('departments.index')
+        return redirect()->route('master.departments.index')
             ->with('success', 'Departemen berhasil dihapus!');
     }
 }

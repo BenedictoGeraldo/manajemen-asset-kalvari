@@ -8,6 +8,7 @@ use App\Exports\TransaksiMutasiAsetExport;
 use App\Models\DataAsetKolektif;
 use App\Models\TransaksiPembelian;
 use App\Models\TransaksiMutasiAset;
+use App\Models\TransaksiPemusnahan;
 use App\Services\MasterDataService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -27,11 +28,10 @@ class LaporanController extends Controller
             'lokasi_id' => $request->input('lokasi_id'),
             'kondisi_id' => $request->input('kondisi_id'),
             'status' => $request->input('status'),
-            'per_page' => (int) $request->input('per_page', 10),
         ];
 
         $laporanAset = $this->buildDataAsetQuery($filters)
-            ->paginate($filters['per_page'])
+            ->paginate(10)
             ->appends($request->query());
 
         $kategoris = $this->masterDataService->getActiveKategoris();
@@ -53,15 +53,6 @@ class LaporanController extends Controller
 
         $laporanAset = $this->buildDataAsetQuery($filters)->get();
 
-        if ($format === 'pdf') {
-            if (!class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
-                abort(500, 'Fitur export PDF belum tersedia. Silakan instal package barryvdh/laravel-dompdf.');
-            }
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.data-aset.pdf', compact('laporanAset', 'filters'))
-                ->setPaper('a4', 'landscape');
-            return $pdf->download('laporan-data-aset-' . now()->format('Ymd-His') . '.pdf');
-        }
-
         $extension = $format === 'csv' ? 'csv' : 'xlsx';
         $writerType = $extension === 'csv'
             ? \Maatwebsite\Excel\Excel::CSV
@@ -77,11 +68,10 @@ class LaporanController extends Controller
             'search' => $request->input('search'),
             'status' => $request->input('status'),
             'jenis' => $request->input('jenis'),
-            'per_page' => (int) $request->input('per_page', 10),
         ];
 
         $laporanMutasi = $this->buildMutasiAsetQuery($filters)
-            ->paginate($filters['per_page'])
+            ->paginate(10)
             ->appends($request->query());
 
         return view('laporan.mutasi-aset.index', compact('laporanMutasi', 'filters'));
@@ -97,15 +87,6 @@ class LaporanController extends Controller
 
         $laporanMutasi = $this->buildMutasiAsetQuery($filters)->get();
 
-        if ($format === 'pdf') {
-            if (!class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
-                abort(500, 'Fitur export PDF belum tersedia. Silakan instal package barryvdh/laravel-dompdf.');
-            }
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.mutasi-aset.pdf', compact('laporanMutasi', 'filters'))
-                ->setPaper('a4', 'landscape');
-            return $pdf->download('laporan-mutasi-aset-' . now()->format('Ymd-His') . '.pdf');
-        }
-
         $extension = $format === 'csv' ? 'csv' : 'xlsx';
         $writerType = $extension === 'csv'
             ? \Maatwebsite\Excel\Excel::CSV
@@ -120,11 +101,10 @@ class LaporanController extends Controller
         $filters = [
             'search' => $request->input('search'),
             'status' => $request->input('status'),
-            'per_page' => (int) $request->input('per_page', 10),
         ];
 
         $laporanPembelian = $this->buildPembelianQuery($filters)
-            ->paginate($filters['per_page'])
+            ->paginate(10)
             ->appends($request->query());
 
         return view('laporan.pembelian.index', compact('laporanPembelian', 'filters'));
@@ -139,15 +119,6 @@ class LaporanController extends Controller
 
         $laporanPembelian = $this->buildPembelianQuery($filters)->get();
 
-        if ($format === 'pdf') {
-            if (!class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
-                abort(500, 'Fitur export PDF belum tersedia. Silakan instal package barryvdh/laravel-dompdf.');
-            }
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.pembelian.pdf', compact('laporanPembelian', 'filters'))
-                ->setPaper('a4', 'landscape');
-            return $pdf->download('laporan-pembelian-' . now()->format('Ymd-His') . '.pdf');
-        }
-
         $extension = $format === 'csv' ? 'csv' : 'xlsx';
         $writerType = $extension === 'csv'
             ? \Maatwebsite\Excel\Excel::CSV
@@ -161,32 +132,26 @@ class LaporanController extends Controller
     {
         $filters = [
             'search' => $request->input('search'),
-            'per_page' => (int) $request->input('per_page', 10),
+            'metode_pemusnahan' => $request->input('metode_pemusnahan'),
         ];
 
         $laporanPemusnahan = $this->buildPemusnahanQuery($filters)
-            ->paginate($filters['per_page'])
+            ->paginate(10)
             ->appends($request->query());
 
-        return view('laporan.pemusnahan.index', compact('laporanPemusnahan', 'filters'));
+        $metodeList = TransaksiPemusnahan::METODE_LIST;
+
+        return view('laporan.pemusnahan.index', compact('laporanPemusnahan', 'filters', 'metodeList'));
     }
 
     public function exportPemusnahan(Request $request, string $format)
     {
         $filters = [
             'search' => $request->input('search'),
+            'metode_pemusnahan' => $request->input('metode_pemusnahan'),
         ];
 
         $laporanPemusnahan = $this->buildPemusnahanQuery($filters)->get();
-
-        if ($format === 'pdf') {
-            if (!class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
-                abort(500, 'Fitur export PDF belum tersedia. Silakan instal package barryvdh/laravel-dompdf.');
-            }
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.pemusnahan.pdf', compact('laporanPemusnahan', 'filters'))
-                ->setPaper('a4', 'landscape');
-            return $pdf->download('laporan-pemusnahan-' . now()->format('Ymd-His') . '.pdf');
-        }
 
         $extension = $format === 'csv' ? 'csv' : 'xlsx';
         $writerType = $extension === 'csv'
@@ -194,7 +159,6 @@ class LaporanController extends Controller
             : \Maatwebsite\Excel\Excel::XLSX;
         $filename = 'laporan-pemusnahan-' . now()->format('Ymd-His') . '.' . $extension;
 
-        // Note: LaporanPemusnahanExport needs to be created
         return Excel::download(new \App\Exports\LaporanPemusnahanExport($laporanPemusnahan), $filename, $writerType);
     }
 
@@ -202,7 +166,7 @@ class LaporanController extends Controller
     {
         $search = trim((string) ($filters['search'] ?? ''));
 
-        return \App\Models\TransaksiPemusnahan::query()
+        return TransaksiPemusnahan::query()
             ->with(['aset:id,kode_aset,nama_aset'])
             ->when($search !== '', function (Builder $query) use ($search) {
                 $query->whereHas('aset', function (Builder $asetQuery) use ($search) {
@@ -211,7 +175,11 @@ class LaporanController extends Controller
                 })
                 ->orWhere('kode_transaksi', 'like', "%{$search}%")
                 ->orWhere('alasan_pemusnahan', 'like', "%{$search}%")
-                ->orWhere('metode_pemusnahan', 'like', "%{$search}%");
+                ->orWhere('metode_pemusnahan', 'like', "%{$search}%")
+                ->orWhere('penanggung_jawab', 'like', "%{$search}%");
+            })
+            ->when($filters['metode_pemusnahan'] ?? null, function (Builder $query, $metode) {
+                $query->where('metode_pemusnahan', $metode);
             })
             ->orderByDesc('tanggal_pemusnahan');
     }

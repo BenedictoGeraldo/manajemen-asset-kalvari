@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\TransaksiMutasiAsetExport;
 use App\Http\Requests\StoreMutasiAsetRequest;
 use App\Http\Requests\UpdateMutasiAsetRequest;
 use App\Http\Requests\CompleteMutasiAsetRequest;
@@ -10,7 +9,6 @@ use App\Models\TransaksiMutasiAset;
 use App\Models\DataAsetKolektif;
 use App\Services\MutasiAsetService;
 use App\Services\MasterDataService;
-use Maatwebsite\Excel\Facades\Excel;
 
 class MutasiAsetController extends Controller
 {
@@ -23,28 +21,19 @@ class MutasiAsetController extends Controller
     {
         $filters = request()->only(['search', 'status', 'jenis', 'per_page']);
 
-        if (!$this->canManageAll()) {
-            $filters['creator_id'] = auth()->id();
+        $user = auth()->user();
+
+        if ($user->is_super_admin) {
+            // no filter — lihat semua
+        } elseif ($user->isAdminDivisi()) {
+            $filters['department_id'] = $user->department_id;
+        } else {
+            $filters['creator_id'] = $user->id;
         }
 
         $mutasis = $this->mutasiService->getPaginatedMutasi($filters);
 
         return view('transaksi.mutasi-aset.index', compact('mutasis', 'filters'));
-    }
-
-    public function export(string $format)
-    {
-        $filters = request()->only(['search', 'status', 'jenis']);
-        $mutasis = TransaksiMutasiAset::with(['aset'])
-            ->search($filters['search'] ?? null)
-            ->when($filters['status'] ?? null, fn($q) => $q->where('status', $filters['status']))
-            ->when($filters['jenis'] ?? null, fn($q) => $q->where('jenis_mutasi', $filters['jenis']))
-            ->get();
-
-        return Excel::download(
-            new TransaksiMutasiAsetExport($mutasis),
-            'mutasi-aset-' . now()->format('Ymd-His') . '.' . ($format === 'xlsx' ? 'xlsx' : 'csv')
-        );
     }
 
     public function create()
@@ -155,26 +144,12 @@ class MutasiAsetController extends Controller
         }
     }
 
-    public function process(TransaksiMutasiAset $mutasiAset)
-    {
-        $this->requireAdmin();
-
-        try {
-            $userId = auth()->id();
-            $this->mutasiService->startProcess($mutasiAset->id, $userId);
-
-            return back()->with('success', 'Proses mutasi aset dimulai');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Gagal memulai proses mutasi aset: ' . $e->getMessage());
-        }
-    }
-
     public function completeForm(TransaksiMutasiAset $mutasiAset)
     {
         $this->requireAdmin();
 
-        if ($mutasiAset->status !== 'proses') {
-            return back()->with('error', 'Hanya mutasi dengan status proses yang bisa diselesaikan');
+        if ($mutasiAset->status !== 'disetujui') {
+            return back()->with('error', 'Hanya mutasi dengan status disetujui yang bisa diselesaikan');
         }
 
         return view('transaksi.mutasi-aset.complete', compact('mutasiAset'));
@@ -211,9 +186,21 @@ class MutasiAsetController extends Controller
 
     private function authorizeAccess($record): void
     {
-        if (!$this->canManageAll() && (int) $record->created_by !== (int) auth()->id()) {
-            abort(403, 'Anda tidak memiliki akses ke transaksi ini.');
+        $user = auth()->user();
+
+        if ($user->is_super_admin) {
+            return;
         }
+
+        if ($user->isAdminDivisi()) {
+            if ($record->creator && $record->creator->department_id === $user->department_id) {
+                return;
+            }
+        } elseif ((int) $record->created_by === (int) $user->id) {
+            return;
+        }
+
+        abort(403, 'Anda tidak memiliki akses ke transaksi ini.');
     }
 
     private function formOptions(): array
@@ -223,10 +210,18 @@ class MutasiAsetController extends Controller
             ->orderBy('nama_aset')
             ->get(['id', 'kode_aset', 'nama_aset']);
 
+        $lokasis = $this->masterDataService->getActiveLokasis();
+        $lokasiGrouped = $lokasis->groupBy('nama_lokasi')->map(fn($items, $nama) => [
+            'group' => $nama,
+            'items' => $items->map(fn($x) => [
+                'id' => $x->id,
+                'label' => $x->sub_lokasi ?: $nama,
+            ])->values()->toArray(),
+        ])->values()->toArray();
+
         return [
             'asets' => $asets,
-            'lokasis' => $this->masterDataService->getActiveLokasis(),
-            'kondisis' => $this->masterDataService->getActiveKondisis(),
+            'lokasiGrouped' => $lokasiGrouped,
         ];
     }
 }

@@ -33,6 +33,7 @@ class BasicPolicy extends Basic
                 Keyword::UNSAFE_INLINE, // Required for Vite/Alpine init
                 Keyword::UNSAFE_EVAL,   // Required for AlpineJS
                 'cdn.jsdelivr.net',     // AlpineJS source
+                'cdn.tailwindcss.com',  // Tailwind CDN for QR scan page
                 'http://localhost:5173',
             ])
             ->addDirective(Directive::STYLE, [

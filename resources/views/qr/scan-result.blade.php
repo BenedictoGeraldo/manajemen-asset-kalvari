@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Informasi Aset - {{ $aset->nama_aset }}</title>
-    <!-- Menggunakan CDN agar styling langsung jalan di HP tanpa perlu setting server Vite -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -31,7 +30,7 @@
             <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
             <div class="absolute bottom-4 left-6 right-6">
                 <span class="inline-block px-3 py-1 mb-2 bg-white/20 backdrop-blur-md border border-white/30 text-white text-xs font-bold tracking-wide uppercase rounded-full shadow-sm">
-                    Aset Gereja Kalvari
+                    {{ setting('church_name', 'Gereja Kalvari') }}
                 </span>
             </div>
         </div>
@@ -42,7 +41,7 @@
                 <div class="relative group">
                     <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-500"></div>
                     @if($aset->gambar_aset_base64)
-                        <img src="{{ $aset->gambar_aset_base64 }}" alt="{{ $aset->nama_aset }}" 
+                        <img src="{{ $aset->gambar_aset_base64 }}" alt="{{ $aset->nama_aset }}"
                              class="relative w-40 h-40 object-cover rounded-2xl shadow-lg border-4 border-white bg-white cursor-pointer transition-transform hover:scale-105"
                              onclick="openImageModal(this.src)" title="Klik untuk memperbesar">
                     @else
@@ -63,7 +62,7 @@
 
             <!-- Details List -->
             <div class="space-y-3">
-                
+
                 @if($aset->kategori)
                 <div class="flex items-center p-3 bg-white/60 rounded-2xl border border-gray-100 shadow-sm">
                     <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center shrink-0 mr-3">
@@ -87,32 +86,85 @@
                     </div>
                     <div>
                         <p class="text-[11px] uppercase tracking-wider font-bold text-gray-400">Lokasi Penempatan</p>
-                        <p class="text-sm font-semibold text-gray-800">{{ $aset->lokasi ? $aset->lokasi->nama_lokasi : 'Tidak diketahui' }}</p>
+                        <p class="text-sm font-semibold text-gray-800">{{ $aset->lokasi?->nama_lokasi ?? 'Tidak diketahui' }}</p>
                     </div>
                 </div>
 
+                @auth
+                {{-- Detail tambahan hanya untuk user login --}}
+                @if($aset->kondisi)
                 <div class="flex items-center p-3 bg-white/60 rounded-2xl border border-gray-100 shadow-sm">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mr-3">
+                    <div class="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0 mr-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                         </svg>
                     </div>
                     <div>
-                        <p class="text-[11px] uppercase tracking-wider font-bold text-gray-400">Status Aset</p>
-                        <p class="text-sm font-semibold text-gray-800">Tercatat di Sistem</p>
+                        <p class="text-[11px] uppercase tracking-wider font-bold text-gray-400">Kondisi</p>
+                        <p class="text-sm font-semibold text-gray-800">{{ $aset->kondisi->nama_kondisi }}</p>
+                    </div>
+                </div>
+                @endif
+
+                <div class="flex items-center p-3 bg-white/60 rounded-2xl border border-gray-100 shadow-sm">
+                    <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center shrink-0 mr-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-[11px] uppercase tracking-wider font-bold text-gray-400">Pengelola</p>
+                        <p class="text-sm font-semibold text-gray-800">{{ $aset->pengelola?->nama_pengelola ?? 'Tidak diketahui' }}</p>
                     </div>
                 </div>
 
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="flex items-center p-3 bg-white/60 rounded-2xl border border-gray-100 shadow-sm">
+                        <div class="w-8 h-8 rounded-lg bg-cyan-100 text-cyan-600 flex items-center justify-center shrink-0 mr-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase tracking-wider font-bold text-gray-400">Jumlah</p>
+                            <p class="text-sm font-semibold text-gray-800">{{ number_format((int) ($aset->jumlah_barang ?? 0), 0, ',', '.') }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center p-3 bg-white/60 rounded-2xl border border-gray-100 shadow-sm">
+                        <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 mr-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase tracking-wider font-bold text-gray-400">Tahun</p>
+                            <p class="text-sm font-semibold text-gray-800">{{ $aset->tahun_pengadaan ?? '-' }}</p>
+                        </div>
+                    </div>
+                </div>
+                @endauth
+
             </div>
-            
-            <div class="mt-8 text-center">
-                <p class="text-xs text-gray-400 mb-2">Internal Gereja Kalvari</p>
+
+            <div class="mt-8 text-center space-y-3">
+                <p class="text-xs text-gray-400">{{ setting('church_name', 'Gereja Kalvari') }}</p>
+
+                @auth
+                <a href="{{ route('data-aset.show', $aset->id) }}" data-navigate class="inline-flex items-center justify-center px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-full hover:bg-gray-800 transition-colors shadow-md">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                    Lihat Detail
+                </a>
+                @else
                 <a href="{{ route('login') }}" class="inline-flex items-center justify-center px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-full hover:bg-gray-800 transition-colors shadow-md">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
                     </svg>
-                    Login Sistem
+                    Login untuk Info Lengkap
                 </a>
+                @endauth
             </div>
         </div>
     </div>

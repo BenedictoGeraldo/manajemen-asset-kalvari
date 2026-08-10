@@ -11,6 +11,8 @@ class TransaksiPemusnahan extends Model
 {
     use HasFactory, SoftDeletes, HasAuditColumns;
 
+    const METODE_LIST = ['Dihancurkan', 'Dibakar', 'Dibuang', 'Dijual', 'Dihibahkan'];
+
     protected $table = 'transaksi_pemusnahan';
 
     protected $fillable = [
@@ -21,6 +23,8 @@ class TransaksiPemusnahan extends Model
         'alasan_pemusnahan',
         'metode_pemusnahan',
         'penanggung_jawab',
+        'nama_pengaju',
+        'unit_pengaju',
         'catatan',
         'dokumen_berita_acara',
         'created_by',
@@ -46,6 +50,23 @@ class TransaksiPemusnahan extends Model
             if (empty($model->kode_transaksi)) {
                 $model->kode_transaksi = 'DIS-' . date('Ymd') . '-' . str_pad(static::withTrashed()->count() + 1, 4, '0', STR_PAD_LEFT);
             }
+        });
+    }
+
+    public function scopeSearch($query, ?string $search)
+    {
+        if (!$search) {
+            return $query;
+        }
+
+        return $query->where(function ($q) use ($search) {
+            $q->where('kode_transaksi', 'like', "%{$search}%")
+                ->orWhere('penanggung_jawab', 'like', "%{$search}%")
+                ->orWhere('alasan_pemusnahan', 'like', "%{$search}%")
+                ->orWhereHas('aset', function ($q) use ($search) {
+                    $q->where('nama_aset', 'like', "%{$search}%")
+                        ->orWhere('kode_aset', 'like', "%{$search}%");
+                });
         });
     }
 }

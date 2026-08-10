@@ -64,6 +64,22 @@
     </div>
 
     <div>
+        <label for="nama_pengaju" class="block text-sm font-medium text-gray-700 mb-1">Nama Pengaju</label>
+        <input type="text" id="nama_pengaju" name="nama_pengaju"
+               value="{{ old('nama_pengaju', $pembelian->nama_pengaju ?? (isset($pembelian) ? '' : auth()->user()->name)) }}"
+               readonly
+               class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700">
+    </div>
+
+    <div>
+        <label for="unit_pengaju" class="block text-sm font-medium text-gray-700 mb-1">Unit / Departemen</label>
+        <input type="text" id="unit_pengaju" name="unit_pengaju"
+               value="{{ old('unit_pengaju', $pembelian->unit_pengaju ?? (isset($pembelian) ? '' : optional(auth()->user()->department)->name)) }}"
+               readonly
+               class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700">
+    </div>
+
+    <div>
         <label for="sumber_dana" class="block text-sm font-medium text-gray-700 mb-1">Sumber Dana</label>
         <input type="text" id="sumber_dana" name="sumber_dana" value="{{ old('sumber_dana', $pembelian->sumber_dana ?? '') }}"
                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
@@ -80,6 +96,10 @@
     <p class="text-sm text-red-600">{{ $message }}</p>
 @enderror
 </div>
+
+@if(!isset($pembelian))
+<input type="hidden" name="status" value="diajukan">
+@endif
 
 <div class="mt-8 border-t pt-6">
     <div class="flex items-center justify-between mb-4">
@@ -108,6 +128,16 @@
     </a>
 </div>
 
+@php
+    $lokasiGrouped = $lokasis->groupBy('nama_lokasi')->map(fn($items, $nama) => [
+        'group' => $nama,
+        'items' => $items->map(fn($x) => [
+            'id' => $x->id,
+            'label' => $x->sub_lokasi ?: $nama,
+        ])->values()->toArray(),
+    ])->values()->toArray();
+@endphp
+
 <script>
 (function() {
     const itemsContainer = document.getElementById('items-container');
@@ -116,14 +146,21 @@
     const initialItems = @json($itemsState);
 
     function buildOptions(list, selected) {
-        return list.map(option => {
-            const isSelected = String(option.id) === String(selected) ? 'selected' : '';
-            return `<option value="${option.id}" ${isSelected}>${option.label}</option>`;
+        return list.map(item => {
+            if (item.group !== undefined) {
+                const childOptions = (item.items || []).map(opt => {
+                    const isSelected = String(opt.id) === String(selected) ? 'selected' : '';
+                    return `<option value="${opt.id}" ${isSelected}>${opt.label}</option>`;
+                }).join('');
+                return `<optgroup label="${item.group}">${childOptions}</optgroup>`;
+            }
+            const isSelected = String(item.id) === String(selected) ? 'selected' : '';
+            return `<option value="${item.id}" ${isSelected}>${item.label}</option>`;
         }).join('');
     }
 
     const kategoriOptions = [{ id: '', label: 'Pilih Kategori' }, ...@json($kategoris->map(fn($x) => ['id' => $x->id, 'label' => $x->nama_kategori])->values())];
-    const lokasiOptions = [{ id: '', label: 'Pilih Lokasi' }, ...@json($lokasis->map(fn($x) => ['id' => $x->id, 'label' => $x->nama_lokasi])->values())];
+    const lokasiOptions = [{ id: '', label: 'Pilih Lokasi' }, ...@json($lokasiGrouped)];
     const kondisiOptions = [{ id: '', label: 'Pilih Kondisi' }, ...@json($kondisis->map(fn($x) => ['id' => $x->id, 'label' => $x->nama_kondisi])->values())];
     const pengelolaOptions = [{ id: '', label: 'Pilih Pengelola' }, ...@json($pengelolas->map(fn($x) => ['id' => $x->id, 'label' => $x->nama_pengelola])->values())];
 

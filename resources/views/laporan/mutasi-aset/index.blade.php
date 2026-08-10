@@ -19,7 +19,7 @@
 
     <div class="bg-white rounded-lg shadow border border-gray-100 p-4 mb-6">
         <form method="GET" action="{{ route('laporan.mutasi-aset.index') }}" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="lg:col-span-2">
                     <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Pencarian</label>
                     <div class="search-input-wrapper">
@@ -65,19 +65,6 @@
                         <option value="dibatalkan" {{ ($filters['status'] ?? '') === 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
                     </select>
                 </div>
-
-                <div>
-                    <label for="per_page" class="block text-sm font-medium text-gray-700 mb-1">Data per Halaman</label>
-                    <select id="per_page"
-                            name="per_page"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        @foreach([10, 25, 50, 100] as $size)
-                            <option value="{{ $size }}" {{ (int) ($filters['per_page'] ?? 10) === $size ? 'selected' : '' }}>
-                                {{ $size }} / halaman
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
             </div>
 
             <div class="flex items-center gap-2">
@@ -86,8 +73,7 @@
                     Terapkan Filter
                 </button>
                 <a href="{{ route('laporan.mutasi-aset.index') }}"
-                   data-navigate
-                   class="btn-c-outline">
+                   class="btn-c-sm">
                     Reset
                 </a>
             </div>
@@ -125,10 +111,6 @@
                     <a href="{{ route('laporan.mutasi-aset.export', array_merge(['format' => 'csv'], request()->except('page'))) }}"
                        class="dropdown-export-item">
                         Export ke CSV (.csv)
-                    </a>
-                    <a href="{{ route('laporan.mutasi-aset.export', array_merge(['format' => 'pdf'], request()->except('page'))) }}"
-                       class="dropdown-export-item">
-                        Export ke PDF (.pdf)
                     </a>
                 </div>
             </div>

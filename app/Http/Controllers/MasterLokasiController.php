@@ -44,7 +44,7 @@ class MasterLokasiController extends Controller
             'is_active'        => 'boolean',
         ]);
 
-        $validated['is_active'] = $request->boolean('is_active', true);
+        $validated['is_active'] = $request->boolean('is_active');
         $validated['kode_lokasi'] = strtoupper($validated['kode_lokasi']);
 
         MasterLokasi::create($validated);
@@ -71,8 +71,13 @@ class MasterLokasiController extends Controller
             'is_active'        => 'boolean',
         ]);
 
-        $validated['is_active'] = $request->boolean('is_active', true);
+        $validated['is_active'] = $request->boolean('is_active');
         $validated['kode_lokasi'] = strtoupper($validated['kode_lokasi']);
+
+        if (!$validated['is_active'] && $lokasi->is_active && $lokasi->dataAset()->count() > 0) {
+            return redirect()->back()
+                ->with('error', 'Lokasi tidak dapat dinonaktifkan karena masih digunakan oleh aset!');
+        }
 
         $lokasi->update($validated);
 

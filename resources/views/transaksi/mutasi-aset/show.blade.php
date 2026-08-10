@@ -50,19 +50,7 @@
                 </form>
             @endif
 
-            @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.mutasi_aset.process')) && $mutasi->status === 'disetujui')
-                <form action="{{ route('transaksi.mutasi_aset.process', $mutasi->id) }}" method="POST" class="inline-flex">
-                    @csrf
-                    <button type="submit" class="btn-a-sm">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                        </svg>
-                        Mulai Proses
-                    </button>
-                </form>
-            @endif
-
-            @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.mutasi_aset.complete')) && $mutasi->status === 'proses')
+            @if((auth()->user()->is_super_admin || auth()->user()->hasPermission('transaksi.mutasi_aset.complete')) && $mutasi->status === 'disetujui')
                 <a href="{{ route('transaksi.mutasi_aset.complete.form', $mutasi->id) }}" data-navigate class="btn-a-sm">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -147,8 +135,16 @@
                         <p class="font-medium text-gray-900 mt-1">{{ $mutasi->approver?->name ?? '-' }}</p>
                     </div>
                     <div class="pb-3">
-                        <p class="text-sm text-gray-600">Tanggal Mulai</p>
-                        <p class="font-medium text-gray-900 mt-1">{{ $mutasi->tanggal_mulai?->format('d/m/Y H:i') ?? '-' }}</p>
+                        <p class="text-sm text-gray-600">Disetujui Oleh</p>
+                        <p class="font-medium text-gray-900 mt-1">{{ $mutasi->approver?->name ?? '-' }}</p>
+                    </div>
+                    <div class="pb-3">
+                        <p class="text-sm text-gray-600">Nama Pengaju</p>
+                        <p class="font-medium text-gray-900 mt-1">{{ $mutasi->nama_pengaju ?: '-' }}</p>
+                    </div>
+                    <div class="pb-3">
+                        <p class="text-sm text-gray-600">Unit Pengaju</p>
+                        <p class="font-medium text-gray-900 mt-1">{{ $mutasi->unit_pengaju ?: '-' }}</p>
                     </div>
                     <div class="pb-3">
                         <p class="text-sm text-gray-600">Tanggal Selesai</p>
@@ -161,23 +157,16 @@
             <div class="bg-white rounded-lg shadow p-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Detail Mutasi</h3>
                 <div class="space-y-4">
-                    @if($mutasi->jenis_mutasi === 'transfer_lokasi')
-                        <div class="grid grid-cols-2 gap-4 pb-4 border-b">
-                            <div>
-                                <p class="text-sm text-gray-600">Lokasi Lama</p>
-                                <p class="font-medium text-gray-900 mt-1">{{ $mutasi->lokasiLama?->nama_lokasi ?? '-' }}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600">Lokasi Baru</p>
-                                <p class="font-medium text-gray-900 mt-1">{{ $mutasi->lokasiBaru?->nama_lokasi ?? '-' }}</p>
-                            </div>
+                    <div class="grid grid-cols-2 gap-4 pb-4 border-b">
+                        <div>
+                            <p class="text-sm text-gray-600">Lokasi Lama</p>
+                            <p class="font-medium text-gray-900 mt-1">{{ $mutasi->lokasiLama?->nama_lokasi ?? '-' }}</p>
                         </div>
-                    @elseif($mutasi->jenis_mutasi === 'perubahan_kondisi')
-                        <div class="pb-4 border-b">
-                            <p class="text-sm text-gray-600">Kondisi Baru</p>
-                            <p class="font-medium text-gray-900 mt-1">{{ $mutasi->kondisi?->nama_kondisi ?? '-' }}</p>
+                        <div>
+                            <p class="text-sm text-gray-600">Lokasi Baru</p>
+                            <p class="font-medium text-gray-900 mt-1">{{ $mutasi->lokasiBaru?->nama_lokasi ?? '-' }}</p>
                         </div>
-                    @endif
+                    </div>
 
                     @if($mutasi->alasan)
                         <div class="pb-4 border-b">

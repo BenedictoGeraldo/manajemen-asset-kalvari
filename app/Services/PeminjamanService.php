@@ -17,6 +17,7 @@ class PeminjamanService
         $search = $filters['search'] ?? null;
         $status = $filters['status'] ?? null;
         $creatorId = $filters['creator_id'] ?? null;
+        $departmentId = $filters['department_id'] ?? null;
         $perPage = $filters['per_page'] ?? 10;
 
         $query = TransaksiPeminjaman::withCount('items')
@@ -30,6 +31,12 @@ class PeminjamanService
 
         if ($creatorId) {
             $query->where('created_by', $creatorId);
+        }
+
+        if ($departmentId) {
+            $query->whereHas('creator', function ($q) use ($departmentId) {
+                $q->where('department_id', $departmentId);
+            });
         }
 
         return $query->paginate($perPage);
@@ -62,13 +69,28 @@ class PeminjamanService
 
                     $peminjaman = TransaksiPeminjaman::create([
                         ...$data,
+                        'status' => \App\Enums\PeminjamanStatus::DIAJUKAN,
                         'nomor_peminjaman' => $this->generateNomorPeminjaman($data['tanggal_pengajuan']),
                         'created_by' => $userId,
                         'updated_by' => $userId,
                     ]);
 
+                    $reservedMap = $this->getReservedStock();
+
                     foreach ($items as $item) {
                         $aset = DataAsetKolektif::findOrFail($item['data_aset_kolektif_id']);
+
+                        $reserved = $reservedMap[$item['data_aset_kolektif_id']] ?? 0;
+                        $available = (int) $aset->jumlah_barang - $reserved;
+
+                        if ((int) $item['jumlah'] > $available) {
+                            throw new \RuntimeException(
+                                'Stok aset "' . $aset->nama_aset . '" tidak mencukupi.'
+                                . ' Tersedia: ' . $available
+                                . ' (stok: ' . $aset->jumlah_barang . ', sedang dipesan: ' . $reserved . ')'
+                                . ', diminta: ' . $item['jumlah'] . '.'
+                            );
+                        }
 
                         $peminjaman->items()->create([
                             ...$item,
@@ -255,6 +277,36 @@ class PeminjamanService
 
             return $peminjaman->load('items.aset');
         });
+    }
+
+    /**
+     * Get reserved stock per aset dari peminjaman dengan status pending (DRAFT, DIAJUKAN, DISETUJUI).
+     * Return map [aset_id => total_reserved_quantity].
+     *
+     * @param int|null $excludePeminjamanId  Peminjaman ID yang dikecualikan (untuk edit).
+     * @return array<int, int>
+     */
+    public function getReservedStock(?int $excludePeminjamanId = null): array
+    {
+        $query = \App\Models\TransaksiPeminjamanItem::query()
+            ->join('transaksi_peminjaman', 'transaksi_peminjaman_items.transaksi_peminjaman_id', '=', 'transaksi_peminjaman.id')
+            ->whereIn('transaksi_peminjaman.status', [
+                \App\Enums\PeminjamanStatus::DRAFT->value,
+                \App\Enums\PeminjamanStatus::DIAJUKAN->value,
+                \App\Enums\PeminjamanStatus::DISETUJUI->value,
+            ]);
+
+        if ($excludePeminjamanId) {
+            $query->where('transaksi_peminjaman.id', '!=', $excludePeminjamanId);
+        }
+
+        return $query
+            ->groupBy('transaksi_peminjaman_items.data_aset_kolektif_id')
+            ->select('transaksi_peminjaman_items.data_aset_kolektif_id')
+            ->selectRaw('SUM(transaksi_peminjaman_items.jumlah) as reserved')
+            ->pluck('reserved', 'data_aset_kolektif_id')
+            ->map(fn ($v) => (int) $v)
+            ->toArray();
     }
 
     private function normalizeItems(array $items): array
