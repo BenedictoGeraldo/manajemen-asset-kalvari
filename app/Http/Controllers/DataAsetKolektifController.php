@@ -325,7 +325,7 @@ class DataAsetKolektifController extends Controller
     public function import(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimes:xlsx,csv|max:5120',
+            'file' => 'required|file|mimetypes:text/csv,text/plain,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet|max:5120',
         ]);
 
         try {

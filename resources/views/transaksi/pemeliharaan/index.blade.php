@@ -133,7 +133,7 @@
             </table>
         </div>
 
-        <div class="p-4 border-t border-gray-200">
+        <div class="px-6 py-4 bg-gray-50 border-t">
             {{ $pemeliharaans->withQueryString()->links() }}
         </div>
     </div>

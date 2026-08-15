@@ -117,10 +117,10 @@
                 </tbody>
             </table>
         </div>
-    </div>
 
-    <div class="mt-4">
-        {{ $mutasis->links() }}
+        <div class="px-6 py-4 bg-gray-50 border-t">
+            {{ $mutasis->links() }}
+        </div>
     </div>
 
     <!-- Delete Modal -->
