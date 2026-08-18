@@ -72,6 +72,3 @@ Setelah semua langkah selesai, Anda dapat mengakses aplikasi di:
 - **Menghentikan Projek:** `./vendor/bin/sail down`
 - **Menjalankan Queue:** `./vendor/bin/sail artisan queue:work`
 - **Akses Bash Kontainer:** `docker exec -it pelita-app bash`
-
----
-*Dibuat oleh Antigravity untuk Projek Pelita.*
