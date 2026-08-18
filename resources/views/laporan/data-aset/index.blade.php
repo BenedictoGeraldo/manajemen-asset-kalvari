@@ -3,6 +3,8 @@
 @section('title', 'Laporan Data Aset')
 @section('page-title', 'Laporan Data Aset')
 
+// this is laporan data asset report page
+
 @section('content')
 <div class="p-6">
     @if(session('success'))
