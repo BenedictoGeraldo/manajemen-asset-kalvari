@@ -62,10 +62,9 @@ services:
             - pelita_db_data:/var/lib/mysql
         networks:
             - pelita
-        # Port MySQL di-bind ke localhost port 3310 agar bisa diakses lewat Navicat (SSH Tunnel)
-        # Port 3309 sudah dipakai oleh abadiin_mysql, jadi 3310 aman dan tidak bentrok.
+        # Port MySQL dibuka ke publik lewat port 3310 agar bisa diakses langsung via Navicat
         ports:
-            - "127.0.0.1:3310:3306"
+            - "0.0.0.0:3310:3306"
 
 volumes:
     pelita_db_data:
