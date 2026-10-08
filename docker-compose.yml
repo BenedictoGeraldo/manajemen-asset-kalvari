@@ -19,7 +19,7 @@ services:
             - "127.0.0.1:${APP_PORT:-8085}:8000"
         environment:
             QUEUE_CONNECTION: database
-        command: sh -c "php artisan serve --host=0.0.0.0 --port=8000"
+        command: sh -c "if [ ! -f /var/www/vendor/autoload.php ]; then composer install --no-dev --optimize-autoloader; fi && php artisan serve --host=0.0.0.0 --port=8000"
         depends_on:
             - db
 
@@ -41,7 +41,7 @@ services:
             - pelita
         environment:
             QUEUE_CONNECTION: database
-        command: "php artisan queue:work"
+        command: sh -c "while [ ! -f /var/www/vendor/autoload.php ]; do sleep 3; done && php artisan queue:work"
         depends_on:
             - db
 
