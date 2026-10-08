@@ -26,23 +26,26 @@ jobs:
             echo "📥 Mengambil kode terbaru dari GitHub..."
             git pull origin main
 
+            echo "🚀 Memastikan kontainer berjalan dan up-to-date..."
+            docker compose up -d
+
             echo "📦 Menginstall dependensi Composer..."
-            docker compose exec -T pelita-app composer install --no-dev --optimize-autoloader
+            docker compose exec -T app composer install --no-dev --optimize-autoloader
 
             echo "🗄️ Menjalankan migrasi database..."
-            docker compose exec -T pelita-app php artisan migrate --force
+            docker compose exec -T app php artisan migrate --force
 
             echo "🎨 Membangun frontend assets (Vite)..."
-            docker compose exec -T pelita-app npm install
-            docker compose exec -T pelita-app npm run build
+            docker compose exec -T app npm install
+            docker compose exec -T app npm run build
 
             echo "⚡ Mengoptimalkan cache Laravel..."
-            docker compose exec -T pelita-app php artisan optimize:clear
-            docker compose exec -T pelita-app php artisan config:cache
-            docker compose exec -T pelita-app php artisan route:cache
-            docker compose exec -T pelita-app php artisan view:cache
+            docker compose exec -T app php artisan optimize:clear
+            docker compose exec -T app php artisan config:cache
+            docker compose exec -T app php artisan route:cache
+            docker compose exec -T app php artisan view:cache
 
             echo "🔄 Merestart Queue Worker..."
-            docker compose exec -T pelita-queue php artisan queue:restart
+            docker compose exec -T queue php artisan queue:restart
 
             echo "✅ Deploy Berhasil!"
