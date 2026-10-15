@@ -20,13 +20,13 @@
         <!-- Left Side - Brand Section -->
         <div class="hidden md:flex w-1/2 p-12 items-center justify-center relative bg-gradient-to-br from-[#5b4b8a] via-[#7d6bb8] to-[#9f8ed6] text-white overflow-hidden">
             <!-- Background Pattern -->
-            <div class="absolute inset-0 opacity-10">
+            <!-- <div class="absolute inset-0 opacity-10">
                 <div class="absolute inset-0" style="background-image: radial-gradient(circle at 25px 25px, white 2%, transparent 0%), radial-gradient(circle at 75px 75px, white 2%, transparent 0%); background-size: 100px 100px;"></div>
-            </div>
+            </div> -->
 
             <!-- Animated Circles -->
-            <div class="absolute top-10 left-10 w-20 h-20 border-4 border-white rounded-full opacity-20 animate-ping"></div>
-            <div class="absolute bottom-10 right-10 w-32 h-32 border-4 border-white rounded-full opacity-20 animate-pulse"></div>
+            <!-- <div class="absolute top-10 left-10 w-20 h-20 border-4 border-white rounded-full opacity-20 animate-ping"></div>
+            <div class="absolute bottom-10 right-10 w-32 h-32 border-4 border-white rounded-full opacity-20 animate-pulse"></div> -->
 
             <div class="relative z-10 text-center space-y-8">
                 <!-- Logo PELITA -->
@@ -58,7 +58,14 @@
                 <p class="text-gray-500 text-sm">Silakan login untuk mengakses sistem manajemen aset</p>
             </div>
 
-            <form method="POST" action="{{ route('login') }}">
+            <form method="POST" action="{{ route('login') }}" onSubmit="
+            const btn = document.getElementById('btn-login);
+            btn.disabled = true;
+            btn.classList.add('opacity-75', 'cursor-not-allowed'); 
+            document.getElementById('btn-icon').classList.add('hidden'); 
+            document.getElementById('btn-spinner').classList.remove('hidden'); 
+            document.getElementById('btn-text').innerText = 'Memproses...';">
+
                 @csrf
 
                 <div class="mb-5">
@@ -72,7 +79,7 @@
                         </div>
                         <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="email"
                                class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 @error('email') border-red-500 @enderror"
-                               placeholder="nama@email.com">
+                               placeholder="Masukan Email...">
                     </div>
                     @error('email')
                         <p class="mt-2 text-sm text-red-600 flex items-center">
@@ -94,7 +101,7 @@
                         </div>
                         <input id="password" type="password" name="password" required autocomplete="current-password"
                                class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 @error('password') border-red-500 @enderror"
-                               placeholder="Masukkan password">
+                               placeholder="Masukkan Password">
                     </div>
                     @error('password')
                         <p class="mt-2 text-sm text-red-600 flex items-center">
@@ -106,13 +113,23 @@
                     @enderror
                 </div>
 
-                <div>
-                    <button type="submit"
+               <div>
+                    <button type="submit" id="btn-login"
                             class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-md text-base font-semibold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-200 transform hover:scale-[1.02]">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        
+                        <!-- Spinner Loading (Awalnya hidden) -->
+                        <svg id="btn-spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+
+                        <!-- Icon Masuk Original -->
+                        <svg id="btn-icon" class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                         </svg>
-                        Masuk ke Sistem
+
+                        <!-- Teks Button -->
+                        <span id="btn-text">Login</span>
                     </button>
                 </div>
             </form>
