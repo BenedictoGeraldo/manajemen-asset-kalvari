@@ -1,4 +1,3 @@
-version: "3.7"
 services:
     app:
         build:
@@ -17,17 +16,10 @@ services:
         networks:
             - pelita
         ports:
-            - "8000:8000"
-            - "5173:5173"
+            - "127.0.0.1:${APP_PORT:-8085}:8000"
         environment:
             QUEUE_CONNECTION: database
-            # DB_CONNECTION: mysql
-            # DB_HOST: db
-            # DB_PORT: 3306
-            # DB_DATABASE: manajemen_asset
-            # DB_USERNAME: laravel
-            # DB_PASSWORD: root
-        command: sh -c "php artisan serve --host=0.0.0.0 --port=8000"
+        command: sh -c "if [ ! -f /var/www/vendor/autoload.php ]; then composer install --no-dev --optimize-autoloader; fi && php artisan serve --host=0.0.0.0 --port=8000"
         depends_on:
             - db
 
@@ -49,13 +41,7 @@ services:
             - pelita
         environment:
             QUEUE_CONNECTION: database
-            # DB_CONNECTION: mysql
-            # DB_HOST: db
-            # DB_PORT: 3306
-            # DB_DATABASE: manajemen_asset
-            # DB_USERNAME: laravel
-            # DB_PASSWORD: root
-        command: "php artisan queue:work"
+        command: sh -c "while [ ! -f /var/www/vendor/autoload.php ]; do sleep 3; done && php artisan queue:work"
         depends_on:
             - db
 
@@ -73,11 +59,18 @@ services:
             SERVICE_NAME: mysql
         volumes:
             - ./docker-compose/mysql:/docker-entrypoint-initdb.d
+            - pelita_db_data:/var/lib/mysql
         networks:
             - pelita
+        # Port MySQL dibuka ke publik lewat port 3310 agar bisa diakses langsung via Navicat
         ports:
-            - "3307:3306"
+            - "0.0.0.0:3310:3306"
+
+volumes:
+    pelita_db_data:
+        driver: local
 
 networks:
     pelita:
         driver: bridge
+
