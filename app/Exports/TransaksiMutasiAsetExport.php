@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use Illuminate\Support\Enumerable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -10,7 +11,7 @@ class TransaksiMutasiAsetExport implements FromCollection, WithHeadings, WithMap
 {
     public function __construct(private $mutasis) {}
 
-    public function collection()
+    public function collection(): Enumerable
     {
         return $this->mutasis;
     }

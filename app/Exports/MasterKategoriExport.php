@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\MasterKategori;
+use Illuminate\Support\Enumerable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -12,7 +13,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class MasterKategoriExport implements FromCollection, WithHeadings, WithMapping, WithColumnWidths, WithStyles
 {
-    public function collection()
+    public function collection(): Enumerable
     {
         return MasterKategori::where('is_active', true)
             ->orderBy('nama_kategori')
@@ -55,7 +56,7 @@ class MasterKategoriExport implements FromCollection, WithHeadings, WithMapping,
         ];
     }
 
-    public function styles(Worksheet $sheet)
+    public function styles(Worksheet $sheet): ?array
     {
         return [
             1 => [
