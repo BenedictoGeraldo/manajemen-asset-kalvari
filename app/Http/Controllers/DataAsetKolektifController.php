@@ -376,7 +376,7 @@ class DataAsetKolektifController extends Controller
         return Excel::download(
             new class($rows) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
                 public function __construct(private $rows) {}
-                public function collection() { return $this->rows; }
+                public function collection(): \Illuminate\Support\Enumerable { return $this->rows; }
                 public function headings(): array {
                     return [
                         'nama_aset', 'kategori', 'deskripsi_aset', 'ukuran', 'deskripsi_ukuran_bentuk',
