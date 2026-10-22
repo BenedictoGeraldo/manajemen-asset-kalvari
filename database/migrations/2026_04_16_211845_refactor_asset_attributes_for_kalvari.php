@@ -13,24 +13,29 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('data_aset_kolektif', function (Blueprint $table) {
-            // Rename budget to nilai_budget
-            $table->renameColumn('budget', 'nilai_budget');
+            // Rename budget to nilai_budget if budget exists
+            if (Schema::hasColumn('data_aset_kolektif', 'budget')) {
+                $table->renameColumn('budget', 'nilai_budget');
+            }
             
             // Add new categorical columns
-            $table->string('sumber_dana')->nullable()->after('budget');
-            $table->string('label_penggunaan')->nullable()->after('sumber_dana');
+            if (!Schema::hasColumn('data_aset_kolektif', 'sumber_dana')) {
+                $table->string('sumber_dana')->nullable()->after('nilai_budget');
+            }
+            if (!Schema::hasColumn('data_aset_kolektif', 'label_penggunaan')) {
+                $table->string('label_penggunaan')->nullable()->after('sumber_dana');
+            }
             
             // Change ukuran to allow structured values
-            $table->string('ukuran_label')->nullable()->after('ukuran');
-            
-            // We use string instead of enum to avoid doctrine/dbal dependency issues with ENUM change
-            // and to allow more flexibility for the long strings from the image.
+            if (!Schema::hasColumn('data_aset_kolektif', 'ukuran_label')) {
+                $table->string('ukuran_label')->nullable()->after('ukuran');
+            }
         });
 
-        // Use DB statement to update tipe_grup if needed, or just handle in logic
-        // For now, let's just add a comment or better yet, make it a string column for flexibility
         Schema::table('data_aset_kolektif', function (Blueprint $table) {
-            $table->string('tipe_grup_v2')->nullable()->after('tipe_grup');
+            if (!Schema::hasColumn('data_aset_kolektif', 'tipe_grup_v2')) {
+                $table->string('tipe_grup_v2')->nullable()->after('tipe_grup');
+            }
         });
     }
 
