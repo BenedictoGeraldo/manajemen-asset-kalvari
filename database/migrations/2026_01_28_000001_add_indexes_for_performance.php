@@ -51,6 +51,14 @@ return new class extends Migration
             ? $table . '_' . implode('_', $columns) . '_index'
             : $table . '_' . $columns . '_index';
 
+        if (DB::getDriverName() === 'sqlite') {
+            $exists = DB::select("SELECT name FROM sqlite_master WHERE type = 'index' AND name = ?", [$indexName]);
+            if (empty($exists)) {
+                $blueprint->index($columns);
+            }
+            return;
+        }
+
         $indexes = DB::select("SHOW INDEXES FROM {$table} WHERE Key_name = ?", [$indexName]);
 
         if (empty($indexes)) {
@@ -97,6 +105,10 @@ return new class extends Migration
      */
     private function dropIndexIfExists(string $table, string|array $columns, Blueprint $blueprint): void
     {
+        if (DB::getDriverName() === 'sqlite') {
+            return;
+        }
+
         $indexName = is_array($columns)
             ? $table . '_' . implode('_', $columns) . '_index'
             : $table . '_' . $columns . '_index';

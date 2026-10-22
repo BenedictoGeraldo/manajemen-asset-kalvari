@@ -28,9 +28,11 @@ return new class extends Migration
         });
 
         // Make slug non-nullable after populating
-        Schema::table('permissions', function (Blueprint $table) {
-            $table->string('slug')->nullable(false)->change();
-        });
+        if (DB::getDriverName() !== 'sqlite') {
+            Schema::table('permissions', function (Blueprint $table) {
+                $table->string('slug')->nullable(false)->change();
+            });
+        }
     }
 
     /**

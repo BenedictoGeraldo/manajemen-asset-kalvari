@@ -10,8 +10,20 @@ return new class extends Migration
     {
         Schema::table('master_lokasi', function (Blueprint $table) {
             // Drop the foreign key and parent_id column
-            $table->dropForeign(['parent_id']);
+            if (DB::getDriverName() !== 'sqlite') {
+                $table->dropForeign(['parent_id']);
+            }
             $table->dropColumn('parent_id');
+
+            // Drop composite index if exists
+            if (DB::getDriverName() === 'sqlite') {
+                DB::statement('DROP INDEX IF EXISTS master_lokasi_gedung_lantai_index');
+            } else {
+                $indexes = DB::select("SHOW INDEXES FROM master_lokasi WHERE Key_name = 'master_lokasi_gedung_lantai_index'");
+                if (!empty($indexes)) {
+                    $table->dropIndex('master_lokasi_gedung_lantai_index');
+                }
+            }
 
             // Drop columns we don't need anymore
             $table->dropColumn(['gedung', 'lantai', 'ruangan']);

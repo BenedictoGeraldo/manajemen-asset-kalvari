@@ -21,12 +21,16 @@ return new class extends Migration
             $table->foreign('rejected_by')->references('id')->on('users')->nullOnDelete();
         });
 
-        DB::statement("ALTER TABLE transaksi_pembelian MODIFY COLUMN status ENUM('draft','diajukan','disetujui','ditolak','dibatalkan') DEFAULT 'draft'");
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement("ALTER TABLE transaksi_pembelian MODIFY COLUMN status ENUM('draft','diajukan','disetujui','ditolak','dibatalkan') DEFAULT 'draft'");
+        }
     }
 
     public function down(): void
     {
-        DB::statement("ALTER TABLE transaksi_pembelian MODIFY COLUMN status ENUM('draft','diajukan','disetujui','dibatalkan') DEFAULT 'draft'");
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement("ALTER TABLE transaksi_pembelian MODIFY COLUMN status ENUM('draft','diajukan','disetujui','dibatalkan') DEFAULT 'draft'");
+        }
 
         Schema::table('transaksi_pembelian', function (Blueprint $table) {
             $table->dropForeign(['department_id']);
